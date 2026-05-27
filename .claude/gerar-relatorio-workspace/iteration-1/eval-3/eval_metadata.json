@@ -1,0 +1,19 @@
+{
+  "eval_id": 3,
+  "eval_name": "documentar-sem-entrada-explicita",
+  "prompt": "Documenta isso: gerei os resultados da análise e quero compartilhar com minha orientadora",
+  "assertions": [
+    {
+      "text": "O agente lista os JSONs disponíveis em output/ ou gera relatório se houver contexto claro de qual JSON usar",
+      "type": "behavior_check"
+    },
+    {
+      "text": "O agente NÃO gera um relatório vazio ou com placeholders",
+      "type": "content_check"
+    },
+    {
+      "text": "O agente se comunica em português com a usuária",
+      "type": "content_check"
+    }
+  ]
+}

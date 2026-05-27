@@ -1,0 +1,11 @@
+## Identificação de chave — dotacao_acao vs empenhos_a (sem skill)
+
+### Chave identificada
+CO_ORGAO (dotacao_acao) JOIN cd_orgao (empenhos_a)
+
+Ambas contêm os mesmos 5 valores de código de órgão.
+Relação: many-to-many após o join — dotacao tem 1 linha por (orgao+acao+fonte),
+empenhos tem múltiplas linhas por órgão.
+
+Nota: a integração completa pode requerer também CO_ACAO ↔ cd_acao e CO_FONTE ↔ cd_fonte
+para uma chave composta mais precisa.

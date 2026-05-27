@@ -1,0 +1,101 @@
+{
+  "skill_name": "comparar-colunas",
+  "evals": [
+    {
+      "id": 1,
+      "name": "match-alto-mesmo-formato",
+      "prompt": "Compara a coluna nr_empenho do arquivo empenhos_a.csv com numero_empenho do pagamentos_b.csv — quero saber se dá pra joinear por elas. Arquivos em /home/luiza-maluf/Área de trabalho/tcc/fase01/.claude/comparar-colunas-workspace/",
+      "expected_output": "Veredito COMPATÍVEL. Match rate A→B próximo de 100% (pagamentos são subconjunto dos empenhos), B→A próximo de 80%. Score semântico alto entre 'nr_empenho' e 'numero_empenho'. Ambas detectadas com padrão nota_empenho. Nenhuma transformação necessária relevante.",
+      "files": [
+        "/home/luiza-maluf/Área de trabalho/tcc/fase01/.claude/comparar-colunas-workspace/empenhos_a.csv",
+        "/home/luiza-maluf/Área de trabalho/tcc/fase01/.claude/comparar-colunas-workspace/pagamentos_b.csv"
+      ],
+      "assertions": [
+        {
+          "id": "a1",
+          "description": "Veredito é COMPATÍVEL",
+          "check": "Output contém 'COMPATÍVEL' sem 'PARCIALMENTE'"
+        },
+        {
+          "id": "a2",
+          "description": "Match rate B→A está entre 95% e 100%",
+          "check": "Match de pagamentos_b em empenhos_a é >= 95% (todos os pagamentos têm empenho correspondente)"
+        },
+        {
+          "id": "a3",
+          "description": "Padrão nota_empenho detectado em ambas",
+          "check": "Output menciona padrão 'nota_empenho' ou regex AAAA NE NNNNNN para as duas colunas"
+        },
+        {
+          "id": "a4",
+          "description": "Score semântico reportado entre os nomes",
+          "check": "Output apresenta um score numérico de similaridade entre 'nr_empenho' e 'numero_empenho'"
+        },
+        {
+          "id": "a5",
+          "description": "JSON salvo no output/ do projeto",
+          "check": "Arquivo JSON criado em /home/luiza-maluf/Área de trabalho/tcc/fase01/output/"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "match-parcial-transformacao-necessaria",
+      "prompt": "será que o campo cd_orgao da empenhos_a.csv bate com CO_ORGAO da orgaos_c.csv? testa pra mim. Arquivos em /home/luiza-maluf/Área de trabalho/tcc/fase01/.claude/comparar-colunas-workspace/",
+      "expected_output": "Match raw pode ser baixo (variação de zeros à esquerda). Após normalização (lstrip zeros), match sobe. Veredito PARCIALMENTE COMPATÍVEL ou COMPATÍVEL com transformação sugerida (strip zeros à esquerda ou zfill). Ambas detectadas como grupo 'orgao', padrão código_5dig.",
+      "files": [
+        "/home/luiza-maluf/Área de trabalho/tcc/fase01/.claude/comparar-colunas-workspace/empenhos_a.csv",
+        "/home/luiza-maluf/Área de trabalho/tcc/fase01/.claude/comparar-colunas-workspace/orgaos_c.csv"
+      ],
+      "assertions": [
+        {
+          "id": "b1",
+          "description": "Detecta ambas como grupo 'orgao'",
+          "check": "Output menciona grupo 'orgao' para cd_orgao e CO_ORGAO"
+        },
+        {
+          "id": "b2",
+          "description": "Identifica transformação de zeros à esquerda",
+          "check": "Output menciona padding (zfill), zeros à esquerda, lstrip ou normalização numérica"
+        },
+        {
+          "id": "b3",
+          "description": "Match rate normalizado é reportado separado do raw",
+          "check": "Output apresenta dois valores de match: antes e depois da normalização"
+        },
+        {
+          "id": "b4",
+          "description": "Veredito não é INCOMPATÍVEL",
+          "check": "Veredito é COMPATÍVEL ou PARCIALMENTE COMPATÍVEL — não INCOMPATÍVEL"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "incompativel-mesmo-tipo-dominio-diferente",
+      "prompt": "quero ver se cd_orgao dos empenhos_a.csv e cd_programa dos programas_d.csv podem ser usados pra cruzar as tabelas. /home/luiza-maluf/Área de trabalho/tcc/fase01/.claude/comparar-colunas-workspace/",
+      "expected_output": "Match rate baixo (valores de 5 dígitos mas populações diferentes). Grupos de domínio incompatíveis: 'orgao' vs 'programa'. Veredito INCOMPATÍVEL com explicação de que apesar do formato parecido (5 dígitos), representam entidades diferentes.",
+      "files": [
+        "/home/luiza-maluf/Área de trabalho/tcc/fase01/.claude/comparar-colunas-workspace/empenhos_a.csv",
+        "/home/luiza-maluf/Área de trabalho/tcc/fase01/.claude/comparar-colunas-workspace/programas_d.csv"
+      ],
+      "assertions": [
+        {
+          "id": "c1",
+          "description": "Veredito é INCOMPATÍVEL",
+          "check": "Output contém 'INCOMPATÍVEL'"
+        },
+        {
+          "id": "c2",
+          "description": "Detecta grupos de domínio diferentes",
+          "check": "Output menciona 'orgao' para cd_orgao e 'programa' para cd_programa, indicando incompatibilidade semântica"
+        },
+        {
+          "id": "c3",
+          "description": "Justificativa menciona domínio/entidade diferente",
+          "check": "Justificativa explica que mesmo com formato similar (5 dígitos), as colunas representam entidades distintas"
+        }
+      ]
+    }
+  ]
+}

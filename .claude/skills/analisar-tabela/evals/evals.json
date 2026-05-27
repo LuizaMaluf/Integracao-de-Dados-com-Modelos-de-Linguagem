@@ -1,0 +1,108 @@
+{
+  "skill_name": "analisar-tabela",
+  "evals": [
+    {
+      "id": 1,
+      "name": "tabela-bem-formada-chave-obvia",
+      "prompt": "Analisa essa tabela pra mim: /home/luiza-maluf/.claude/skills/analisar-tabela-workspace/data/empenhos.csv",
+      "expected_output": "Perfil completo com todas as 9 colunas. Deve detectar grupo 'empenho' para nr_empenho, padrão nota_empenho (AAAA NE NNNNNN), e sugerir nr_empenho como chave primária com justificativa. JSON salvo em output/.",
+      "files": [
+        "/home/luiza-maluf/.claude/skills/analisar-tabela-workspace/data/empenhos.csv"
+      ],
+      "assertions": [
+        {
+          "id": "a1",
+          "description": "Detecta grupo 'empenho' para coluna nr_empenho",
+          "check": "O output (terminal ou JSON) menciona grupo 'empenho' associado a nr_empenho"
+        },
+        {
+          "id": "a2",
+          "description": "Detecta padrão nota_empenho (regex YYYYNENNNNNN)",
+          "check": "Output menciona padrão 'nota_empenho' ou similar para nr_empenho"
+        },
+        {
+          "id": "a3",
+          "description": "Sugere nr_empenho como chave primária",
+          "check": "Sugestão de chave final é nr_empenho"
+        },
+        {
+          "id": "a4",
+          "description": "JSON é salvo no diretório output/ do projeto",
+          "check": "Arquivo JSON criado em /home/luiza-maluf/Área de trabalho/tcc/fase01/output/"
+        },
+        {
+          "id": "a5",
+          "description": "Perfila todas as 9 colunas da tabela",
+          "check": "Output lista nr_empenho, cd_orgao, cd_uo, exercicio, cd_acao, cd_fonte, cd_natureza, vl_empenho, ds_historico"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "tabela-colunas-genericas-encoding-latin1",
+      "prompt": "o que tem nessa tabela aqui? /home/luiza-maluf/.claude/skills/analisar-tabela-workspace/data/transferencias_latin1.csv — ela veio do sistema de convênios",
+      "expected_output": "Deve detectar encoding latin-1 automaticamente. Colunas com nomes genéricos (campo_1..campo_7). Deve inferir grupos por padrão dos valores: campo_1 ~ convênio, campo_2 ~ UF, campo_4 ~ CNPJ. Candidata a chave: campo_1 (uniqueness alta) ou campo_4. JSON salvo.",
+      "files": [
+        "/home/luiza-maluf/.claude/skills/analisar-tabela-workspace/data/transferencias_latin1.csv"
+      ],
+      "assertions": [
+        {
+          "id": "b1",
+          "description": "Carrega o arquivo sem erro de encoding",
+          "check": "Output não reporta erro de UnicodeDecodeError; tabela é carregada com 150 linhas"
+        },
+        {
+          "id": "b2",
+          "description": "Detecta padrão convênio em campo_1",
+          "check": "campo_1 tem padrão detectado como 'convenio' ou regex \\d{6}/\\d{4}"
+        },
+        {
+          "id": "b3",
+          "description": "Detecta padrão UF em campo_2",
+          "check": "campo_2 identificado com grupo 'uf' ou valores reconhecidos como estados brasileiros"
+        },
+        {
+          "id": "b4",
+          "description": "Detecta CNPJ raw em campo_4",
+          "check": "campo_4 identificado com padrão 'cnpj_raw' ou grupo 'cpf_cnpj'"
+        },
+        {
+          "id": "b5",
+          "description": "Sugere uma chave primária com justificativa",
+          "check": "Há uma sugestão de chave (campo_1 ou campo_4) com justificativa textual"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "tabela-chave-composta-sem-chave-simples",
+      "prompt": "quais são as chaves dessa base de dotação? /home/luiza-maluf/.claude/skills/analisar-tabela-workspace/data/dotacao_acao.csv",
+      "expected_output": "Nenhuma coluna simples tem uniqueness >= 0.95 (CO_ORGAO, CO_ACAO, CO_FONTE são repetitivos). A skill deve: (1) avisar que não há chave simples, (2) sugerir chave composta CO_ORGAO + CO_ACAO + CO_FONTE com base na combinação única delas, (3) detectar grupos orgao, acao, fonte_recurso.",
+      "files": [
+        "/home/luiza-maluf/.claude/skills/analisar-tabela-workspace/data/dotacao_acao.csv"
+      ],
+      "assertions": [
+        {
+          "id": "c1",
+          "description": "Não há candidata simples com uniqueness >= 95%",
+          "check": "Output indica que nenhuma coluna isolada é candidata a chave primária (ou lista vazia de candidatas)"
+        },
+        {
+          "id": "c2",
+          "description": "Detecta grupos de domínio corretos",
+          "check": "CO_ORGAO → grupo 'orgao', CO_ACAO → grupo 'acao', CO_FONTE → grupo 'fonte_recurso'"
+        },
+        {
+          "id": "c3",
+          "description": "Sugere chave composta ou alerta sobre ausência de chave simples",
+          "check": "Output menciona chave composta (CO_ORGAO + CO_ACAO + CO_FONTE) ou explica que a identificação de chave requer análise de combinação"
+        },
+        {
+          "id": "c4",
+          "description": "Identifica colunas de valor corretamente",
+          "check": "VL_DOTACAO e VL_EMPENHADO detectados como grupo 'valor'"
+        }
+      ]
+    }
+  ]
+}

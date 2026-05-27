@@ -1,0 +1,17 @@
+## Análise de empenhos.csv (sem skill)
+
+200 linhas, 9 colunas, separador ;, encoding UTF-8. Domínio: empenhos SIAFI.
+
+| Coluna       | Únicos | Nulos | Observação                                          |
+|--------------|--------|-------|-----------------------------------------------------|
+| nr_empenho   | 200    | 0     | Padrão ANONEnnnnnn — identificador oficial SIAFI    |
+| cd_orgao     | 5      | 0     | Código do órgão (5 dígitos)                         |
+| cd_uo        | 5      | 0     | Unidade orçamentária (6 dígitos)                    |
+| exercicio    | 2      | 0     | 2023 e 2024, ~50% cada                              |
+| cd_acao      | 5      | 0     | Código da ação (alfanumérico)                       |
+| cd_fonte     | 3      | 0     | Fonte de recursos (4 dígitos)                       |
+| cd_natureza  | 5      | 0     | Natureza de despesa (33xxxx=corrente, 44xxxx=capital)|
+| vl_empenho   | 200    | 0     | Decimal BR (vírgula), faixa R$128k-R$8,99M          |
+| ds_historico | 200    | 0     | Texto livre — template fixo                         |
+
+Chave primária: nr_empenho (200/200 únicos, 0 nulos, padrão estruturado AAAA+NE+NNNNNN).

@@ -1,0 +1,52 @@
+======================================================================
+PERFIL DA TABELA: transferencias_latin1.csv
+Linhas: 151 | Colunas: 7
+======================================================================
+Encoding detectado: latin-1
+
+COLUNAS:
+  campo_1  [grupo: convenio] [padrão: convenio_conv]
+    dtype        : string
+    únicos       : 151 (100.0%)
+    nulos        : 0.0%
+    comp. médio  : 15.0 chars
+    top valores  : CONV337547/2024(1x), CONV273580/2024(1x), ...
+
+  campo_2  [grupo: uf] [padrão: uf_2]
+    dtype        : string
+    únicos       : 6 (4.0%)
+    top valores  : BA(31x), GO(28x), MG(27x), SP(22x), RS(22x)
+
+  campo_3  [grupo: orgao] [padrão: codigo_7dig]
+    dtype        : string
+    únicos       : 20 (13.2%)
+    top valores  : 3163449(14x), 4593556(11x), ...
+
+  campo_4  [grupo: unidade_orcamentaria] [padrão: codigo_14dig]
+    dtype        : string
+    únicos       : 150 (99.3%)
+    comp. médio  : 14.0 chars
+
+  campo_5  [grupo: valor] [padrão: valor_br]
+    dtype        : string
+    únicos       : 151 (100.0%)
+    faixa        : R$179k - R$4.97M
+
+  campo_6  [grupo: -]
+    únicos       : 3
+    valores      : EM EXECUÇÃO(68x), FIRMADO(47x), ENCERRADO(36x)
+
+  campo_7  [grupo: exercicio] [padrão: iso_date]
+    únicos       : 141 (93.4%)
+    range        : 2024-01-03 a 2024-12-24
+
+======================================================================
+CANDIDATAS A CHAVE PRIMÁRIA:
+  ✓ campo_1 — uniqueness: 100.0%, grupo: convenio, padrão: CONV\d{6}/\d{4}
+  ✓ campo_5 — uniqueness: 100.0%, grupo: valor
+
+SUGESTÃO DE CHAVE: campo_1
+  "campo_1 possui unicidade de 100%, zero nulos, grupo de domínio
+  reconhecido (convenio) e padrão regex CONV\d{6}/\d{4}. campo_5
+  também é única, mas valores monetários não são identificadores."
+======================================================================

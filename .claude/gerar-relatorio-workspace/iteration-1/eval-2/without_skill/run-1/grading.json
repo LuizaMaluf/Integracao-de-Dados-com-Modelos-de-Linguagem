@@ -1,0 +1,44 @@
+{
+  "eval_id": 2,
+  "run": "without_skill",
+  "expectations": [
+    {
+      "text": "O arquivo Markdown foi salvo em output/reports/ com nome contendo 'convenios' e 'transferencias'",
+      "passed": false,
+      "evidence": "Arquivo salvo no workspace do eval, não em output/reports/"
+    },
+    {
+      "text": "O resumo executivo contém aviso ⚠️ (confiança 0.58 < 0.60)",
+      "passed": true,
+      "evidence": "Aviso de confiança baixa presente na seção 4 ('Confiança: 0.58 — abaixo do limiar')"
+    },
+    {
+      "text": "O código Python usa chave composta (duas colunas no left_on/right_on)",
+      "passed": false,
+      "evidence": "Sem código Python. Apenas SQL com INNER JOIN e ON composto."
+    },
+    {
+      "text": "A subseção de transformações necessárias está presente e descreve normalização do separador",
+      "passed": true,
+      "evidence": "Transformações descritas em prosa na seção do Candidato 1, com exemplo de '/' → '-'"
+    },
+    {
+      "text": "A seção 3 contém tabela de pesos e passos da análise",
+      "passed": true,
+      "evidence": "Seção 2 (Metodologia) lista os 8 passos e a fórmula de pontuação composta"
+    },
+    {
+      "text": "O relatório NÃO tem placeholders vazios como <nome> ou <col>",
+      "passed": true,
+      "evidence": "Sem placeholders"
+    }
+  ],
+  "pass_rate": 0.667,
+  "notes": "Melhor que baseline do eval 1 — inclui metodologia e passos. Faltam: local correto de saída, código Python de implementação, tabela de pesos na seção dedicada. Estrutura organizada mas diverge do padrão da skill.",
+  "summary": {
+    "pass_rate": 0.6667,
+    "passed": 4,
+    "failed": 2,
+    "total": 6
+  }
+}

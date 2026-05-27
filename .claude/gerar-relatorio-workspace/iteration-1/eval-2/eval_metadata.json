@@ -1,0 +1,31 @@
+{
+  "eval_id": 2,
+  "eval_name": "relatorio-convenios-transferencias-baixa-confianca",
+  "prompt": "Quero um relatório do resultado da integração entre convênios e transferências",
+  "assertions": [
+    {
+      "text": "O arquivo Markdown foi salvo em output/reports/ com nome contendo 'convenios' e 'transferencias'",
+      "type": "file_exists"
+    },
+    {
+      "text": "O resumo executivo contém aviso ⚠️ (confiança 0.58 < 0.60)",
+      "type": "content_check"
+    },
+    {
+      "text": "O código Python usa chave composta (duas colunas no left_on/right_on)",
+      "type": "content_check"
+    },
+    {
+      "text": "A subseção de transformações necessárias está presente e descreve normalização do separador",
+      "type": "content_check"
+    },
+    {
+      "text": "A seção 3 contém tabela de pesos e passos da análise",
+      "type": "content_check"
+    },
+    {
+      "text": "O relatório NÃO tem placeholders vazios como <nome> ou <col>",
+      "type": "content_check"
+    }
+  ]
+}

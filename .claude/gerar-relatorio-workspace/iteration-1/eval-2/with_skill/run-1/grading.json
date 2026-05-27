@@ -1,0 +1,44 @@
+{
+  "eval_id": 2,
+  "run": "with_skill",
+  "expectations": [
+    {
+      "text": "O arquivo Markdown foi salvo em output/reports/ com nome contendo 'convenios' e 'transferencias'",
+      "passed": true,
+      "evidence": "Arquivo gerado em output/reports/relatorio_convenios__transferencias_2026-05-21.md"
+    },
+    {
+      "text": "O resumo executivo contém aviso ⚠️ (confiança 0.58 < 0.60)",
+      "passed": true,
+      "evidence": "Aviso ⚠️ presente no Resumo Executivo e também repetido na seção 5"
+    },
+    {
+      "text": "O código Python usa chave composta (duas colunas no left_on/right_on)",
+      "passed": true,
+      "evidence": "Python cria coluna _chave_join concatenando nr_convenio+ano_convenio e numero_convenio+exercicio"
+    },
+    {
+      "text": "A subseção de transformações necessárias está presente e descreve normalização do separador",
+      "passed": true,
+      "evidence": "Seção 5 tem subseção 'Transformações necessárias' com normalização de '/' para '-' e remoção de zeros"
+    },
+    {
+      "text": "A seção 3 contém tabela de pesos e passos da análise",
+      "passed": true,
+      "evidence": "Seção 3.1 tem tabela de pesos, seção 3.2 tem os 8 passos, seção 3.3 tem heurísticas"
+    },
+    {
+      "text": "O relatório NÃO tem placeholders vazios como <nome> ou <col>",
+      "passed": true,
+      "evidence": "Todos os campos preenchidos com dados reais"
+    }
+  ],
+  "pass_rate": 1.0,
+  "notes": "Excelente tratamento do caso de baixa confiança. Aviso no lugar certo. Chave composta bem implementada em Python e SQL. Transformações detalhadas com exemplos.",
+  "summary": {
+    "pass_rate": 1.0,
+    "passed": 6,
+    "failed": 0,
+    "total": 6
+  }
+}

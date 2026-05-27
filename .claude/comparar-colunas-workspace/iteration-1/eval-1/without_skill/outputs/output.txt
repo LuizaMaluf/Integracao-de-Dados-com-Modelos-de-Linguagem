@@ -1,0 +1,18 @@
+## Comparação nr_empenho vs numero_empenho (sem skill)
+
+Formato: AAAANE###### em ambas as colunas.
+
+| Métrica                      | Valor  |
+|------------------------------|--------|
+| Valores em empenhos_a        | 150    |
+| Valores em pagamentos_b      | 120    |
+| Interseção                   | 120    |
+| Match rate A→B               | 80.0%  |
+| Match rate B→A               | 100.0% |
+| Duplicatas em empenhos_a     | 0      |
+| Duplicatas em pagamentos_b   | 0      |
+
+Veredicto: COMPATÍVEL para join direto, sem transformação.
+- Todos os 120 pagamentos encontram correspondência nos empenhos.
+- 30 empenhos sem match = empenhos ainda não pagos (esperado).
+- Recomendado: LEFT JOIN (empenhos à esquerda) para preservar empenhos sem pagamento.

@@ -1,0 +1,29 @@
+{
+  "eval_id": 3,
+  "run": "with_skill",
+  "expectations": [
+    {
+      "text": "O agente lista os JSONs disponíveis em output/ ou gera relatório se houver contexto claro de qual JSON usar",
+      "passed": true,
+      "evidence": "Agente listou corretamente os 4 JSONs disponíveis em output/ e perguntou qual usar para o relatório"
+    },
+    {
+      "text": "O agente NÃO gera um relatório vazio ou com placeholders",
+      "passed": true,
+      "evidence": "Agente não gerou relatório sem dados — aguardou escolha do usuário antes de prosseguir"
+    },
+    {
+      "text": "O agente se comunica em português com a usuária",
+      "passed": true,
+      "evidence": "Resposta inteira em português, incluindo a pergunta de qual JSON usar"
+    }
+  ],
+  "pass_rate": 1.0,
+  "notes": "Comportamento correto ao receber prompt vago sem entrada explícita: listou JSONs disponíveis e pediu escolha antes de gerar relatório.",
+  "summary": {
+    "pass_rate": 1.0,
+    "passed": 3,
+    "failed": 0,
+    "total": 3
+  }
+}

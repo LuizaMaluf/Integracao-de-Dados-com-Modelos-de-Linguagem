@@ -1,0 +1,21 @@
+## Comparação cd_orgao (empenhos_a) vs CO_ORGAO (orgaos_c) — sem skill
+
+### Resultado
+COMPATÍVEL — as colunas são plenamente compatíveis para JOIN.
+
+### Análise
+
+Valores únicos em cd_orgao: {20000, 26000, 36000, 44000, 52000} (5 valores)
+Valores únicos em CO_ORGAO: {20000, 26000, 36000, 44000, 52000} (5 valores)
+
+Match rate A→B: 100% (todos os órgãos dos empenhos existem na tabela de órgãos)
+Match rate B→A: 100% (todos os órgãos cadastrados aparecem nos empenhos)
+
+Sem diferença de formatação — ambos inteiros de 5 dígitos, sem zeros problemáticos.
+
+### Atenção
+orgaos_c tem registros DUPLICADOS por CO_ORGAO (múltiplas linhas por órgão).
+Um INNER JOIN simples vai multiplicar as linhas de empenhos.
+Recomendado: deduplicar orgaos_c antes do join ou adicionar critério extra.
+
+### Veredito: COMPATÍVEL

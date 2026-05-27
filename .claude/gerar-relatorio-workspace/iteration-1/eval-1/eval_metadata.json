@@ -1,0 +1,39 @@
+{
+  "eval_id": 1,
+  "eval_name": "relatorio-empenhos-pagamentos-alta-confianca",
+  "prompt": "Gera um relatório a partir de output/identificar_chave_empenhos_a__pagamentos_b.json",
+  "assertions": [
+    {
+      "text": "O arquivo Markdown foi salvo em output/reports/ com nome contendo 'empenhos' e 'pagamentos'",
+      "type": "file_exists"
+    },
+    {
+      "text": "O relatório contém seção de Metodologia com tabela de pesos (35%, 30%, 20%, 15%)",
+      "type": "content_check"
+    },
+    {
+      "text": "O relatório lista os 8 passos da análise na seção 3.2",
+      "type": "content_check"
+    },
+    {
+      "text": "O relatório contém os critérios de rejeição na seção 3.3",
+      "type": "content_check"
+    },
+    {
+      "text": "O relatório NÃO contém aviso ⚠️ (confiança 0.97 está acima do limiar)",
+      "type": "content_check"
+    },
+    {
+      "text": "O relatório contém código Python com merge usando nr_empenho e numero_empenho",
+      "type": "content_check"
+    },
+    {
+      "text": "O relatório contém código SQL com JOIN nas colunas corretas",
+      "type": "content_check"
+    },
+    {
+      "text": "O relatório NÃO tem placeholders vazios como <nome> ou <col>",
+      "type": "content_check"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+## Identificação de chave — empenhos_a vs pagamentos_b (sem skill)
+
+### Colunas disponíveis
+empenhos_a:  nr_empenho, cd_orgao, vl_empenho
+pagamentos_b: numero_empenho, dt_pagamento, vl_pago
+
+### Chave identificada
+empenhos_a.nr_empenho JOIN pagamentos_b.numero_empenho
+
+Apesar dos nomes diferentes (nr_ vs numero_), ambas armazenam o número do empenho
+no formato AAAA NE NNNNNN (ex: 2024NE000001). Valores em comum confirmados.
+
+### Join em pandas
+resultado = empenhos.merge(pagamentos, left_on='nr_empenho', right_on='numero_empenho', how='inner')
+
+### Join SQL
+SELECT e.*, p.dt_pagamento, p.vl_pago
+FROM empenhos_a e
+JOIN pagamentos_b p ON e.nr_empenho = p.numero_empenho;

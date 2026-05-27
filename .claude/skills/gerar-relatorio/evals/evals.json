@@ -1,0 +1,27 @@
+{
+  "skill_name": "gerar-relatorio",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Gera um relatório a partir de output/identificar_chave_empenhos_a__pagamentos_b.json",
+      "expected_output": "Arquivo Markdown em output/reports/ com 8 seções estruturadas: resumo executivo, tabelas analisadas, metodologia com heurística e passos da análise, candidatos rankeados, chave recomendada com evidências, código Python e SQL, qualidade do join e próximos passos. Seção de metodologia deve incluir a tabela de pesos (semântico 35%, match rate 30%, estrutural 20%, padrão 15%), os 8 passos de análise e os critérios de rejeição. Confiança 0.97, sem aviso de limiar.",
+      "files": [
+        "output/identificar_chave_empenhos_a__pagamentos_b.json"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Quero um relatório do resultado da integração entre convênios e transferências",
+      "expected_output": "Arquivo Markdown em output/reports/ com aviso ⚠️ no resumo executivo (confiança 0.58 < 0.60). Seção de implementação deve mostrar código com chave composta (nr_convenio+ano_convenio LEFT JOIN numero_convenio+exercicio). Subseção de transformações necessárias deve estar presente descrevendo normalização do separador e zeros à esquerda. Seção de metodologia deve incluir heurística e passos da análise.",
+      "files": [
+        "output/identificar_chave_convenios__transferencias.json"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Documenta isso: gerei os resultados da análise e quero compartilhar com minha orientadora",
+      "expected_output": "O agente deve listar os JSONs disponíveis em output/ e perguntar qual usar (comportamento quando nenhuma entrada é fornecida explicitamente), ou se já há contexto da conversa com um resultado de identificar-chave, gerar o relatório diretamente.",
+      "files": []
+    }
+  ]
+}

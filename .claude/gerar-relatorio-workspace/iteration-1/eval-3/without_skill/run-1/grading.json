@@ -1,0 +1,29 @@
+{
+  "eval_id": 3,
+  "run": "without_skill",
+  "expectations": [
+    {
+      "text": "O agente lista os JSONs disponíveis em output/ ou gera relatório se houver contexto claro de qual JSON usar",
+      "passed": false,
+      "evidence": "Agente gerou um relatório de progresso genérico do TCC sem consultar os JSONs disponíveis em output/"
+    },
+    {
+      "text": "O agente NÃO gera um relatório vazio ou com placeholders",
+      "passed": true,
+      "evidence": "Relatório gerado tem conteúdo, mas é genérico e não usa dados reais de nenhuma análise"
+    },
+    {
+      "text": "O agente se comunica em português com a usuária",
+      "passed": true,
+      "evidence": "Resposta em português"
+    }
+  ],
+  "pass_rate": 0.667,
+  "notes": "Sem skill, o agente não sabe que deve consultar os JSONs em output/. Gerou relatório de progresso genérico do TCC sem dados reais de integração — não atende o objetivo da skill.",
+  "summary": {
+    "pass_rate": 0.6667,
+    "passed": 2,
+    "failed": 1,
+    "total": 3
+  }
+}

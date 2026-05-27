@@ -1,0 +1,106 @@
+{
+  "skill_name": "identificar-chave",
+  "evals": [
+    {
+      "id": 1,
+      "name": "chave-simples-obvia",
+      "prompt": "como faço pra cruzar essas duas tabelas? /home/luiza-maluf/Área de trabalho/tcc/fase01/.claude/comparar-colunas-workspace/empenhos_a.csv e /home/luiza-maluf/Área de trabalho/tcc/fase01/.claude/comparar-colunas-workspace/pagamentos_b.csv",
+      "expected_output": "Identifica nr_empenho (tabela A) ↔ numero_empenho (tabela B) como melhor chave. Score alto (>0.7). Match rate B→A próximo de 100%. Confiança >= 0.8. JSON salvo em output/.",
+      "files": [
+        "/home/luiza-maluf/Área de trabalho/tcc/fase01/.claude/comparar-colunas-workspace/empenhos_a.csv",
+        "/home/luiza-maluf/Área de trabalho/tcc/fase01/.claude/comparar-colunas-workspace/pagamentos_b.csv"
+      ],
+      "assertions": [
+        {
+          "id": "a1",
+          "description": "Identifica nr_empenho ↔ numero_empenho como melhor chave",
+          "check": "best_match.columns_a contém 'nr_empenho' e best_match.columns_b contém 'numero_empenho' (ou vice-versa)"
+        },
+        {
+          "id": "a2",
+          "description": "Confiança >= 0.7",
+          "check": "best_match.confidence >= 0.7 no JSON de saída"
+        },
+        {
+          "id": "a3",
+          "description": "Ranking de candidatos apresentado com pelo menos 2 entradas",
+          "check": "Output mostra ao menos 2 candidatos rankeados antes da decisão final"
+        },
+        {
+          "id": "a4",
+          "description": "JSON salvo no output/ do projeto",
+          "check": "Arquivo JSON criado em /home/luiza-maluf/Área de trabalho/tcc/fase01/output/"
+        },
+        {
+          "id": "a5",
+          "description": "Evidências favoráveis listadas para a chave escolhida",
+          "check": "Output menciona pelo menos uma evidência favorável (match rate, grupo de domínio ou padrão regex)"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "chave-com-variacao-formato",
+      "prompt": "quero integrar os empenhos com a tabela de órgãos, qual campo uso? arquivos: /home/luiza-maluf/Área de trabalho/tcc/fase01/.claude/comparar-colunas-workspace/empenhos_a.csv e /home/luiza-maluf/Área de trabalho/tcc/fase01/.claude/comparar-colunas-workspace/orgaos_c.csv",
+      "expected_output": "Identifica cd_orgao ↔ CO_ORGAO como melhor chave. Detecta necessidade de normalização (zeros à esquerda). Match rate após normalização maior que raw. Confiança moderada (0.5-0.8). Transformações necessárias mencionadas.",
+      "files": [
+        "/home/luiza-maluf/Área de trabalho/tcc/fase01/.claude/comparar-colunas-workspace/empenhos_a.csv",
+        "/home/luiza-maluf/Área de trabalho/tcc/fase01/.claude/comparar-colunas-workspace/orgaos_c.csv"
+      ],
+      "assertions": [
+        {
+          "id": "b1",
+          "description": "Identifica cd_orgao ↔ CO_ORGAO como melhor chave",
+          "check": "best_match envolve cd_orgao e CO_ORGAO"
+        },
+        {
+          "id": "b2",
+          "description": "Transformação de normalização mencionada",
+          "check": "Output menciona normalização, zeros à esquerda, zfill ou lstrip como transformação necessária"
+        },
+        {
+          "id": "b3",
+          "description": "Evidências contrárias listadas (match raw baixo ou variação de formato)",
+          "check": "Output lista pelo menos uma evidência contrária ou limitação da chave"
+        },
+        {
+          "id": "b4",
+          "description": "JSON de saída contém required_transformations não vazio",
+          "check": "required_transformations no JSON da melhor chave tem pelo menos um item"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "chave-composta-sem-chave-simples",
+      "prompt": "como integrar a tabela de dotação com a de empenhos? /home/luiza-maluf/Área de trabalho/tcc/fase01/.claude/analisar-tabela-workspace/data/dotacao_acao.csv e /home/luiza-maluf/Área de trabalho/tcc/fase01/.claude/comparar-colunas-workspace/empenhos_a.csv",
+      "expected_output": "Nenhuma coluna isolada tem match alto suficiente para chave simples. Skill deve detectar que CO_ORGAO/CO_ACAO/CO_FONTE da dotação se relacionam com cd_orgao/cd_acao/cd_fonte dos empenhos. Pode sugerir chave composta ou indicar que é necessária análise de combinação. Confiança menor (0.4-0.7).",
+      "files": [
+        "/home/luiza-maluf/Área de trabalho/tcc/fase01/.claude/analisar-tabela-workspace/data/dotacao_acao.csv",
+        "/home/luiza-maluf/Área de trabalho/tcc/fase01/.claude/comparar-colunas-workspace/empenhos_a.csv"
+      ],
+      "assertions": [
+        {
+          "id": "c1",
+          "description": "Detecta colunas relacionadas entre as duas tabelas (orgao, acao, fonte)",
+          "check": "Candidatos incluem pares como CO_ORGAO↔cd_orgao, CO_ACAO↔cd_acao, CO_FONTE↔cd_fonte"
+        },
+        {
+          "id": "c2",
+          "description": "Sugere chave composta ou alerta sobre ausência de chave simples forte",
+          "check": "Output menciona chave composta, combinação de colunas, ou explica que nenhuma chave simples é suficiente"
+        },
+        {
+          "id": "c3",
+          "description": "Ranking de candidatos tem pelo menos 3 entradas",
+          "check": "candidate_keys no JSON tem pelo menos 3 pares listados"
+        },
+        {
+          "id": "c4",
+          "description": "Justificativa final explica a limitação da chave escolhida",
+          "check": "best_match.justification menciona que a integração é parcial ou requer combinação de campos"
+        }
+      ]
+    }
+  ]
+}

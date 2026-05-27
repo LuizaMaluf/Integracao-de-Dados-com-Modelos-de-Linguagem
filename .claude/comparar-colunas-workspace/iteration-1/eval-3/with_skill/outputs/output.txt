@@ -1,0 +1,32 @@
+══════════════════════════════════════════════════════════════════════
+COMPARAÇÃO DE COLUNAS (com skill)
+  Tabela A: empenhos_a.csv  → coluna: cd_orgao
+  Tabela B: programas_d.csv → coluna: cd_programa
+══════════════════════════════════════════════════════════════════════
+
+                      CD_ORGAO         CD_PROGRAMA
+  Linhas            : 150              100
+  Únicos            : 5 (3.3%)         100 (100.0%)
+  Nulos             : 0.0%             0.0%
+  Comp. médio       : 5.0 chars        5.0 chars
+  Grupo de domínio  : orgao            programa
+  Padrão detectado  : codigo_5dig      codigo_5dig
+
+MATCH RATE (após normalização):
+  A → B : 0.0%   (0 de 5 valores de cd_orgao encontrados em cd_programa)
+  B → A : 0.0%   (0 de 100 valores de cd_programa encontrados em cd_orgao)
+
+Score semântico entre nomes: 0.21
+
+EXEMPLOS SÓ EM A: 20000, 26000, 36000, 44000, 52000
+EXEMPLOS SÓ EM B: 13204, 15812, 17493, 21045, 23901 (e mais 95)
+
+TRANSFORMAÇÕES SUGERIDAS: nenhuma (problema é semântico, não de formato)
+
+══════════════════════════════════════════════════════════════════════
+VEREDITO: ❌ INCOMPATÍVEL
+  "Apesar do formato idêntico (5 dígitos numéricos), cd_orgao e
+  cd_programa pertencem a domínios completamente diferentes: órgãos
+  federais vs programas orçamentários. Match rate 0% em ambas as
+  direções confirma incompatibilidade."
+══════════════════════════════════════════════════════════════════════

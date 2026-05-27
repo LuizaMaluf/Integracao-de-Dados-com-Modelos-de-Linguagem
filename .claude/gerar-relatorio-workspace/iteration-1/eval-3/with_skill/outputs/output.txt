@@ -1,0 +1,8 @@
+Encontrei os seguintes resultados de análise disponíveis em `output/`:
+
+1. `identificar_chave_empenhos_a__pagamentos_b.json` - chave de integração entre empenhos e pagamentos
+2. `identificar_chave_convenios__transferencias.json` - chave de integração entre convênios e transferências
+3. `comparar_colunas_empenhos_a_cd_orgao__orgaos_c_CO_ORGAO.json` - comparação de colunas cd_orgao vs CO_ORGAO
+4. `analisar_tabela_transferencias_latin1.json` - análise da tabela de transferências
+
+**Qual desses resultados você quer usar para gerar o relatório para sua orientadora?** Os arquivos `identificar_chave_*.json` são os mais adequados para um relatório executivo completo, pois contêm ranking de candidatos, evidências e código de implementação.

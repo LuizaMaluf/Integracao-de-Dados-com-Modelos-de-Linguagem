@@ -1,0 +1,54 @@
+{
+  "eval_id": 1,
+  "run": "without_skill",
+  "expectations": [
+    {
+      "text": "O arquivo Markdown foi salvo em output/reports/ com nome contendo 'empenhos' e 'pagamentos'",
+      "passed": false,
+      "evidence": "Arquivo gerado no workspace do eval, não em output/reports/. Nome não segue padrão da skill."
+    },
+    {
+      "text": "O relatório contém seção de Metodologia com tabela de pesos (35%, 30%, 20%, 15%)",
+      "passed": false,
+      "evidence": "Sem seção de metodologia com tabela de pesos. O relatório tem apenas 4 seções genéricas."
+    },
+    {
+      "text": "O relatório lista os 8 passos da análise na seção 3.2",
+      "passed": false,
+      "evidence": "Sem passos da análise. O relatório é mais curto e não reproduz o processo."
+    },
+    {
+      "text": "O relatório contém os critérios de rejeição na seção 3.3",
+      "passed": false,
+      "evidence": "Sem critérios de rejeição."
+    },
+    {
+      "text": "O relatório NÃO contém aviso ⚠️ (confiança 0.97 está acima do limiar)",
+      "passed": true,
+      "evidence": "Sem aviso de confiança baixa — correto para este caso."
+    },
+    {
+      "text": "O relatório contém código Python com merge usando nr_empenho e numero_empenho",
+      "passed": false,
+      "evidence": "Sem código Python de implementação. Apenas código SQL."
+    },
+    {
+      "text": "O relatório contém código SQL com JOIN nas colunas corretas",
+      "passed": true,
+      "evidence": "SQL presente: LEFT JOIN pagamentos_b p ON e.nr_empenho = p.numero_empenho"
+    },
+    {
+      "text": "O relatório NÃO tem placeholders vazios como <nome> ou <col>",
+      "passed": true,
+      "evidence": "Sem placeholders no relatório gerado."
+    }
+  ],
+  "pass_rate": 0.375,
+  "notes": "Relatório básico com resultado correto mas sem estrutura padronizada. Faltam: metodologia com pesos, 8 passos, heurísticas, código Python. Apenas SQL presente. Estrutura muito mais simples que o esperado.",
+  "summary": {
+    "pass_rate": 0.375,
+    "passed": 3,
+    "failed": 5,
+    "total": 8
+  }
+}

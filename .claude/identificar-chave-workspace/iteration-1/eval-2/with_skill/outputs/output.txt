@@ -1,0 +1,25 @@
+## IDENTIFICAÇÃO DE CHAVE DE INTEGRAÇÃO (com skill)
+
+Tabela A: empenhos_a (150 linhas, 3 colunas)
+Tabela B: orgaos_c (80 linhas, 2 colunas)
+
+TOP CANDIDATOS:
+
+#1  cd_orgao ↔ CO_ORGAO  | score: 0.948 | match: 100.0% | cardinalidade: baixa (5 valores)
+    Evidências: mesmo domínio semântico (código de órgão federal); prefixos cd_/CO_ são
+    convenções de código; match rate 100%; mesmo conjunto {20000,26000,36000,44000,52000};
+    dtype numérico compatível
+    Transformações: nenhuma necessária
+
+#2  cd_orgao ↔ NO_ORGAO  | score: 0.158 | match: 0.0%
+    REJEITADO: NO_ORGAO é coluna de nome/descrição (texto) — dtype incompatível
+
+══════════════════════════════════════════════════════════════════════
+MELHOR CHAVE IDENTIFICADA
+  Tabela A : empenhos_a  →  [cd_orgao]
+  Tabela B : orgaos_c    →  [CO_ORGAO]
+  Confiança: 0.948
+  Justificativa: "cd_orgao e CO_ORGAO compartilham o mesmo domínio semântico
+  (código de órgão federal), têm dtype compatível (numérico 5 dígitos) e
+  apresentam match rate de 100%. Join direto sem transformações."
+══════════════════════════════════════════════════════════════════════

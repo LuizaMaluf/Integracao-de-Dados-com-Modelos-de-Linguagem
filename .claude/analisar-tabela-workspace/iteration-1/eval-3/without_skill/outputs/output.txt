@@ -1,0 +1,30 @@
+## Análise das chaves de `dotacao_acao.csv` (sem skill)
+
+### Metadados
+- 75 linhas, 7 colunas, separador ;, encoding utf-8
+
+### Classificação das colunas
+
+| Coluna      | Papel   | Únicos | Detalhe                        |
+|-------------|---------|--------|-------------------------------|
+| CO_ORGAO    | Chave   | 5      | Código do órgão federal        |
+| CO_ACAO     | Chave   | 5      | Código da ação orçamentária    |
+| CO_FONTE    | Chave   | 3      | Código da fonte de recursos    |
+| NO_PROGRAMA | Dimensão| ~20    | Nome do programa               |
+| VL_DOTACAO  | Medida  | 75     | Valor autorizado na LOA        |
+| VL_EMPENHADO| Medida  | 75     | Valor efetivamente empenhado   |
+| PC_EXEC     | Medida  | 75     | Percentual de execução         |
+
+### Chave Primária: COMPOSTA (CO_ORGAO, CO_ACAO, CO_FONTE)
+
+Nenhuma coluna individual é chave primária:
+- CO_ORGAO: apenas 5 valores únicos
+- CO_ACAO: apenas 5 valores únicos
+- CO_FONTE: apenas 3 valores únicos
+
+A combinação CO_ORGAO + CO_ACAO + CO_FONTE = 5×5×3 = 75 combinações únicas,
+correspondendo exatamente ao total de linhas. Grade completa, sem duplicatas.
+
+### SUGESTÃO DE CHAVE
+Chave composta: (CO_ORGAO, CO_ACAO, CO_FONTE)
+Nenhuma coluna isolada tem unicidade suficiente para ser chave primária.

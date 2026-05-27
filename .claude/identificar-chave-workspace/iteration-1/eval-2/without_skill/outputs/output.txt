@@ -1,0 +1,9 @@
+## Identificação de chave — empenhos_a vs orgaos_c (sem skill)
+
+### Chave identificada
+empenhos_a.cd_orgao JOIN orgaos_c.CO_ORGAO
+
+Ambas contêm os mesmos 5 valores de código de órgão:
+{20000, 26000, 36000, 44000, 52000}
+
+Match rate: 100% em ambas as direções.
