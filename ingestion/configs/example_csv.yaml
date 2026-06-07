@@ -1,0 +1,21 @@
+source_name: fgts_operacoes
+type: csv
+schedule: "@daily"
+
+# Path relative to the mounted volume, or an absolute path inside the container
+file_path: /opt/airflow/raw_files/fgts_operacoes.csv
+
+# Columns to keep (leave empty to keep all)
+columns:
+  - cd_contrato
+  - vl_financiamento
+  - dt_operacao
+  - cd_municipio
+  - cd_uf
+
+# Rows to skip at the top (e.g. header commentary lines)
+skip_rows: 0
+
+# CSV encoding and separator
+encoding: utf-8
+separator: ";"

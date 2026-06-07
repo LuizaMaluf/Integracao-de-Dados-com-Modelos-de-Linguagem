@@ -1,0 +1,8 @@
+version: 2
+
+models:
+  - name: painel_execucao_orcamentaria
+    description: Visão consolidada de execução orçamentária — empenhos x planos de ação x contratos
+
+  - name: painel_contratos_resumo
+    description: Resumo de contratos por órgão e mês, pronto para Superset

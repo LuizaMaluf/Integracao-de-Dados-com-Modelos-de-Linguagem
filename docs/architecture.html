@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arquitetura — Gov Hub BR</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #1a1a2e;
+      background: #f4f6fb;
+    }
+
+    .page { max-width: 1040px; margin: 0 auto; padding: 2.5rem 1.5rem 6rem; }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+      color: #fff;
+      border-radius: 14px;
+      padding: 2.5rem;
+      margin-bottom: 2.5rem;
+    }
+    header h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -.02em; }
+    header .subtitle { opacity: .65; font-size: .9rem; margin-top: .4rem; }
+    header .meta { margin-top: 1.5rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    header .meta-item { display: flex; flex-direction: column; }
+    header .meta-label { font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; opacity: .5; }
+    header .meta-value { font-size: .88rem; font-weight: 600; opacity: .9; }
+
+    /* ── Section titles ── */
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #0f3460;
+      margin: 2.5rem 0 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(to right, #e0e7ff, transparent);
+    }
+    .section-number {
+      background: #0f3460;
+      color: #fff;
+      font-size: .7rem;
+      font-weight: 800;
+      width: 1.6rem;
+      height: 1.6rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.07);
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.2rem 1.75rem;
+      border-bottom: 1px solid #eef2ff;
+    }
+    .card-header h2 { font-size: 1rem; font-weight: 700; color: #0f3460; flex: 1; }
+    .card-body { padding: 1.75rem; }
+
+    /* ── Badge ── */
+    .badge {
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      padding: .22rem .6rem;
+      border-radius: 99px;
+      white-space: nowrap;
+    }
+    .badge-blue   { background: #eef2ff; color: #4338ca; }
+    .badge-green  { background: #f0fdf4; color: #166534; }
+    .badge-amber  { background: #fffbeb; color: #92400e; }
+    .badge-gray   { background: #f3f4f6; color: #4b5563; }
+    .badge-purple { background: #faf5ff; color: #6b21a8; }
+    .badge-red    { background: #fef2f2; color: #991b1b; }
+
+    /* ── Highlight box ── */
+    .highlight {
+      background: #fafbff;
+      border-left: 3px solid #4f46e5;
+      border-radius: 0 8px 8px 0;
+      padding: .9rem 1.1rem;
+      margin: 1rem 0;
+      font-size: .9rem;
+      color: #374151;
+    }
+    .highlight strong { color: #1a1a2e; }
+    .highlight.amber { border-color: #f59e0b; background: #fffcf0; }
+    .highlight.green { border-color: #22c55e; background: #f0fdf4; }
+
+    /* ── Nodes ── */
+    .pipe-node {
+      border-radius: 9px;
+      padding: .65rem .9rem;
+      font-size: .8rem;
+      font-weight: 600;
+      text-align: center;
+      border: 1.5px solid;
+    }
+    .pipe-node .sub {
+      font-size: .65rem;
+      font-weight: 400;
+      opacity: .7;
+      margin-top: .15rem;
+      display: block;
+    }
+    .node-source  { background: #f0f9ff; border-color: #bae6fd; color: #075985; }
+    .node-bronze  { background: #fff7ed; border-color: #fed7aa; color: #9a3412; }
+    .node-silver  { background: #f8fafc; border-color: #cbd5e1; color: #334155; }
+    .node-gold    { background: #fefce8; border-color: #fde68a; color: #713f12; }
+    .node-agent   { background: #f5f3ff; border-color: #ddd6fe; color: #5b21b6; }
+    .node-bridge  { background: #f0fdf4; border-color: #bbf7d0; color: #14532d; }
+    .node-output  { background: #fdf4ff; border-color: #e9d5ff; color: #581c87; }
+    .node-catalog { background: #fff1f2; border-color: #fecdd3; color: #881337; }
+    .node-orch    { background: #f0f9ff; border-color: #93c5fd; color: #1e3a5f; }
+
+    /* ── Visão geral pipeline ── */
+    .overview {
+      background: #fafbff;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      padding: 1.75rem;
+      overflow-x: auto;
+    }
+
+    .ov-row {
+      display: flex;
+      gap: .6rem;
+      margin-bottom: .35rem;
+    }
+    .ov-row .pipe-node { flex: 1; }
+
+    .ov-arrow {
+      text-align: center;
+      color: #9ca3af;
+      font-size: .72rem;
+      padding: .25rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .4rem;
+    }
+    .ov-arrow::before, .ov-arrow::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e5e7eb;
+      max-width: 80px;
+    }
+
+    .ov-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: .35rem;
+    }
+    .ov-split-col {
+      display: flex;
+      flex-direction: column;
+      gap: .35rem;
+    }
+    .ov-split-arrow {
+      text-align: center;
+      color: #9ca3af;
+      font-size: .85rem;
+      padding: .15rem 0;
+    }
+
+    /* ── Flow (vertical) ── */
+    .flow {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+    }
+    .flow .pipe-node { width: 100%; }
+    .flow-arrow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: .3rem 0;
+      gap: .05rem;
+    }
+    .flow-arrow .line { width: 2px; height: 18px; background: #d1d5db; }
+    .flow-arrow .tip  { color: #9ca3af; font-size: 1rem; line-height: 1; }
+    .flow-arrow .lbl  { font-size: .67rem; color: #9ca3af; text-align: center; }
+
+    /* ── Horizontal sub-pipeline ── */
+    .sub-pipeline {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      overflow-x: auto;
+      padding: 1rem 0;
+    }
+    .sub-node {
+      flex-shrink: 0;
+      border-radius: 8px;
+      padding: .6rem .85rem;
+      font-size: .78rem;
+      font-weight: 600;
+      text-align: center;
+      border: 1.5px solid;
+      min-width: 110px;
+    }
+    .sub-node .sub {
+      font-size: .63rem;
+      font-weight: 400;
+      opacity: .7;
+      display: block;
+      margin-top: .1rem;
+    }
+    .sub-arrow { flex-shrink: 0; color: #9ca3af; padding: 0 .3rem; font-size: 1rem; }
+
+    /* ── Components table ── */
+    .comp-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .85rem;
+    }
+    .comp-table th {
+      background: #f8faff;
+      color: #6b7280;
+      font-size: .7rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      padding: .55rem .9rem;
+      text-align: left;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    .comp-table td {
+      padding: .7rem .9rem;
+      border-bottom: 1px solid #f3f4f6;
+      vertical-align: top;
+    }
+    .comp-table tr:last-child td { border-bottom: none; }
+    .comp-table code {
+      background: #f3f4f6;
+      border-radius: 4px;
+      padding: .1rem .35rem;
+      font-size: .79rem;
+      color: #374151;
+    }
+
+    /* ── Layer legend ── */
+    .layer-legend {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1.25rem;
+    }
+    .legend-item { display: flex; align-items: center; gap: .4rem; font-size: .78rem; color: #6b7280; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ── Dir tree ── */
+    .dir-tree {
+      font-size: .78rem;
+      color: #374151;
+      line-height: 1.8;
+      background: #f8faff;
+      padding: 1.1rem 1.25rem;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      white-space: pre;
+    }
+    .dir-tree .hl { color: #4338ca; font-weight: 600; }
+    .dir-tree .dim { color: #9ca3af; }
+
+    /* ── ADR list ── */
+    .adr-list { display: flex; flex-direction: column; gap: .75rem; }
+    .adr-item {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      padding: .9rem 1rem;
+      background: #fafbff;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+    }
+    .adr-num {
+      font-size: .7rem;
+      font-weight: 800;
+      color: #4338ca;
+      background: #eef2ff;
+      padding: .2rem .5rem;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+    .adr-item h4 { font-size: .88rem; font-weight: 700; color: #0f3460; }
+    .adr-item p { font-size: .82rem; color: #6b7280; margin-top: .2rem; }
+
+    footer {
+      text-align: center;
+      color: #9ca3af;
+      font-size: .8rem;
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid #e5e7eb;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ══ HEADER ══ -->
+  <header>
+    <h1>Arquitetura — Gov Hub BR</h1>
+    <p class="subtitle">Ingestão config-driven + identificação automática de chaves de integração</p>
+    <div class="meta">
+      <div class="meta-item">
+        <span class="meta-label">Repositório</span>
+        <span class="meta-value">gov-hub</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Padrão</span>
+        <span class="meta-value">Medallion · Bronze → Silver → Gold</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Stack</span>
+        <span class="meta-value">Python · Airflow · MinIO · PostgreSQL · dbt · Superset · Claude API</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Módulos</span>
+        <span class="meta-value">ingestion/ · transformation/ · integration/</span>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- ══ 1. VISÃO GERAL ══ -->
+  <div class="section-title">
+    <span class="section-number">1</span>
+    Visão Geral
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="badge badge-blue">Sistema completo</span>
+      <h2>Da fonte governamental à Integration Key identificada</h2>
+    </div>
+    <div class="card-body">
+
+      <p style="color:#374151; margin-bottom:1.5rem;">
+        O Gov Hub recebe dados de sistemas governamentais heterogêneos, ingere via pipeline Medallion
+        e usa um agente semântico para identificar automaticamente como conectar tabelas de sistemas distintos —
+        sem intervenção manual. Tudo dentro do repositório <strong>gov-hub</strong>, em dois módulos:
+        <code>ingestion/</code> e <code>integration/</code>.
+      </p>
+
+      <div class="overview">
+
+        <!-- Fontes -->
+        <div class="ov-row">
+          <div class="pipe-node node-source">SIAFI<span class="sub">Portal da Transparência API</span></div>
+          <div class="pipe-node node-source">TransfereGov<span class="sub">API REST</span></div>
+          <div class="pipe-node node-source">ComprasGov<span class="sub">API REST</span></div>
+          <div class="pipe-node node-source">SIAPE · SICONV<span class="sub">API REST</span></div>
+          <div class="pipe-node node-source">IBGE · IPEA<span class="sub">API / Dump / PDF</span></div>
+        </div>
+
+        <div class="ov-arrow">↓ &nbsp; Airflow DAG Factory · Generic Extractor</div>
+
+        <!-- Bronze -->
+        <div class="ov-row">
+          <div class="pipe-node node-bronze" style="flex:1">
+            Bronze — MinIO
+            <span class="sub">raw/&lt;source&gt;/&lt;date&gt;/ · artefato bruto imutável · reprocessável sem re-hit na API</span>
+          </div>
+        </div>
+
+        <div class="ov-arrow">↓ &nbsp; Transform + Validate · Pandera schema check</div>
+
+        <!-- Silver -->
+        <div class="ov-row">
+          <div class="pipe-node node-silver">siafi.*<span class="sub">notas_empenho, nc, pf…</span></div>
+          <div class="pipe-node node-silver">transfere_gov.*<span class="sub">planos_acao, programas…</span></div>
+          <div class="pipe-node node-silver">compras_gov.*<span class="sub">contratos, faturas…</span></div>
+          <div class="pipe-node node-silver">siape.*<span class="sub">servidores…</span></div>
+          <div class="pipe-node node-silver">siconv.*<span class="sub">convenios…</span></div>
+        </div>
+
+        <!-- Split: Gold vs Integration -->
+        <div class="ov-split">
+
+          <div class="ov-split-col">
+            <div class="ov-arrow" style="font-size:.7rem; color:#9ca3af; padding:.25rem 0; text-align:center;">↓ &nbsp; transformation/ · dbt (independente)</div>
+            <div class="pipe-node node-gold">Gold Layer — dbt<span class="sub">bronze → silver → gold · modelos analíticos</span></div>
+            <div class="ov-split-arrow">↓</div>
+            <div class="pipe-node node-gold">Apache Superset<span class="sub">dashboards · exploração de dados</span></div>
+          </div>
+
+          <div class="ov-split-col">
+            <div class="ov-arrow" style="font-size:.7rem; color:#9ca3af; padding:.25rem 0; text-align:center;">↓ &nbsp; Table Catalog · Integration Gateway</div>
+            <div class="pipe-node node-bridge">Integration Gateway<span class="sub">descobre pares de tabelas via Catalog</span></div>
+            <div class="ov-split-arrow">↓</div>
+            <div class="pipe-node node-agent">IntegrationAgent — Evidence + LLM<span class="sub">identifica a chave de join entre os sistemas</span></div>
+            <div class="ov-split-arrow">↓</div>
+            <div class="pipe-node node-output">output/identificar_chave_*.json + relatório HTML<span class="sub">Integration Key · score · código Python/SQL</span></div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="layer-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#bae6fd;"></div>Fonte governamental</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#fed7aa;"></div>Bronze (raw imutável)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#cbd5e1;"></div>Silver (staging estruturado)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#fde68a;"></div>Gold (analítico)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#bbf7d0;"></div>Integration Gateway</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#ddd6fe;"></div>IntegrationAgent</div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ══ 2. MÓDULO ingestion/ ══ -->
+  <div class="section-title">
+    <span class="section-number">2</span>
+    Módulo <code style="font-size:.95rem;">ingestion/</code>
+  </div>
+
+  <!-- 2a. Componentes -->
+  <div class="card">
+    <div class="card-header">
+      <span class="badge badge-amber">Ingestão</span>
+      <h2>Componentes do pipeline de ingestão</h2>
+    </div>
+    <div class="card-body">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Componente</th>
+            <th>Responsabilidade</th>
+            <th>Ferramenta</th>
+            <th>Onde vive</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-gray">1</span></td>
+            <td><strong>Source Registry</strong></td>
+            <td>Declaração de cada fonte: URL, auth, paginação, schedule, schema alvo, conflict fields</td>
+            <td><code>YAML</code> + Pydantic</td>
+            <td><code>ingestion/configs/</code></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-gray">2</span></td>
+            <td><strong>DAG Factory</strong></td>
+            <td>Lê o Source Registry e gera todos os DAGs do Airflow automaticamente — sem arquivo Python por fonte</td>
+            <td><code>astronomer/dag-factory</code></td>
+            <td><code>ingestion/dag_factory.yaml</code></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-gray">3</span></td>
+            <td><strong>Generic Extractor</strong></td>
+            <td>HTTP com retry e backoff, paginação parametrizada (cursor/page/offset), auth por config, buffer IO.Bytes</td>
+            <td><code>httpx</code></td>
+            <td><code>ingestion/extractors/base.py</code></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-gray">3b</span></td>
+            <td><strong>Extractors especializados</strong></td>
+            <td>PDF (layout analysis + Claude API), CSV/XLSX, SQL dump — lógica que não cabe no extractor genérico</td>
+            <td><code>pdfplumber</code> · <code>unstructured</code> · <code>psycopg2</code></td>
+            <td><code>ingestion/extractors/</code></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-amber">4</span></td>
+            <td><strong>Bronze Store</strong></td>
+            <td>Artefato bruto imutável por execução. Path: <code>raw/&lt;source&gt;/&lt;date&gt;/</code></td>
+            <td><code>MinIO</code> (S3-compatible)</td>
+            <td><code>ingestion/storage/bronze.py</code></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-gray">5</span></td>
+            <td><strong>Parsers</strong></td>
+            <td>Converte artefato bronze para DataFrame estruturado (semântico via LLM ou estrutural via regras)</td>
+            <td><code>pandas</code> · <code>Claude API</code></td>
+            <td><code>ingestion/parsers/</code></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-gray">6</span></td>
+            <td><strong>Transform + Validate</strong></td>
+            <td>Normaliza colunas, valida schema Pandera declarado no YAML da fonte, rejeita inválidos</td>
+            <td><code>pandera</code></td>
+            <td><code>ingestion/storage/silver.py</code></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-gray">7</span></td>
+            <td><strong>Silver Store</strong></td>
+            <td>Tabelas estruturadas por schema de origem, acessíveis por múltiplos processos</td>
+            <td><code>PostgreSQL</code></td>
+            <td><code>ingestion/storage/silver.py</code></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-gray">8</span></td>
+            <td><strong>Table Catalog</strong></td>
+            <td>Registra cada carga: fonte, tabela, schema, linhas, quality_ok, timestamp</td>
+            <td><code>catalog.ingested_tables</code> (PostgreSQL)</td>
+            <td><code>ingestion/storage/catalog.py</code></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-gray">9</span></td>
+            <td><strong>Integration Bridge</strong></td>
+            <td>Consulta o Catalog, carrega os DataFrames do silver e aciona o IntegrationAgent</td>
+            <td><code>Python</code></td>
+            <td><code>ingestion/bridge/integration_bridge.py</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="highlight" style="margin-top:1.25rem;">
+        <strong>Exemplo de Source Registry (YAML):</strong>
+        <pre style="margin-top:.6rem; font-size:.79rem; color:#374151; line-height:1.6;">source_name: siafi_notas_empenho
+type: api
+schedule: "@daily"
+url: "https://api.portaldatransparencia.gov.br/api-de-dados/..."
+auth_strategy: api_key_header
+auth_env_var: SIAFI_API_KEY
+pagination_strategy: page_number
+page_param: pagina
+page_size: 500
+has_more_field: hasNext
+target_schema: siafi
+target_table: notas_empenho
+conflict_fields: [numEmpenho, anoEmpenho]</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2b. Fluxo interno -->
+  <div class="card">
+    <div class="card-header">
+      <span class="badge badge-blue">Fluxo</span>
+      <h2>Execução de uma ingestão — passo a passo</h2>
+    </div>
+    <div class="card-body">
+      <div class="flow">
+
+        <div class="pipe-node node-orch">
+          Airflow DAG Factory
+          <span class="sub">DAG gerado automaticamente a partir do Source Registry · dispara no schedule do YAML</span>
+        </div>
+        <div class="flow-arrow">
+          <div class="line"></div><div class="tip">↓</div>
+        </div>
+
+        <div class="pipe-node node-source">
+          Generic Extractor → API Governamental
+          <span class="sub">pagina até hasNext = false · acumula em IO.BytesIO · retry com backoff exponencial</span>
+        </div>
+        <div class="flow-arrow">
+          <div class="line"></div><div class="tip">↓</div>
+          <div class="lbl">payload bruto serializado</div>
+        </div>
+
+        <div class="pipe-node node-bronze">
+          Bronze Store — MinIO
+          <span class="sub">raw/&lt;source_name&gt;/&lt;YYYY-MM-DD&gt;/response.json · imutável · uma escrita por execução</span>
+        </div>
+        <div class="flow-arrow">
+          <div class="line"></div><div class="tip">↓</div>
+          <div class="lbl">parser → normaliza colunas → valida schema Pandera</div>
+        </div>
+
+        <div class="pipe-node node-silver">
+          Silver Store — PostgreSQL
+          <span class="sub">&lt;schema&gt;.&lt;tabela&gt; · upsert por conflict_fields declarado no YAML</span>
+        </div>
+        <div class="flow-arrow">
+          <div class="line"></div><div class="tip">↓</div>
+        </div>
+
+        <div class="pipe-node node-catalog">
+          Table Catalog — catalog.ingested_tables
+          <span class="sub">registra: source · tabela · schema · row_count · quality_ok · loaded_at</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══ 3. MÓDULO integration/ ══ -->
+  <div class="section-title">
+    <span class="section-number">3</span>
+    Módulo <code style="font-size:.95rem;">integration/</code>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="badge badge-purple">Agente semântico</span>
+      <h2>IntegrationAgent — identificação automática de chaves de integração</h2>
+    </div>
+    <div class="card-body">
+
+      <p style="color:#374151; margin-bottom:1.25rem;">
+        Dado dois DataFrames (tabela A e tabela B), o agente identifica qual campo de A conecta com qual campo de B.
+        O pipeline passa por cinco estágios: perfilagem estatística → geração de candidatos →
+        camadas de evidência (semântica e de conteúdo) → decisão com LLM → relatório.
+      </p>
+
+      <!-- Pipeline horizontal -->
+      <div class="sub-pipeline">
+        <div class="sub-node node-silver" style="min-width:100px">
+          Tabela A + B<span class="sub">DataFrames do silver</span>
+        </div>
+        <div class="sub-arrow">→</div>
+        <div class="sub-node node-agent" style="min-width:120px">
+          E1 · Perfilagem<span class="sub">TableMetadata<br>dtype · nulos · padrão regex</span>
+        </div>
+        <div class="sub-arrow">→</div>
+        <div class="sub-node node-agent" style="min-width:140px">
+          E2 · Candidatos<span class="sub">CandidateGenerator<br>score semântico ≥ 0.30</span>
+        </div>
+        <div class="sub-arrow">→</div>
+        <div class="sub-node node-agent" style="min-width:160px">
+          E3 · Evidence Layer<span class="sub">Semântica + Conteúdo<br>match_rate · structural</span>
+        </div>
+        <div class="sub-arrow">→</div>
+        <div class="sub-node node-agent" style="min-width:140px">
+          E4 · Decision Layer<span class="sub">LLM reasoning<br>Integration Key</span>
+        </div>
+        <div class="sub-arrow">→</div>
+        <div class="sub-node node-output" style="min-width:120px">
+          Relatório<span class="sub">HTML + JSON</span>
+        </div>
+      </div>
+
+      <div style="margin-top:1.5rem;">
+        <table class="comp-table">
+          <thead>
+            <tr>
+              <th>Estágio</th>
+              <th>Componente</th>
+              <th>Output</th>
+              <th>Detalhe técnico</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge badge-purple">E1</span></td>
+              <td><strong>TableProfiler</strong></td>
+              <td><code>TableMetadata</code></td>
+              <td>dtype, cardinalidade, nulos, unicidade, top valores, comprimento médio, padrão regex — por coluna</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-purple">E2</span></td>
+              <td><strong>CandidateGenerator</strong></td>
+              <td><code>CandidateKey[]</code></td>
+              <td>Score semântico ≥ 0.30 → caminho semântico. Abaixo → Content Evidence Layer como fallback. Score composto: semântico×0.35 + match_rate×0.30 + structural×0.20 + pattern×0.15</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-purple">E3a</span></td>
+              <td><strong>Semantic Evidence Layer</strong></td>
+              <td><code>SemanticScore</code></td>
+              <td>Embeddings de nomes de coluna via <code>sentence-transformers</code>. Threshold 0.30 para promoção direta ao Decision Layer.</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-purple">E3b</span></td>
+              <td><strong>Content Evidence Layer</strong></td>
+              <td><code>ContentEvidence</code></td>
+              <td><code>format_match</code> · <code>overlap_rate</code> · <code>substring_match_rate</code> · <code>content_score</code>. Pares com content_score ≥ 0.50 são promovidos mesmo com score semântico baixo. Detecta Derived Key (chave SIAFI embutida como substring).</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-purple">E4</span></td>
+              <td><strong>Decision Layer</strong></td>
+              <td><code>IntegrationKey</code> + confiança</td>
+              <td>Claude API raciocina sobre os candidatos ranqueados e escolhe a melhor Integration Key. Busca Derived Key para identificadores SIAFI (NC, NE, PF) embutidos em campos compostos.</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-purple">E5</span></td>
+              <td><strong>ReportGenerator</strong></td>
+              <td>HTML + JSON</td>
+              <td>Gauge de confiança, score bars por candidato, evidências, código Python e SQL prontos para o join.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="highlight" style="margin-top:1.25rem;">
+        <strong>Skills disponíveis para acionamento direto via Claude Code:</strong>
+        <div style="margin-top:.65rem; display:flex; flex-wrap:wrap; gap:.4rem;">
+          <span class="badge badge-purple">/integrar-bases</span>
+          <span class="badge badge-purple">/mapear-integracoes</span>
+          <span class="badge badge-purple">/analisar-tabela</span>
+          <span class="badge badge-purple">/comparar-colunas</span>
+          <span class="badge badge-purple">/identificar-chave</span>
+          <span class="badge badge-purple">/gerar-relatorio</span>
+          <span class="badge badge-purple">/definir-contexto</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ══ 3b. MÓDULO transformation/ ══ -->
+  <div class="section-title">
+    <span class="section-number">3</span>
+    Módulo <code style="font-size:.95rem;">transformation/</code>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="badge badge-amber">dbt · independente do Airflow</span>
+      <h2>Transformação — separada da orquestração</h2>
+    </div>
+    <div class="card-body">
+
+      <p style="color:#374151; margin-bottom:1.25rem;">
+        O módulo <code>transformation/</code> contém o projeto dbt do gov-hub. Ele é completamente independente do Airflow:
+        pode ser executado via CLI (<code>dbt run</code>) sem nenhum container em pé. O Airflow apenas agenda e monitora a
+        execução via DAG Cosmos — mas não possui os arquivos dbt dentro de si.
+      </p>
+
+      <div class="highlight amber">
+        <strong>Separação de responsabilidades:</strong>
+        <ul style="margin-top:.5rem; padding-left:1.25rem; line-height:1.9; font-size:.88rem;">
+          <li><strong>ingestion/</strong> — extrai e carrega dados brutos no silver (PostgreSQL). Responsabilidade: <em>mover dados</em>.</li>
+          <li><strong>transformation/</strong> — transforma o silver em modelos analíticos. Responsabilidade: <em>modelar dados</em>.</li>
+          <li>O Airflow aciona o dbt via <code>transformation_dag.py</code>, mas os arquivos dbt estão fora do diretório de DAGs.</li>
+        </ul>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; margin-top:1.25rem;">
+
+        <div>
+          <p style="font-size:.8rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:#6b7280; margin-bottom:.6rem;">Estrutura</p>
+          <div class="dir-tree">transformation/
+├── <span class="hl">dbt_project.yml</span>        <span class="dim">← projeto gov_hub</span>
+├── profiles.yml           <span class="dim">← conexão PostgreSQL</span>
+├── packages.yml           <span class="dim">← dbt-utils</span>
+├── .env.example
+└── models/
+    ├── <span class="hl">bronze/</span>            <span class="dim">← leitura do silver (incremental)</span>
+    │   ├── sources.yml    <span class="dim">← declara tabelas do silver</span>
+    │   └── siafi_notas_empenho.sql
+    ├── <span class="hl">silver/</span>            <span class="dim">← normalização e enriquecimento</span>
+    │   └── siafi_empenhos_enriched.sql
+    └── <span class="hl">gold/</span>              <span class="dim">← modelos para Superset</span>
+        └── painel_execucao_orcamentaria.sql</div>
+        </div>
+
+        <div>
+          <p style="font-size:.8rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:#6b7280; margin-bottom:.6rem;">Como rodar</p>
+          <div style="font-size:.82rem; color:#374151; line-height:1.8;">
+            <p style="margin-bottom:.5rem;"><strong>Fora do container (dev):</strong></p>
+            <pre style="background:#f8faff; border:1px solid #e5e7eb; border-radius:6px; padding:.75rem; font-size:.78rem; margin-bottom:.75rem;">cd gov-hub/
+dbt run --project-dir transformation/ \
+        --profiles-dir transformation/
+dbt test --project-dir transformation/ \
+         --profiles-dir transformation/</pre>
+            <p style="margin-bottom:.5rem;"><strong>Via Airflow (produção):</strong></p>
+            <p style="color:#6b7280; font-size:.82rem;">A DAG <code>gov_hub_transformation</code> roda diariamente às 01:00 via Cosmos, apontando para <code>/opt/airflow/transformation</code> (volume montado separado de <code>/opt/airflow/dags</code>).</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ══ 5. INTEGRATION GATEWAY ══ -->
+  <div class="section-title">
+    <span class="section-number">5</span>
+    Integration Gateway — ponte entre os módulos
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="badge badge-green">Bridge</span>
+      <h2>Como o ingestion/ aciona o integration/</h2>
+    </div>
+    <div class="card-body">
+
+      <p style="color:#374151; margin-bottom:1.25rem;">
+        O Integration Gateway conecta os dois módulos do repositório. Ele vive em <code>ingestion/bridge/</code>
+        e é acionado por uma DAG Airflow dedicada. Consulta o Table Catalog para descobrir tabelas disponíveis,
+        carrega os DataFrames do silver e delega ao IntegrationAgent a identificação da chave.
+      </p>
+
+      <div class="flow">
+        <div class="pipe-node node-catalog">
+          Table Catalog — catalog.ingested_tables
+          <span class="sub">filtra quality_ok = true · seleciona par de tabelas para integrar</span>
+        </div>
+        <div class="flow-arrow">
+          <div class="line"></div><div class="tip">↓</div>
+          <div class="lbl">carrega os dois DataFrames do silver</div>
+        </div>
+
+        <div class="pipe-node node-bridge">
+          Integration Gateway — ingestion/bridge/integration_bridge.py
+          <span class="sub">DAG: integration_bridge_dag · recebe table_a e table_b como parâmetros · constrói TableMetadata</span>
+        </div>
+        <div class="flow-arrow">
+          <div class="line"></div><div class="tip">↓</div>
+          <div class="lbl">chama IntegrationAgent.run(df_a, meta_a, df_b, meta_b)</div>
+        </div>
+
+        <div class="pipe-node node-agent">
+          IntegrationAgent — integration/src/agent/orchestrator.py
+          <span class="sub">E1 Perfilagem → E2 Candidatos → E3 Evidências → E4 Decision Layer LLM</span>
+        </div>
+        <div class="flow-arrow">
+          <div class="line"></div><div class="tip">↓</div>
+        </div>
+
+        <div class="pipe-node node-output">
+          integration/output/identificar_chave_&lt;a&gt;__&lt;b&gt;.json
+          <span class="sub">Integration Key recomendada · score de confiança · código Python e SQL prontos para o join</span>
+        </div>
+      </div>
+
+      <div class="highlight green" style="margin-top:1.25rem;">
+        <strong>Exemplo:</strong> após ingerir <code>siafi.notas_empenho</code> e <code>transfere_gov.planos_acao</code>,
+        o gateway aciona o agente que identifica <code>num_empenho ↔ nr_empenho</code> como Integration Key,
+        com código Python e SQL gerado automaticamente para o join entre os dois sistemas.
+      </div>
+
+      <div class="highlight amber" style="margin-top:.75rem;">
+        <strong>Acionamento da DAG:</strong>
+        <pre style="margin-top:.5rem; font-size:.8rem; color:#374151;">{"table_a": "siafi.notas_empenho", "table_b": "transfere_gov.planos_acao"}</pre>
+        Pode ser disparado manualmente via Airflow UI ou automaticamente por um sensor que monitora o Catalog em busca de pares novos.
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ══ 6. ESTRUTURA ══ -->
+  <div class="section-title">
+    <span class="section-number">6</span>
+    Estrutura do Repositório
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1.25rem;">
+
+        <div>
+          <p style="font-size:.8rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:#6b7280; margin-bottom:.75rem;">ingestion/</p>
+          <div class="dir-tree" style="font-size:.73rem;">gov-hub/ingestion/
+├── <span class="hl">configs/</span>          <span class="dim">← Source Registry</span>
+│   ├── siafi_notas_empenho.yaml
+│   └── ...
+├── <span class="hl">dag_factory.yaml</span>  <span class="dim">← gera todos os DAGs</span>
+├── dags/
+│   ├── dag_factory_loader.py
+│   ├── <span class="hl">transformation_dag.py</span> <span class="dim">← aciona dbt</span>
+│   └── integration_bridge_dag.py
+├── extractors/
+│   ├── base.py           <span class="dim">← GenericExtractor</span>
+│   ├── pdf_extractor.py
+│   └── csv_extractor.py
+├── parsers/
+│   ├── semantic_parser.py
+│   └── structural_parser.py
+├── storage/
+│   ├── bronze.py         <span class="dim">← MinIO</span>
+│   ├── silver.py         <span class="dim">← PostgreSQL</span>
+│   └── catalog.py        <span class="dim">← Table Catalog</span>
+├── bridge/
+│   └── integration_bridge.py
+└── docker-compose.yml    <span class="dim">← monta transformation/</span></div>
+        </div>
+
+        <div>
+          <p style="font-size:.8rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:#6b7280; margin-bottom:.75rem;">transformation/</p>
+          <div class="dir-tree" style="font-size:.73rem;">gov-hub/transformation/
+├── <span class="hl">dbt_project.yml</span>   <span class="dim">← projeto gov_hub</span>
+├── profiles.yml      <span class="dim">← conexão PostgreSQL</span>
+├── packages.yml
+├── .env.example
+└── models/
+    ├── <span class="hl">bronze/</span>       <span class="dim">← leitura incremental</span>
+    │   ├── sources.yml <span class="dim">← tabelas do silver</span>
+    │   └── siafi_notas_empenho.sql
+    ├── <span class="hl">silver/</span>       <span class="dim">← enriquecimento</span>
+    │   └── siafi_empenhos_enriched.sql
+    └── <span class="hl">gold/</span>         <span class="dim">← modelos Superset</span>
+        └── painel_execucao_orcamentaria.sql
+
+<span class="dim"># Roda sem Airflow:</span>
+dbt run --project-dir transformation/ \
+        --profiles-dir transformation/</div>
+        </div>
+
+        <div>
+          <p style="font-size:.8rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:#6b7280; margin-bottom:.75rem;">integration/</p>
+          <div class="dir-tree" style="font-size:.73rem;">gov-hub/integration/
+├── src/
+│   ├── agent/
+│   │   ├── orchestrator.py   <span class="dim">← IntegrationAgent</span>
+│   │   └── candidate_generator.py
+│   ├── analyzers/
+│   │   ├── content_analyzer.py <span class="dim">← E3b</span>
+│   │   └── semantic_score.py   <span class="dim">← E3a</span>
+│   ├── profiler/
+│   │   └── table_profiler.py   <span class="dim">← E1</span>
+│   ├── decision/
+│   │   └── llm_decision.py     <span class="dim">← E4 LLM</span>
+│   └── report/
+│       └── report_generator.py <span class="dim">← E5</span>
+├── data/raw/         <span class="dim">← CSVs de entrada</span>
+└── output/
+    ├── identificar_chave_*.json
+    └── reports/*.html</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══ 7. ADRs ══ -->
+  <div class="section-title">
+    <span class="section-number">7</span>
+    Decisões de Arquitetura (ADRs)
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="adr-list">
+
+        <div class="adr-item">
+          <span class="adr-num">ADR 0001</span>
+          <div>
+            <h4>Caminho único de notificação via on_failure_callback</h4>
+            <p>Todo alerta passa pelo <code>on_failure_callback</code> do Airflow. A task <code>validate_volume</code> levanta exceção com texto descritivo em vez de notificar diretamente, evitando mensagens duplicadas.</p>
+          </div>
+          <span class="badge badge-green">Aceito</span>
+        </div>
+
+        <div class="adr-item">
+          <span class="adr-num">ADR 0002</span>
+          <div>
+            <h4>Substituir DAGs individuais por DAG Factory config-driven</h4>
+            <p>Um <code>dag_factory.yaml</code> lido pelo <code>astronomer/dag-factory</code> substitui todos os DAGs hard-coded. Adicionar uma fonte governamental nova = criar um YAML, sem arquivo Python.</p>
+          </div>
+          <span class="badge badge-amber">Proposto</span>
+        </div>
+
+        <div class="adr-item">
+          <span class="adr-num">ADR 0003</span>
+          <div>
+            <h4>Bronze Store (MinIO) antes do Silver</h4>
+            <p>Cada ingestão escreve o payload bruto em MinIO antes de qualquer transformação. Permite reprocessar sem re-hit na API. A mudança de licença de Mai/2025 removeu o web console do MinIO Community Edition, mas não afeta a API S3 usada pelo código.</p>
+          </div>
+          <span class="badge badge-amber">Proposto</span>
+        </div>
+
+        <div class="adr-item">
+          <span class="adr-num">ADR 0004</span>
+          <div>
+            <h4>Integration Gateway como ponte entre ingestion/ e integration/</h4>
+            <p>O gateway vive em <code>ingestion/bridge/</code>, consulta o Table Catalog e aciona o <code>IntegrationAgent</code> via DAG separada — desacoplando ingestão de identificação de chaves.</p>
+          </div>
+          <span class="badge badge-amber">Proposto</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Gov Hub BR · TCC · Lab Livre / UnB · Jun 2026
+  </footer>
+
+</div>
+</body>
+</html>

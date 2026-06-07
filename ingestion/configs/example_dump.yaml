@@ -1,0 +1,15 @@
+source_name: gold_financiamentos
+type: dump
+schedule: "@weekly"
+
+# Supported formats: sql | csv_gz
+format: csv_gz
+file_path: /opt/airflow/raw_files/gold_financiamentos.csv.gz
+
+# For format: sql — list which tables to extract (leave empty = all)
+# For format: csv_gz — ignored (single table per file)
+tables:
+  - gold_financiamentos_imobiliarios
+
+encoding: utf-8
+separator: ","

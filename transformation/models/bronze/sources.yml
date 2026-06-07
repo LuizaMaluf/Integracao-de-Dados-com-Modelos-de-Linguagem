@@ -1,0 +1,16 @@
+version: 2
+
+sources:
+  - name: silver
+    description: Tabelas ingeridas pelo pipeline de ingestão (gov-hub/ingestion)
+    schema: silver
+    tables:
+      - name: siafi_notas_empenho
+      - name: siafi_nota_credito
+      - name: siafi_programacao_financeira
+      - name: transfere_gov_planos_acao
+      - name: transfere_gov_programas
+      - name: compras_gov_contratos
+      - name: compras_gov_faturas
+      - name: siape_servidores
+      - name: siconv_convenios

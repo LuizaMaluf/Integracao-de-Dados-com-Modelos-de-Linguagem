@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TCC — Gov Hub BR · Luiza & Lucas</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue-dark:   #0f3460;
+      --blue-mid:    #16213e;
+      --blue-deep:   #1a1a2e;
+      --indigo:      #4338ca;
+      --indigo-light:#eef2ff;
+      --amber:       #f59e0b;
+      --amber-light: #fffbeb;
+      --green:       #22c55e;
+      --green-light: #f0fdf4;
+      --red-light:   #fef2f2;
+      --text:        #1a1a2e;
+      --text-muted:  #6b7280;
+      --border:      #e5e7eb;
+      --bg:          #f4f6fb;
+      --surface:     #fff;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    /* ── Layout ── */
+    .page { max-width: 1060px; margin: 0 auto; padding: 0 1.5rem 6rem; }
+
+    /* ── Cover ── */
+    .cover {
+      background: linear-gradient(145deg, #0a0a1a 0%, #0f3460 50%, #1a1a4e 100%);
+      color: #fff;
+      padding: 4rem 3rem 3.5rem;
+      margin-bottom: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .cover::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 320px; height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(99,102,241,.25) 0%, transparent 70%);
+    }
+    .cover::after {
+      content: '';
+      position: absolute;
+      bottom: -40px; left: 40px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(245,158,11,.12) 0%, transparent 70%);
+    }
+    .cover-tag {
+      display: inline-block;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 99px;
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      padding: .3rem .85rem;
+      margin-bottom: 1.5rem;
+    }
+    .cover h1 {
+      font-size: 2.2rem;
+      font-weight: 900;
+      letter-spacing: -.03em;
+      line-height: 1.15;
+      margin-bottom: .75rem;
+    }
+    .cover h1 span { color: #f59e0b; }
+    .cover .subtitle {
+      font-size: 1rem;
+      opacity: .7;
+      max-width: 620px;
+      margin-bottom: 2.5rem;
+      line-height: 1.6;
+    }
+    .cover-meta {
+      display: flex;
+      gap: 2.5rem;
+      flex-wrap: wrap;
+      border-top: 1px solid rgba(255,255,255,.15);
+      padding-top: 1.5rem;
+    }
+    .cover-meta-item .label {
+      font-size: .68rem;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      opacity: .45;
+    }
+    .cover-meta-item .value {
+      font-size: .88rem;
+      font-weight: 600;
+      opacity: .9;
+    }
+
+    /* ── Section heading ── */
+    .section {
+      margin: 3rem 0 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: .85rem;
+    }
+    .section-num {
+      width: 2rem; height: 2rem;
+      border-radius: 50%;
+      background: var(--blue-dark);
+      color: #fff;
+      font-size: .72rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .section h2 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--blue-dark);
+    }
+    .section::after {
+      content: '';
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(to right, #e0e7ff, transparent);
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.06);
+      overflow: hidden;
+      margin-bottom: 1.25rem;
+    }
+    .card-head {
+      display: flex;
+      align-items: center;
+      gap: .85rem;
+      padding: 1.1rem 1.75rem;
+      border-bottom: 1px solid #eef2ff;
+    }
+    .card-head h3 { font-size: .98rem; font-weight: 700; color: var(--blue-dark); flex: 1; }
+    .card-body { padding: 1.75rem; }
+
+    /* ── Badge ── */
+    .badge {
+      font-size: .68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      padding: .22rem .65rem;
+      border-radius: 99px;
+      white-space: nowrap;
+    }
+    .b-blue   { background: #eef2ff; color: #4338ca; }
+    .b-green  { background: #f0fdf4; color: #166534; }
+    .b-amber  { background: #fffbeb; color: #92400e; }
+    .b-red    { background: #fef2f2; color: #991b1b; }
+    .b-purple { background: #faf5ff; color: #6b21a8; }
+    .b-gray   { background: #f3f4f6; color: #4b5563; }
+
+    /* ── Highlight ── */
+    .hl {
+      background: #fafbff;
+      border-left: 3px solid var(--indigo);
+      border-radius: 0 8px 8px 0;
+      padding: .9rem 1.1rem;
+      margin: .9rem 0;
+      font-size: .9rem;
+      color: #374151;
+    }
+    .hl.amber { border-color: var(--amber); background: var(--amber-light); }
+    .hl.green { border-color: var(--green); background: var(--green-light); }
+    .hl.red   { border-color: #f87171;      background: var(--red-light); }
+
+    /* ── Before/After grid ── */
+    .before-after {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    .ba-before, .ba-after {
+      border-radius: 10px;
+      padding: 1rem 1.1rem;
+      font-size: .85rem;
+    }
+    .ba-before {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+    }
+    .ba-after {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+    }
+    .ba-before h4 { color: #991b1b; font-size: .75rem; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; margin-bottom: .6rem; }
+    .ba-after  h4 { color: #166534; font-size: .75rem; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; margin-bottom: .6rem; }
+    .ba-before li, .ba-after li { margin-left: 1rem; margin-bottom: .25rem; line-height: 1.5; color: #374151; }
+
+    /* ── Timeline ── */
+    .timeline { display: flex; flex-direction: column; gap: 0; padding: .5rem 0; }
+    .tl-item {
+      display: flex;
+      gap: 1.25rem;
+      padding-bottom: 1.75rem;
+      position: relative;
+    }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+      width: 2.5rem;
+    }
+    .tl-dot {
+      width: 2rem; height: 2rem;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem;
+      font-weight: 800;
+      flex-shrink: 0;
+      z-index: 1;
+    }
+    .tl-line {
+      width: 2px;
+      flex: 1;
+      background: #e5e7eb;
+      margin-top: .25rem;
+    }
+    .tl-content { flex: 1; padding-top: .1rem; }
+    .tl-content h4 { font-size: .95rem; font-weight: 700; color: var(--blue-dark); margin-bottom: .3rem; }
+    .tl-content p  { font-size: .85rem; color: #374151; line-height: 1.6; }
+    .tl-tag { font-size: .7rem; color: var(--text-muted); margin-bottom: .3rem; }
+
+    /* ── Metrics ── */
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin: 1.25rem 0;
+    }
+    .metric-card {
+      background: var(--surface);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 1.25rem 1rem;
+      text-align: center;
+    }
+    .metric-value {
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: -.03em;
+      line-height: 1;
+      margin-bottom: .3rem;
+    }
+    .metric-label {
+      font-size: .78rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .metric-delta {
+      font-size: .72rem;
+      font-weight: 700;
+      margin-top: .3rem;
+    }
+    .delta-up   { color: #166534; }
+    .delta-down { color: #991b1b; }
+
+    /* ── Decision card ── */
+    .decision {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+    .decision-head {
+      display: flex;
+      align-items: center;
+      gap: .85rem;
+      padding: .9rem 1.25rem;
+      background: #fafbff;
+      border-bottom: 1px solid var(--border);
+    }
+    .decision-body {
+      padding: 1.1rem 1.25rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1rem;
+      font-size: .84rem;
+    }
+    .decision-col h5 {
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--text-muted);
+      margin-bottom: .4rem;
+    }
+    .decision-col p { color: #374151; line-height: 1.5; }
+
+    /* ── Agent pipeline ── */
+    .pipeline-h {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      overflow-x: auto;
+      padding: 1rem 0;
+    }
+    .ph-node {
+      flex-shrink: 0;
+      border-radius: 9px;
+      padding: .75rem .9rem;
+      font-size: .8rem;
+      font-weight: 600;
+      text-align: center;
+      border: 1.5px solid;
+      min-width: 120px;
+    }
+    .ph-node .sub { font-size: .63rem; font-weight: 400; opacity: .7; display: block; margin-top: .15rem; }
+    .ph-arr { flex-shrink: 0; padding: 0 .3rem; color: #9ca3af; font-size: 1.1rem; display: flex; align-items: center; }
+
+    .n-silver { background:#f8fafc; border-color:#cbd5e1; color:#334155; }
+    .n-agent  { background:#f5f3ff; border-color:#ddd6fe; color:#5b21b6; }
+    .n-out    { background:#fdf4ff; border-color:#e9d5ff; color:#581c87; }
+    .n-bridge { background:#f0fdf4; border-color:#bbf7d0; color:#14532d; }
+    .n-bronze { background:#fff7ed; border-color:#fed7aa; color:#9a3412; }
+    .n-gold   { background:#fefce8; border-color:#fde68a; color:#713f12; }
+
+    /* ── Benefit cards ── */
+    .benefits {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    .benefit {
+      border-radius: 12px;
+      padding: 1.25rem;
+      border: 1px solid;
+    }
+    .benefit .ben-icon { font-size: 1.6rem; margin-bottom: .6rem; }
+    .benefit h4 { font-size: .9rem; font-weight: 700; margin-bottom: .4rem; }
+    .benefit p  { font-size: .82rem; line-height: 1.55; color: #374151; }
+
+    .ben-scale  { background:#f0f9ff; border-color:#bae6fd; }
+    .ben-scale h4 { color:#075985; }
+    .ben-qual   { background:#f0fdf4; border-color:#bbf7d0; }
+    .ben-qual h4 { color:#14532d; }
+    .ben-ai     { background:#faf5ff; border-color:#ddd6fe; }
+    .ben-ai h4  { color:#5b21b6; }
+    .ben-audit  { background:#fffbeb; border-color:#fde68a; }
+    .ben-audit h4 { color:#92400e; }
+    .ben-dbt    { background:#fdf4ff; border-color:#e9d5ff; }
+    .ben-dbt h4 { color:#6b21a8; }
+    .ben-open   { background:#f8fafc; border-color:#cbd5e1; }
+    .ben-open h4 { color:#334155; }
+
+    /* ── Table ── */
+    .tbl {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .85rem;
+    }
+    .tbl th {
+      background: #f8faff;
+      color: var(--text-muted);
+      font-size: .7rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      padding: .55rem .9rem;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+    .tbl td {
+      padding: .7rem .9rem;
+      border-bottom: 1px solid #f3f4f6;
+      vertical-align: top;
+    }
+    .tbl tr:last-child td { border-bottom: none; }
+    .tbl code {
+      background: #f3f4f6;
+      border-radius: 4px;
+      padding: .1rem .35rem;
+      font-size: .79rem;
+    }
+
+    /* ── Quote ── */
+    .quote {
+      border-left: 4px solid var(--indigo);
+      padding: .75rem 1.25rem;
+      background: #fafbff;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      font-size: .92rem;
+      color: #374151;
+      margin: 1rem 0;
+    }
+    .quote cite { display: block; font-style: normal; font-size: .78rem; color: var(--text-muted); margin-top: .4rem; }
+
+    /* ── ADR ref ── */
+    .adr-refs { display: flex; flex-direction: column; gap: .6rem; }
+    .adr-ref {
+      display: flex; gap: .85rem; align-items: flex-start;
+      padding: .8rem 1rem;
+      background: #fafbff;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: .84rem;
+    }
+    .adr-num {
+      font-size: .7rem; font-weight: 800; color: var(--indigo);
+      background: var(--indigo-light);
+      padding: .2rem .5rem; border-radius: 6px; white-space: nowrap;
+    }
+    .adr-ref h5 { font-size: .88rem; font-weight: 700; color: var(--blue-dark); }
+    .adr-ref p  { font-size: .8rem; color: var(--text-muted); margin-top: .15rem; }
+
+    footer {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: .8rem;
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ══ CAPA ══ -->
+  <div class="cover">
+    <div class="cover-tag">Trabalho de Conclusão de Curso</div>
+    <h1>Gov Hub BR<br><span>Engenharia de Dados para Sistemas Governamentais</span></h1>
+    <p class="subtitle">
+      Arquitetura escalável para ingestão, transformação e integração semântica automática
+      de dados de sistemas estruturantes do governo federal brasileiro.
+    </p>
+    <div class="cover-meta">
+      <div class="cover-meta-item">
+        <span class="label">Autores</span>
+        <span class="value">Luiza Maluf · Lucas Bottino</span>
+      </div>
+      <div class="cover-meta-item">
+        <span class="label">Instituição</span>
+        <span class="value">Universidade de Brasília · Lab Livre</span>
+      </div>
+      <div class="cover-meta-item">
+        <span class="label">Apoio</span>
+        <span class="value">GovHub</span>
+      </div>
+      <div class="cover-meta-item">
+        <span class="label">Ano</span>
+        <span class="value">2026</span>
+      </div>
+      <div class="cover-meta-item">
+        <span class="label">Stack</span>
+        <span class="value">Python · Airflow · MinIO · PostgreSQL · dbt · Claude API</span>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══ 1. PROBLEMA ══ -->
+  <div class="section">
+    <div class="section-num">1</div>
+    <h2>O Problema</h2>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <p style="color:#374151; margin-bottom:1rem;">
+        O governo federal brasileiro opera dezenas de sistemas estruturantes — SIAFI, TransfereGov, ComprasGov,
+        SIAPE, SICONV, SIORG, entre outros — cada um com modelo de dados próprio, vocabulário diferente e sem
+        mecanismo oficial de integração entre si. Gestores públicos que precisam cruzar dados de execução
+        orçamentária com contratos, ou empenhos com planos de ação, fazem isso manualmente ou não fazem.
+      </p>
+
+      <div class="before-after">
+        <div class="ba-before">
+          <h4>Situação encontrada</h4>
+          <ul>
+            <li>73 arquivos de DAG Airflow — um por endpoint de cada sistema</li>
+            <li>15+ classes <code>ClienteXXX</code> com lógica de HTTP duplicada</li>
+            <li>Dados vão direto da API para o PostgreSQL — sem preservação de artefato bruto</li>
+            <li>Schema criado dinamicamente em runtime (<code>create_table_if_not_exists</code>) — drift silencioso</li>
+            <li>dbt acoplado dentro da pasta de DAGs do Airflow</li>
+            <li>Identificação de chave de join entre sistemas: 100% manual</li>
+            <li>Adicionar nova fonte governamental: criar 5+ arquivos Python</li>
+          </ul>
+        </div>
+        <div class="ba-after">
+          <h4>O que queremos</h4>
+          <ul>
+            <li>Adicionar uma fonte = criar 1 arquivo YAML</li>
+            <li>Dado bruto preservado para reprocessamento sem re-puxar da API</li>
+            <li>Schema gerenciado por versionamento, não por código runtime</li>
+            <li>dbt independente do Airflow — roda via CLI sem container</li>
+            <li>Identificação automática de chave de join com evidência semântica + LLM</li>
+            <li>Catálogo de dados rastreável e consultável</li>
+            <li>Pipeline auditável ponta a ponta</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="hl red">
+        <strong>Impacto real:</strong> sem integração automática entre sistemas, um relatório que cruza empenhos
+        do SIAFI com planos de ação do TransfereGov requer análise manual de schemas de dois sistemas distintos,
+        construção de query ad hoc e validação por especialista. Com o Gov Hub BR, esse processo é automatizado
+        pelo IntegrationAgent — que identifica a chave, calcula a confiança e gera o código Python e SQL pronto.
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══ 2. MÉTRICAS ══ -->
+  <div class="section">
+    <div class="section-num">2</div>
+    <h2>O Que Foi Melhorado — em números</h2>
+  </div>
+
+  <div class="metrics">
+    <div class="metric-card">
+      <div class="metric-value" style="color:#991b1b;">73</div>
+      <div class="metric-label">arquivos de DAG antes</div>
+      <div class="metric-delta delta-down">→ <strong style="color:#166534;">1</strong> dag_factory.yaml</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value" style="color:#991b1b;">15+</div>
+      <div class="metric-label">classes ClienteXXX antes</div>
+      <div class="metric-delta delta-down">→ <strong style="color:#166534;">1</strong> GenericExtractor</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value" style="color:#166534;">0</div>
+      <div class="metric-label">linhas Python para<br>adicionar nova fonte</div>
+      <div class="metric-delta delta-up">antes: ~200 linhas por fonte</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value" style="color:#5b21b6;">3</div>
+      <div class="metric-label">módulos isolados e independentes</div>
+      <div class="metric-delta" style="color:#6b7280;">ingestion · transformation · integration</div>
+    </div>
+  </div>
+
+  <div class="metrics" style="margin-top:.5rem;">
+    <div class="metric-card">
+      <div class="metric-value" style="color:#166534;">✓</div>
+      <div class="metric-label">dado bruto preservado em MinIO — reprocessável sem nova chamada à API</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value" style="color:#166534;">✓</div>
+      <div class="metric-label">dbt desacoplado do Airflow — roda via CLI independente</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value" style="color:#166534;">✓</div>
+      <div class="metric-label">Table Catalog — rastreabilidade de toda carga realizada</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value" style="color:#5b21b6;">AI</div>
+      <div class="metric-label">identificação automática de chaves de integração com LLM</div>
+    </div>
+  </div>
+
+
+  <!-- ══ 3. PROCESSO DE CRIAÇÃO ══ -->
+  <div class="section">
+    <div class="section-num">3</div>
+    <h2>Processo de Criação — Linha do Tempo</h2>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="timeline">
+
+        <div class="tl-item">
+          <div class="tl-left">
+            <div class="tl-dot" style="background:#eef2ff; color:#4338ca;">1</div>
+            <div class="tl-line"></div>
+          </div>
+          <div class="tl-content">
+            <div class="tl-tag">Diagnóstico inicial</div>
+            <h4>Análise do pipeline existente</h4>
+            <p>Mapeamento do <code>data-application-gov-hub</code>: 73 DAGs individuais, 15+ classes HTTP quase idênticas,
+            dados indo direto de API para PostgreSQL sem bronze layer, dbt acoplado dentro da pasta de DAGs do Airflow.
+            Identificamos os quatro gargalos principais: escalabilidade, preservação de dados, acoplamento dbt/Airflow
+            e identificação manual de chaves de integração.</p>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-left">
+            <div class="tl-dot" style="background:#faf5ff; color:#6b21a8;">2</div>
+            <div class="tl-line"></div>
+          </div>
+          <div class="tl-content">
+            <div class="tl-tag">Decisão de arquitetura</div>
+            <h4>Adoção do padrão Medallion com pipeline config-driven</h4>
+            <p>Escolhemos a Medallion Architecture (Bronze → Silver → Gold) como padrão estrutural por ser o padrão
+            de mercado para data lakehouses (adotado por Databricks, Microsoft Fabric, Snowflake). A abordagem
+            config-driven elimina o código duplicado: cada fonte governamental é declarada em um YAML, e o
+            <code>dag-factory</code> da Astronomer gera os DAGs automaticamente.</p>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-left">
+            <div class="tl-dot" style="background:#fff7ed; color:#9a3412;">3</div>
+            <div class="tl-line"></div>
+          </div>
+          <div class="tl-content">
+            <div class="tl-tag">Bronze layer</div>
+            <h4>MinIO como object store imutável</h4>
+            <p>Introduzimos o MinIO (S3-compatible, self-hosted, open source) como Bronze Store. Cada execução de
+            ingestão grava o payload bruto da API em <code>raw/&lt;source&gt;/&lt;date&gt;/response.json</code>
+            antes de qualquer transformação. APIs governamentais como o Portal da Transparência
+            têm histórico de mudanças retroativas — o bronze preserva a fidelidade original do dado.</p>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-left">
+            <div class="tl-dot" style="background:#f0fdf4; color:#166534;">4</div>
+            <div class="tl-line"></div>
+          </div>
+          <div class="tl-content">
+            <div class="tl-tag">Separação de responsabilidades</div>
+            <h4>transformation/ como módulo independente</h4>
+            <p>O dbt foi movido para <code>transformation/</code>, fora do diretório de DAGs. O Airflow agenda
+            a execução via DAG Cosmos, mas não possui os arquivos dbt. Isso permite: (1) rodar
+            <code>dbt run</code> via CLI sem container Airflow em pé; (2) versionar e revisar modelos
+            dbt independentemente dos DAGs de ingestão; (3) times diferentes trabalharem nos dois módulos
+            sem conflito.</p>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-left">
+            <div class="tl-dot" style="background:#fdf4ff; color:#581c87;">5</div>
+            <div class="tl-line"></div>
+          </div>
+          <div class="tl-content">
+            <div class="tl-tag">Inovação central do TCC</div>
+            <h4>IntegrationAgent — identificação automática de chaves de integração</h4>
+            <p>Desenvolvemos o componente mais inovador do projeto: um agente que recebe dois DataFrames
+            e identifica automaticamente qual campo de um conecta com qual campo do outro. O pipeline usa
+            embeddings semânticos (<code>sentence-transformers</code>), análise de conteúdo (sobreposição de valores,
+            padrão regex, substring matching) e raciocínio LLM (Claude API) para decidir a Integration Key
+            com score de confiança e código de join gerado automaticamente.</p>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-left">
+            <div class="tl-dot" style="background:#eef2ff; color:#4338ca;">6</div>
+          </div>
+          <div class="tl-content">
+            <div class="tl-tag">Integração dos módulos</div>
+            <h4>Integration Gateway — ponte entre ingestão e agente</h4>
+            <p>O Table Catalog registra cada carga bem-sucedida no silver. O Integration Gateway consulta o
+            Catalog, carrega os DataFrames e aciona o IntegrationAgent. O resultado — Integration Key
+            recomendada, score, código Python e SQL — alimenta modelos Gold no dbt, fechando o ciclo:
+            dado bruto → silver → chave identificada → modelo analítico → Superset.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══ 4. DECISÕES TÉCNICAS ══ -->
+  <div class="section">
+    <div class="section-num">4</div>
+    <h2>Decisões Técnicas e Justificativas</h2>
+  </div>
+
+  <div class="decision">
+    <div class="decision-head">
+      <span class="badge b-blue">ADR 0002</span>
+      <h4 style="font-size:.95rem; font-weight:700; color:var(--blue-dark);">Source Registry YAML + DAG Factory</h4>
+      <span class="badge b-amber">Escalabilidade</span>
+    </div>
+    <div class="decision-body">
+      <div class="decision-col">
+        <h5>Problema</h5>
+        <p>73 arquivos Python de DAG com estrutura quase idêntica. Adicionar uma fonte = criar novos arquivos, duplicar lógica, risco de inconsistência.</p>
+      </div>
+      <div class="decision-col">
+        <h5>Decisão</h5>
+        <p>Um YAML por fonte no Source Registry. O <code>astronomer/dag-factory</code> lê os YAMLs e gera os DAGs automaticamente. Nenhum Python por fonte.</p>
+      </div>
+      <div class="decision-col">
+        <h5>Consequência</h5>
+        <p>Adicionar uma nova fonte governamental leva ~5 minutos (escrever o YAML). Mudança transversal (ex: retry delay) = editar 1 lugar.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="decision">
+    <div class="decision-head">
+      <span class="badge b-blue">ADR 0003</span>
+      <h4 style="font-size:.95rem; font-weight:700; color:var(--blue-dark);">Bronze Store — MinIO antes do Silver</h4>
+      <span class="badge b-amber">Auditabilidade</span>
+    </div>
+    <div class="decision-body">
+      <div class="decision-col">
+        <h5>Problema</h5>
+        <p>API → PostgreSQL direto. Sem artefato bruto: se a API mudar, dado histórico está perdido. Impossível auditar o que foi ingerido originalmente.</p>
+      </div>
+      <div class="decision-col">
+        <h5>Decisão</h5>
+        <p>MinIO (S3-compatible, self-hosted) recebe cada payload bruto antes de qualquer transformação. Uma escrita por execução, imutável.</p>
+      </div>
+      <div class="decision-col">
+        <h5>Consequência</h5>
+        <p>Reprocessamento sem nova chamada à API. Auditoria completa do dado na fonte. Conforme padrões de dados abertos governamentais.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="decision">
+    <div class="decision-head">
+      <span class="badge b-purple">Novo</span>
+      <h4 style="font-size:.95rem; font-weight:700; color:var(--blue-dark);">transformation/ separado do Airflow</h4>
+      <span class="badge b-amber">Separação de responsabilidades</span>
+    </div>
+    <div class="decision-body">
+      <div class="decision-col">
+        <h5>Problema</h5>
+        <p>dbt dentro de <code>dags/dbt/</code> — acoplado ao Airflow. Para testar um modelo dbt, era preciso o container Airflow em pé. Times de ingestão e transformação conflitavam no mesmo diretório.</p>
+      </div>
+      <div class="decision-col">
+        <h5>Decisão</h5>
+        <p><code>transformation/</code> na raiz do repo, independente. Montado via Docker volume separado. DAG Cosmos aponta para o path externo.</p>
+      </div>
+      <div class="decision-col">
+        <h5>Consequência</h5>
+        <p><code>dbt run --project-dir transformation/</code> funciona sem Airflow. Branches de modelos dbt não afetam DAGs de ingestão. CI pode testar dbt e Airflow separadamente.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="decision">
+    <div class="decision-head">
+      <span class="badge b-purple">ADR 0004</span>
+      <h4 style="font-size:.95rem; font-weight:700; color:var(--blue-dark);">IntegrationAgent com Evidence Layer + LLM</h4>
+      <span class="badge b-amber">Contribuição de pesquisa</span>
+    </div>
+    <div class="decision-body">
+      <div class="decision-col">
+        <h5>Problema</h5>
+        <p>Identificar qual campo do SIAFI conecta com qual campo do TransfereGov é um processo 100% manual, que requer especialista de domínio e horas de análise para cada par de sistemas.</p>
+      </div>
+      <div class="decision-col">
+        <h5>Decisão</h5>
+        <p>Pipeline em 4 estágios: perfilagem estatística → candidatos por score semântico (embeddings) → Evidence Layer (conteúdo + estrutura) → Decision Layer (LLM reasoning).</p>
+      </div>
+      <div class="decision-col">
+        <h5>Consequência</h5>
+        <p>Integração entre dois sistemas governamentais identificada em segundos com score de confiança e código de join gerado. Processo antes de horas → agora automatizado.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══ 5. O AGENTE DE INTEGRAÇÃO ══ -->
+  <div class="section">
+    <div class="section-num">5</div>
+    <h2>O IntegrationAgent — Contribuição Central</h2>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <span class="badge b-purple">Evidence Layer + LLM Reasoning</span>
+      <h3>Pipeline de identificação automática de chaves</h3>
+    </div>
+    <div class="card-body">
+
+      <p style="color:#374151; margin-bottom:1.25rem;">
+        O IntegrationAgent é a contribuição de pesquisa central do TCC. Dado dois DataFrames de sistemas
+        governamentais distintos, o agente identifica automaticamente qual campo conecta as duas tabelas —
+        sem intervenção humana. O pipeline combina três técnicas complementares.
+      </p>
+
+      <div class="pipeline-h">
+        <div class="ph-node n-silver">Tabela A + B<span class="sub">DataFrames do silver</span></div>
+        <div class="ph-arr">→</div>
+        <div class="ph-node n-agent">E1 · Perfilagem<span class="sub">dtype · nulos · regex · cardinalidade</span></div>
+        <div class="ph-arr">→</div>
+        <div class="ph-node n-agent">E2 · Candidatos<span class="sub">score semântico ≥ 0.30<br>sentence-transformers</span></div>
+        <div class="ph-arr">→</div>
+        <div class="ph-node n-agent">E3a · Semântica<span class="sub">embeddings de nomes<br>de coluna</span></div>
+        <div class="ph-arr">+</div>
+        <div class="ph-node n-agent">E3b · Conteúdo<span class="sub">overlap · substring<br>format_match</span></div>
+        <div class="ph-arr">→</div>
+        <div class="ph-node n-agent">E4 · LLM<span class="sub">Claude API<br>raciocínio + decisão</span></div>
+        <div class="ph-arr">→</div>
+        <div class="ph-node n-out">Integration Key<span class="sub">score · código Python/SQL</span></div>
+      </div>
+
+      <div style="margin-top:1.5rem;">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Técnica</th>
+              <th>O que detecta</th>
+              <th>Exemplo no contexto governamental</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Embeddings semânticos</strong></td>
+              <td>Campos com nomes diferentes mas mesmo significado</td>
+              <td><code>num_empenho</code> (SIAFI) ↔ <code>nr_empenho</code> (TransfereGov)</td>
+            </tr>
+            <tr>
+              <td><strong>Content Evidence Layer</strong></td>
+              <td>Campos com nomes sem relação mas valores sobrepostos; chaves derivadas embutidas</td>
+              <td><code>nc_completa</code> contém <code>nr_nc</code> como substring — Derived Key SIAFI</td>
+            </tr>
+            <tr>
+              <td><strong>LLM Reasoning</strong></td>
+              <td>Contexto de domínio, resolução de ambiguidade, explicação da decisão</td>
+              <td>Entre múltiplos candidatos com score similar, escolhe o mais plausível no domínio orçamentário</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="hl" style="margin-top:1.25rem;">
+        <strong>Derived Key:</strong> uma contribuição específica do TCC. No domínio SIAFI, identificadores como
+        Notas de Crédito têm formato composto (<code>2024NC000123</code>) que é reconstruível a partir de campos
+        separados (ano + tipo + número). O Content Evidence Layer detecta essa relação de substring mesmo quando
+        nenhum campo tem nome semanticamente próximo.
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══ 6. ARQUITETURA FINAL ══ -->
+  <div class="section">
+    <div class="section-num">6</div>
+    <h2>Arquitetura Final — Três Módulos</h2>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1.25rem; margin-bottom:1.25rem;">
+
+        <div style="border:1.5px solid #bae6fd; border-radius:10px; padding:1.1rem;">
+          <div style="font-size:.7rem; font-weight:800; text-transform:uppercase; letter-spacing:.07em; color:#075985; margin-bottom:.6rem;">ingestion/</div>
+          <p style="font-size:.82rem; color:#374151; line-height:1.6; margin-bottom:.75rem;">
+            Orquestração Airflow + extração das APIs governamentais + Bronze Store (MinIO) + Silver (PostgreSQL) + Table Catalog.
+          </p>
+          <div style="display:flex; flex-wrap:wrap; gap:.3rem;">
+            <span class="badge b-gray">Airflow</span>
+            <span class="badge b-gray">MinIO</span>
+            <span class="badge b-gray">PostgreSQL</span>
+            <span class="badge b-gray">httpx</span>
+            <span class="badge b-gray">pandera</span>
+          </div>
+        </div>
+
+        <div style="border:1.5px solid #fde68a; border-radius:10px; padding:1.1rem;">
+          <div style="font-size:.7rem; font-weight:800; text-transform:uppercase; letter-spacing:.07em; color:#713f12; margin-bottom:.6rem;">transformation/</div>
+          <p style="font-size:.82rem; color:#374151; line-height:1.6; margin-bottom:.75rem;">
+            Projeto dbt independente. Bronze → Silver → Gold. Modelos analíticos para o Superset. Roda via CLI sem Airflow.
+          </p>
+          <div style="display:flex; flex-wrap:wrap; gap:.3rem;">
+            <span class="badge b-gray">dbt</span>
+            <span class="badge b-gray">PostgreSQL</span>
+            <span class="badge b-gray">Superset</span>
+          </div>
+        </div>
+
+        <div style="border:1.5px solid #ddd6fe; border-radius:10px; padding:1.1rem;">
+          <div style="font-size:.7rem; font-weight:800; text-transform:uppercase; letter-spacing:.07em; color:#5b21b6; margin-bottom:.6rem;">integration/</div>
+          <p style="font-size:.82rem; color:#374151; line-height:1.6; margin-bottom:.75rem;">
+            IntegrationAgent. Identifica automaticamente chaves de join entre sistemas governamentais com NLP + LLM.
+          </p>
+          <div style="display:flex; flex-wrap:wrap; gap:.3rem;">
+            <span class="badge b-gray">sentence-transformers</span>
+            <span class="badge b-gray">Claude API</span>
+            <span class="badge b-gray">pandas</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="hl amber">
+        <strong>Princípio arquitetural:</strong> cada módulo tem uma única responsabilidade e pode ser executado
+        e testado de forma independente. O <code>ingestion/</code> não conhece o dbt. O <code>transformation/</code>
+        não conhece o Airflow. O <code>integration/</code> não depende de nenhum dos dois — recebe DataFrames e devolve
+        uma Integration Key.
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ══ 7. BENEFÍCIOS ══ -->
+  <div class="section">
+    <div class="section-num">7</div>
+    <h2>Benefícios</h2>
+  </div>
+
+  <div class="benefits">
+
+    <div class="benefit ben-scale">
+      <div class="ben-icon">📈</div>
+      <h4>Escalabilidade</h4>
+      <p>Adicionar qualquer novo sistema governamental (SCDP, SIOP, SEI) = criar um YAML de ~20 linhas.
+      Zero código Python novo. Zero risco de regressão em fontes existentes.</p>
+    </div>
+
+    <div class="benefit ben-qual">
+      <div class="ben-icon">✅</div>
+      <h4>Qualidade de dados</h4>
+      <p>Pandera valida o schema declarado no YAML da fonte antes de qualquer dado chegar ao silver.
+      Registros inválidos falham a task do Airflow — não silenciosamente corrompem o banco.</p>
+    </div>
+
+    <div class="benefit ben-ai">
+      <div class="ben-icon">🤖</div>
+      <h4>IA para integração</h4>
+      <p>O IntegrationAgent identifica automaticamente chaves de join entre sistemas governamentais
+      com NLP + análise de conteúdo + LLM. Processo antes manual de horas passa a ser automatizado.</p>
+    </div>
+
+    <div class="benefit ben-audit">
+      <div class="ben-icon">🔍</div>
+      <h4>Auditabilidade</h4>
+      <p>Bronze Store preserva o dado bruto imutável. Table Catalog registra cada carga com timestamp,
+      row count e status de qualidade. Rastreabilidade completa de onde cada dado veio e quando entrou.</p>
+    </div>
+
+    <div class="benefit ben-dbt">
+      <div class="ben-icon">🔀</div>
+      <h4>Independência entre times</h4>
+      <p>Engenheiros de ingestão trabalham em <code>ingestion/</code>. Analistas de dados trabalham em
+      <code>transformation/</code> sem container Airflow. Times paralelos sem conflito de arquivos.</p>
+    </div>
+
+    <div class="benefit ben-open">
+      <div class="ben-icon">🔓</div>
+      <h4>100% open source</h4>
+      <p>Airflow, MinIO, PostgreSQL, dbt, sentence-transformers, pandera. Nenhuma dependência de serviço
+      gerenciado ou licença proprietária. Replicável por qualquer órgão público.</p>
+    </div>
+
+  </div>
+
+
+  <!-- ══ 8. CONTRIBUIÇÕES PARA O TCC ══ -->
+  <div class="section">
+    <div class="section-num">8</div>
+    <h2>Contribuições Acadêmicas</h2>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Contribuição</th>
+            <th>Tipo</th>
+            <th>Descrição</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>C1</td>
+            <td><strong>IntegrationAgent</strong></td>
+            <td><span class="badge b-purple">Pesquisa</span></td>
+            <td>Abordagem original para identificação automática de chaves de integração em dados governamentais usando embedding semântico + análise de conteúdo + LLM reasoning. Inclui detecção de Derived Key (identificadores SIAFI embutidos).</td>
+          </tr>
+          <tr>
+            <td>C2</td>
+            <td><strong>Content Evidence Layer</strong></td>
+            <td><span class="badge b-purple">Pesquisa</span></td>
+            <td>Camada de fallback para pares de campos com score semântico baixo mas sobreposição real de valores. Permite identificar chaves cujos nomes de campo são semanticamente distantes mas cujos dados se correspondem.</td>
+          </tr>
+          <tr>
+            <td>C3</td>
+            <td><strong>Arquitetura Medallion Gov</strong></td>
+            <td><span class="badge b-blue">Engenharia</span></td>
+            <td>Aplicação do padrão Medallion a dados governamentais brasileiros heterogêneos, com Source Registry config-driven que reduz de 73 DAGs individuais para um único arquivo de configuração.</td>
+          </tr>
+          <tr>
+            <td>C4</td>
+            <td><strong>Separação ingestion/transformation</strong></td>
+            <td><span class="badge b-blue">Engenharia</span></td>
+            <td>Desacoplamento do dbt do Airflow em módulo independente — padrão raramente documentado na literatura, mas com impacto direto na manutenibilidade e testabilidade do pipeline.</td>
+          </tr>
+          <tr>
+            <td>C5</td>
+            <td><strong>Domínio: dados orçamentários federais</strong></td>
+            <td><span class="badge b-green">Domínio</span></td>
+            <td>Contextualização para vocabulário SIAFI (NC, NE, PF, PTRES, UG), padrões de identificadores e relações entre sistemas (TransfereGov ↔ SIAFI ↔ ComprasGov) — gap de documentação pública.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="quote" style="margin-top:1.25rem;">
+        "A fragmentação de dados entre sistemas estruturantes do governo federal é um problema estrutural.
+        Sistemas como SIAFI, SIAPE e TransfereGov foram construídos em épocas e por equipes diferentes,
+        sem modelo de integração unificado. O Gov Hub BR propõe uma camada de integração semântica automática
+        sobre essa realidade — sem exigir mudanças nos sistemas de origem."
+        <cite>— motivação do TCC</cite>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ══ 9. ADRs ══ -->
+  <div class="section">
+    <div class="section-num">9</div>
+    <h2>Decisões Arquiteturais Registradas</h2>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="adr-refs">
+        <div class="adr-ref">
+          <span class="adr-num">ADR 0001</span>
+          <div>
+            <h5>Caminho único de notificação via on_failure_callback</h5>
+            <p>Todo alerta Telegram passa por um único ponto — o callback do Airflow. A task de validação de volume levanta exceção descritiva em vez de notificar diretamente, evitando flood de mensagens duplicadas.</p>
+          </div>
+          <span class="badge b-green">Aceito</span>
+        </div>
+        <div class="adr-ref">
+          <span class="adr-num">ADR 0002</span>
+          <div>
+            <h5>Source Registry YAML + DAG Factory</h5>
+            <p>73 arquivos de DAG e 15+ clientes HTTP substituídos por YAML declarativos e <code>dag-factory</code>. Fonte nova = YAML de 20 linhas.</p>
+          </div>
+          <span class="badge b-amber">Proposto</span>
+        </div>
+        <div class="adr-ref">
+          <span class="adr-num">ADR 0003</span>
+          <div>
+            <h5>Bronze Store com MinIO antes do Silver</h5>
+            <p>Artefato bruto preservado antes de qualquer transformação. Permite reprocessamento sem nova chamada à API. MinIO AGPL-3.0, a mudança de licença de Mai/2025 não afeta a API S3 usada no código.</p>
+          </div>
+          <span class="badge b-amber">Proposto</span>
+        </div>
+        <div class="adr-ref">
+          <span class="adr-num">ADR 0004</span>
+          <div>
+            <h5>Integration Gateway como ponte entre ingestion/ e integration/</h5>
+            <p>O gateway consulta o Table Catalog para descobrir pares de tabelas e aciona o IntegrationAgent via DAG separada, desacoplando ingestão de identificação de chaves.</p>
+          </div>
+          <span class="badge b-amber">Proposto</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══ 10. ARTEFATOS ══ -->
+  <div class="section">
+    <div class="section-num">10</div>
+    <h2>Artefatos Gerados</h2>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Artefato</th>
+            <th>Localização</th>
+            <th>Descrição</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Documentação de arquitetura</strong></td>
+            <td><code>docs/architecture.html</code></td>
+            <td>Visão completa do sistema com diagramas de fluxo, tabela de componentes e estrutura de diretórios</td>
+          </tr>
+          <tr>
+            <td><strong>ADRs (4 decisões)</strong></td>
+            <td><code>docs/adr/0001–0004</code></td>
+            <td>Registro formal de cada decisão arquitetural: contexto, decisão, alternativa rejeitada, consequências</td>
+          </tr>
+          <tr>
+            <td><strong>Módulo ingestion/</strong></td>
+            <td><code>ingestion/</code></td>
+            <td>Pipeline de ingestão completo: DAGs, extractors, storage bronze/silver, bridge, docker-compose</td>
+          </tr>
+          <tr>
+            <td><strong>Módulo transformation/</strong></td>
+            <td><code>transformation/</code></td>
+            <td>Projeto dbt gov_hub independente com modelos bronze/silver/gold, profiles e macros</td>
+          </tr>
+          <tr>
+            <td><strong>Módulo integration/</strong></td>
+            <td><code>integration/</code></td>
+            <td>IntegrationAgent: profiler, candidate generator, semantic evidence, content evidence, LLM decision, report generator</td>
+          </tr>
+          <tr>
+            <td><strong>Relatórios HTML</strong></td>
+            <td><code>integration/output/reports/</code></td>
+            <td>Um relatório por par de tabelas integradas — Integration Key, score de confiança, evidências, código Python e SQL</td>
+          </tr>
+          <tr>
+            <td><strong>Skills Claude Code</strong></td>
+            <td><code>~/.claude/skills/</code></td>
+            <td>/integrar-bases, /mapear-integracoes, /analisar-tabela, /comparar-colunas, /identificar-chave, /gerar-relatorio, /definir-contexto</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    Gov Hub BR · Luiza Maluf &amp; Lucas Bottino · Universidade de Brasília · Lab Livre · Apoio: GovHub · 2026
+  </footer>
+
+</div>
+</body>
+</html>

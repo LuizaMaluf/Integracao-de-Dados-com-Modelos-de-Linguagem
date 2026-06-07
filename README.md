@@ -244,43 +244,56 @@ Gera uma página HTML estilizada a partir do resultado do `/identificar-chave`. 
 
 As skills trocam dados **via arquivo** — o output de uma etapa é lido como input pela próxima. Os paths são previsíveis e derivados dos nomes das tabelas de entrada.
 
+### Visão geral
+
+```mermaid
+flowchart TD
+    DC["/definir-contexto\ndomínio novo"]
+    MI["/mapear-integracoes\ndiretório de bases"]
+    IB["/integrar-bases\ndois CSVs"]
+
+    DC -->|"output/contexts/context_{dominio}.json"| IB
+    MI -->|"filtra pares ≥ 0.45\nchama para cada aprovado"| IB
+    IB --> R["output/reports/relatorio_{a}__{b}.html"]
 ```
-[definir-contexto]  ←── use antes de integrar um domínio novo
-      │
-      └─→  output/contexts/context_{dominio}.json
 
-[mapear-integracoes]  ←── use com um diretório de bases
-      │
-      ├─→ score semântico entre todos os C(N,2) pares (só nomes de colunas)
-      ├─→ descarta pares com afinidade < 0.45
-      └─→ chama [integrar-bases] para cada par aprovado
-               └─→ output/reports/mapa_integracoes_{dir}_{data}.html
+### Pipeline interno do `/integrar-bases`
 
-[integrar-bases]  ←── use com dois CSVs específicos
-      │
-      └─→  output/contexts/context_{dominio}.json
-                    │
-                    ▼
-[integrar-bases] ──────────────────────────────────────────────────────
-      │
-      │  Etapa 0: valida cobertura do contexto
-      │  Etapa 1: ─→ [analisar-tabela] ×2
-      │                  └─→ output/analisar_tabela_{stem_a}.json
-      │                  └─→ output/analisar_tabela_{stem_b}.json
-      │
-      │  Etapa 2: ─→ [comparar-colunas] (modo automático)
-      │                  lê: analisar_tabela_{a}.json + analisar_tabela_{b}.json
-      │                  └─→ output/comparar_colunas_{a}__{b}.json
-      │
-      │  Etapa 3: ─→ [identificar-chave] (Decision Layer)
-      │                  lê: comparar_colunas_{a}__{b}.json
-      │                  └─→ output/identificar_chave_{a}__{b}.json
-      │
-      │  Etapa 4: ─→ [gerar-relatorio]
-      │                  lê: identificar_chave_{a}__{b}.json
-      │                  └─→ output/reports/relatorio_{a}__{b}_{data}.html
-      │
-      └──────────────────────────────────────────────────────────────────
+```mermaid
+flowchart TD
+    CTX(["context_{dominio}.json\noptional"])
+    A["tabela_a.csv"]
+    B["tabela_b.csv"]
+
+    subgraph E0["Etapa 0 — Validar contexto"]
+        VC["/context-validator\nContext Coverage ≥ 60%?"]
+    end
+
+    subgraph E1["Etapa 1 — Perfilar tabelas"]
+        AT1["/analisar-tabela A"]
+        AT2["/analisar-tabela B"]
+    end
+
+    subgraph E2["Etapa 2 — Evidence Layer"]
+        CC["/comparar-colunas\nmodo automático"]
+    end
+
+    subgraph E3["Etapa 3 — Decision Layer"]
+        IK["/identificar-chave\n+ LLM reasoning"]
+    end
+
+    subgraph E4["Etapa 4 — Relatório"]
+        GR["/gerar-relatorio"]
+    end
+
+    CTX --> E0
+    A --> E0
+    B --> E0
+    E0 --> E1
+    E1 -->|"analisar_tabela_{a}.json\nanalisar_tabela_{b}.json"| E2
+    E2 -->|"comparar_colunas_{a}__{b}.json"| E3
+    E3 -->|"identificar_chave_{a}__{b}.json"| E4
+    E4 --> REL["output/reports/relatorio_{a}__{b}.html"]
 ```
 
 Cada arquivo intermediário fica em `output/` e pode ser inspecionado manualmente. Se uma etapa falhar, o pipeline pode ser retomado do ponto de falha sem reprocessar tudo.

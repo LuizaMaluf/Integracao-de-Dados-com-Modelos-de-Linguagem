@@ -1,0 +1,16 @@
+version: 2
+
+models:
+  - name: siafi_empenhos_enriched
+    description: Notas de empenho com campos normalizados e joins com programação financeira
+    columns:
+      - name: num_empenho
+        tests:
+          - not_null
+          - unique
+
+  - name: transfere_planos_enriched
+    description: Planos de ação com campos de execução calculados
+
+  - name: contratos_enriched
+    description: Contratos com estágios de execução consolidados

@@ -1,0 +1,22 @@
+version: 2
+
+models:
+  - name: siafi_notas_empenho
+    description: Notas de empenho do SIAFI — leitura direta da tabela silver ingerida pelo pipeline
+    columns:
+      - name: num_empenho
+        description: Número do empenho
+        tests:
+          - not_null
+      - name: ano_empenho
+        tests:
+          - not_null
+
+  - name: transfere_gov_planos_acao
+    description: Planos de ação do TransfereGov — leitura direta da tabela silver
+
+  - name: compras_gov_contratos
+    description: Contratos do ComprasGov — leitura direta da tabela silver
+
+  - name: siape_servidores
+    description: Servidores do SIAPE — leitura direta da tabela silver
