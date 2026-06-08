@@ -10,7 +10,7 @@ from src.analyzers.semantic import semantic_score, find_domain_group
 from src.analyzers.structural import profile_column, dtype_compatible, cardinality_label
 from src.analyzers.statistical import overlap_stats
 from src.analyzers.content_analyzer import analyze as content_analyze, PROMOTION_THRESHOLD
-from src.transformers.pattern_detector import detect_pattern, patterns_compatible
+from src.transformers.pattern_detector import detect_pattern
 from src.loaders.base import TableMetadata
 
 

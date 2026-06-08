@@ -10,7 +10,6 @@ from datetime import date
 import duckdb
 import pandas as pd
 
-# Allow importing fase01/src from inside the container
 sys.path.insert(0, "/opt/airflow/agent_src")
 from loaders.base import TableMetadata  # noqa: E402
 
@@ -55,5 +54,5 @@ def build_metadata(df: pd.DataFrame, table_name: str) -> TableMetadata:
         columns=list(df.columns),
         dtypes={col: str(dtype) for col, dtype in df.dtypes.items()},
         row_count=len(df),
-        sample=df.head(5).to_dict(orient="records"),
+        sample=df.head(5),
     )
