@@ -7,6 +7,7 @@ fora do container com `dbt run --project-dir transformation/`.
 
 Dispara diariamente após a janela de ingestão (01:00).
 """
+
 import os
 from datetime import datetime
 from pathlib import Path

@@ -1,0 +1,4 @@
+name: abecip
+auth_type: none
+base_url: "https://www.abecip.org.br/api"
+rate_limit_rps: 2.0

@@ -1,0 +1,6 @@
+schedule: "@monthly"
+destination: minio
+filters:
+  referencia: "2025-01"
+retries: 2
+retry_delay_minutes: 10

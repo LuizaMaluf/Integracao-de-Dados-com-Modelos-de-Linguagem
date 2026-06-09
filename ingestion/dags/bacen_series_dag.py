@@ -33,7 +33,7 @@ def dag_factory(cfg: dict):
 
             @task(task_id=f"load_bronze_{codigo}")
             def load_bronze(parquet_key: str):
-                get_warehouse().load_from_parquet(parquet_key, cfg["source_name"], serie["tabela"])
+                get_warehouse().load_parquet(parquet_key, cfg["source_name"], serie["tabela"])
 
             raw_json = extract()
             original_key = write_original(raw_json)

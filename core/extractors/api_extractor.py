@@ -16,7 +16,9 @@ from core.extractors.base import BaseExtractor
 
 
 class ApiExtractor(BaseExtractor):
-    """Fetches all pages from a REST API and returns a flat DataFrame."""
+    """
+    Fetches all pages from a REST API and returns a flat DataFrame.
+    """
 
     def _build_url(self) -> str:
         serie = self.config.get("serie")

@@ -1,0 +1,4 @@
+name: bacen
+auth_type: none
+base_url: "https://api.bcb.gov.br/dados/serie"
+rate_limit_rps: 5.0

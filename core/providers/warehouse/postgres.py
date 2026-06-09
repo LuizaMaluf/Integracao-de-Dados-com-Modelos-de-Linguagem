@@ -29,7 +29,7 @@ class PostgreSQLProvider(WarehouseProvider):
     def _normalize_col(name: str) -> str:
         return re.sub(r"[^a-z0-9_]", "_", name.lower().strip())
 
-    def load(self, df: pd.DataFrame, schema: str, table: str) -> None:
+    def load_df(self, df: pd.DataFrame, schema: str, table: str) -> None:
         self._ensure_schema(schema)
 
         with duckdb.connect() as conn:
@@ -44,7 +44,7 @@ class PostgreSQLProvider(WarehouseProvider):
 
         normalized.to_sql(table, self._engine(), schema=schema, if_exists="replace", index=False)
 
-    def load_from_parquet(self, parquet_key: str, schema: str, table: str) -> None:
+    def load_parquet(self, parquet_key: str, schema: str, table: str) -> None:
         from core.providers.factory import get_storage
         df = get_storage().read_parquet(parquet_key)
-        self.load(df, schema, table)
+        self.load_df(df, schema, table)

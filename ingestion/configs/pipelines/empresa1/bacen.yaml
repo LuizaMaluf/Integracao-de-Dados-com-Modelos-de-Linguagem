@@ -1,0 +1,7 @@
+schedule: "@daily"
+destination: minio
+filters:
+  series: [20704, 20705, 20706, 432]
+  ultimos: 13
+retries: 3
+retry_delay_minutes: 5
