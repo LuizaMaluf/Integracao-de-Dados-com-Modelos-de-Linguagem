@@ -1,0 +1,13 @@
+project: poc_tcc
+description: "PoC Arquitetura TCC - Lab Livre"
+
+storage:
+  provider: minio
+  endpoint_env: STORAGE_ENDPOINT
+  access_key_env: STORAGE_ACCESS_KEY
+  secret_key_env: STORAGE_SECRET_KEY
+  bucket_env: STORAGE_BUCKET_RAW
+
+warehouse:
+  provider: postgres
+  conn_env: DW_CONN

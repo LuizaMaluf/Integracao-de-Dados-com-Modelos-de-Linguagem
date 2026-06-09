@@ -1,0 +1,14 @@
+# Ingestion pipeline
+httpx
+pandas
+pyarrow
+openpyxl
+sqlalchemy
+boto3
+duckdb
+PyYAML
+
+# Dev / test
+pytest
+pytest-mock
+ruff

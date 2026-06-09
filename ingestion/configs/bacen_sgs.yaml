@@ -1,0 +1,27 @@
+source_name: bacen_sgs
+type: api_series
+schedule: "@daily"
+start_date: "2026-06-06"
+
+base_url: "https://api.bcb.gov.br/dados/serie"
+auth_strategy: none
+pagination_strategy: none
+
+ultimos: 13
+
+params:
+  formato: json
+
+series:
+  - codigo: 20704
+    descricao: "Financiamentos imobiliários PF - Total - Contratações (R$ mil)"
+    tabela: financiamentos_pf_total
+  - codigo: 20705
+    descricao: "Financiamentos imobiliários PF - Aquisição - Contratações (R$ mil)"
+    tabela: financiamentos_pf_aquisicao
+  - codigo: 20706
+    descricao: "Financiamentos imobiliários PF - Construção - Contratações (R$ mil)"
+    tabela: financiamentos_pf_construcao
+  - codigo: 432
+    descricao: "Taxa SELIC acumulada no mês (% a.a.)"
+    tabela: taxa_selic

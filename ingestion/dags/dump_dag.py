@@ -42,20 +42,21 @@ for _cfg in _load_configs():
         @task()
         def write_bronze(tables_json: dict, cfg) -> list[str]:
             import pandas as pd
-            from storage import bronze
+            from providers import get_storage
             keys = []
             for table_name, df_json in tables_json.items():
                 df = pd.read_json(df_json)
-                key = bronze.write_parquet(df, cfg["source_name"], f"{table_name}.parquet")
+                key = get_storage().write_parquet(df, cfg["source_name"], table_name)
                 keys.append(key)
             return keys
 
         @task()
         def stage_silver(bronze_keys: list, cfg):
-            from storage import bronze, silver
+            from providers import get_storage
+            from storage import silver
             for key in bronze_keys:
-                table_name = key.split("/")[-1].replace(".parquet", "")
-                df = bronze.read_parquet(key)
+                table_name = key.split("/")[-3]  # raw/{source}/{table}/parquet/{date}.parquet
+                df = get_storage().read_parquet(key)
                 silver.write(df, table_name)
 
         keys = write_bronze(extract(cfg), cfg)

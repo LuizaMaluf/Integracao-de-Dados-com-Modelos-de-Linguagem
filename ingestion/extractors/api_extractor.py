@@ -1,9 +1,13 @@
 """
-Extracts data from paginated REST APIs (governmental and public).
-Config keys: url, auth_strategy, auth_header, auth_env_var,
-             pagination_strategy, page_param, page_size, page_size_param,
-             params, records_path, has_more_field.
+Extracts data from REST APIs.
+Supports auth strategies: none | bearer | api_key_header
+Supports pagination strategies: none | page_number
+Config keys used: url (generic) or base_url + serie (api_series),
+                  auth_strategy, auth_header, auth_env_var,
+                  pagination_strategy, page_param, page_size, page_size_param,
+                  params, records_path, has_more_field
 """
+import json
 import os
 from typing import Any
 
@@ -16,10 +20,20 @@ from .base import BaseExtractor
 class ApiExtractor(BaseExtractor):
     """Fetches all pages from a REST API and returns a flat DataFrame."""
 
-    def extract(self) -> pd.DataFrame:
+    def _build_url(self) -> str:
+        serie = self.config.get("serie")
+        if serie:
+            base = f"{self.config['base_url']}/bcdata.sgs.{serie['codigo']}/dados"
+            ultimos = self.config.get("ultimos")
+            return f"{base}/ultimos/{ultimos}" if ultimos else base
+        return self.config["url"]
+
+    def extract_raw(self) -> str:
+        """Fetch all pages and return the combined records as a JSON string."""
         headers = self._build_headers()
         records: list[dict] = []
         page = 1
+        url = self._build_url()
 
         with httpx.Client(timeout=30) as client:
             while True:
@@ -30,7 +44,7 @@ class ApiExtractor(BaseExtractor):
                     params[self.config["page_param"]] = page
                     params[self.config.get("page_size_param", "size")] = self.config.get("page_size", 100)
 
-                response = client.get(self.config["url"], headers=headers, params=params)
+                response = client.get(url, headers=headers, params=params)
                 response.raise_for_status()
                 data = response.json()
 
@@ -41,17 +55,21 @@ class ApiExtractor(BaseExtractor):
                     break
                 page += 1
 
-        return pd.DataFrame(records)
+        return json.dumps(records)
+
+    def extract(self) -> pd.DataFrame:
+        return pd.read_json(self.extract_raw(), orient="records")
 
     def _build_headers(self) -> dict:
+        headers = {"Accept": "application/json"}
         strategy = self.config.get("auth_strategy", "none")
         if strategy == "bearer":
             token = os.environ[self.config["auth_env_var"]]
-            return {"Authorization": f"Bearer {token}"}
-        if strategy == "api_key_header":
+            headers["Authorization"] = f"Bearer {token}"
+        elif strategy == "api_key_header":
             token = os.environ[self.config["auth_env_var"]]
-            return {self.config["auth_header"]: token}
-        return {}
+            headers[self.config["auth_header"]] = token
+        return headers
 
     def _extract_records(self, data: Any) -> list[dict]:
         path = self.config.get("records_path")

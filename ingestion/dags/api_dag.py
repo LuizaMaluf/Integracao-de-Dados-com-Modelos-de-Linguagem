@@ -40,14 +40,15 @@ for _cfg in _load_configs():
         @task()
         def write_bronze(df_json: str, cfg):
             import pandas as pd
-            from storage import bronze
+            from providers import get_storage
             df = pd.read_json(df_json)
-            return bronze.write_parquet(df, cfg["source_name"], "data.parquet")
+            return get_storage().write_parquet(df, cfg["source_name"], "data")
 
         @task()
         def stage_silver(bronze_key: str, cfg):
-            from storage import bronze, silver
-            df = bronze.read_parquet(bronze_key)
+            from providers import get_storage
+            from storage import silver
+            df = get_storage().read_parquet(bronze_key)
             return silver.write(df, cfg["source_name"])
 
         key = write_bronze(extract(cfg), cfg)
