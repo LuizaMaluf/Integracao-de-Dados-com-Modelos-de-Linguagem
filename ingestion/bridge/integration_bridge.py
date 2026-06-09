@@ -15,7 +15,7 @@ from storage import silver
 OUTPUT_DIR = Path("/opt/airflow/output")
 
 
-def run_integration(table_a: str, table_b: str, use_llm: bool = True) -> Path:
+def run_integration(table_a: str, table_b: str, use_llm: bool = True, store=None) -> Path:
     """
     Load two silver tables, run IntegrationAgent, and persist the result JSON.
     Returns the output file path.
@@ -31,4 +31,9 @@ def run_integration(table_a: str, table_b: str, use_llm: bool = True) -> Path:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     out_path = OUTPUT_DIR / f"identificar_chave_{table_a}__{table_b}.json"
     out_path.write_text(json.dumps(result, indent=2, ensure_ascii=False))
+
+    if store is not None:
+        from bridge.context_writer import persist_discovery
+        persist_discovery(result, store)
+
     return out_path

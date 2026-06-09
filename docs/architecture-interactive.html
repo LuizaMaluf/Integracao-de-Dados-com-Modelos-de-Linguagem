@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>gov-hub — Arquitetura Interativa</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --blue:     #0f3460;
+  --indigo:   #4338ca;
+  --ind-lt:   #eef2ff;
+  --amber:    #d97706;
+  --amb-lt:   #fffbeb;
+  --green:    #059669;
+  --grn-lt:   #ecfdf5;
+  --purple:   #7c3aed;
+  --pur-lt:   #faf5ff;
+  --slate:    #475569;
+  --border:   #e2e8f0;
+  --bg:       #f8fafc;
+  --surface:  #ffffff;
+  --text:     #0f172a;
+  --muted:    #64748b;
+  --radius:   10px;
+}
+
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size:14px; line-height:1.6; color:var(--text); background:var(--bg); height:100vh; overflow:hidden; display:flex; flex-direction:column; }
+
+/* ── Nav ── */
+nav { background:var(--blue); color:#fff; padding:.6rem 1.5rem; display:flex; align-items:center; gap:1.5rem; flex-shrink:0; }
+nav .brand { font-weight:800; font-size:1rem; letter-spacing:-.02em; }
+nav .brand span { color:#f59e0b; }
+.tabs { display:flex; gap:.15rem; }
+.tab { padding:.35rem .85rem; border-radius:6px; font-size:.78rem; font-weight:600; cursor:pointer; color:rgba(255,255,255,.6); transition:.15s; border:none; background:none; }
+.tab:hover { color:#fff; background:rgba(255,255,255,.1); }
+.tab.active { color:#fff; background:rgba(255,255,255,.18); }
+.spacer { flex:1; }
+.hint { font-size:.72rem; opacity:.45; }
+
+/* ── Main layout ── */
+.main { flex:1; display:grid; grid-template-columns:320px 1fr; overflow:hidden; }
+
+/* ── Pipeline panel ── */
+.pipeline-panel { border-right:1px solid var(--border); overflow-y:auto; padding:1.25rem 1rem; background:var(--surface); }
+
+.layer-label { font-size:.65rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:var(--muted); margin:1rem 0 .4rem .5rem; }
+.layer-label:first-child { margin-top:0; }
+
+.node {
+  display:flex; align-items:center; gap:.65rem;
+  padding:.55rem .75rem; border-radius:8px;
+  cursor:pointer; transition:.15s; margin-bottom:.2rem;
+  border:1.5px solid transparent; position:relative;
+}
+.node:hover { background:var(--ind-lt); border-color:#c7d2fe; }
+.node.active { background:var(--ind-lt); border-color:var(--indigo); }
+
+.node-num { width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.65rem; font-weight:800; flex-shrink:0; }
+.node-name { font-size:.82rem; font-weight:600; color:var(--text); }
+.node-tool { font-size:.68rem; color:var(--muted); }
+
+.connector { width:2px; height:14px; background:var(--border); margin:0 auto 0 25px; }
+
+/* Context Store node — special transversal */
+.node-context { background:linear-gradient(135deg,#faf5ff,#ede9fe); border-color:#c4b5fd !important; }
+.node-context .node-num { background:#7c3aed; color:#fff; }
+.context-tag { font-size:.6rem; font-weight:700; text-transform:uppercase; background:#7c3aed; color:#fff; padding:.1rem .4rem; border-radius:4px; margin-left:auto; }
+
+/* Layer colors */
+.l-config   .node-num { background:#4338ca; color:#fff; }
+.l-ingest   .node-num { background:#0369a1; color:#fff; }
+.l-bronze   .node-num { background:#d97706; color:#fff; }
+.l-silver   .node-num { background:#059669; color:#fff; }
+.l-catalog  .node-num { background:#0f766e; color:#fff; }
+.l-integ    .node-num { background:#7c3aed; color:#fff; }
+.l-gold     .node-num { background:#b45309; color:#fff; }
+
+/* ── Detail panel ── */
+.detail-panel { overflow-y:auto; padding:2rem 2.5rem; }
+
+.detail-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--muted); text-align:center; gap:.5rem; }
+.detail-empty .arrow { font-size:2rem; opacity:.3; }
+
+.detail-content { display:none; max-width:680px; }
+.detail-content.visible { display:block; }
+
+.detail-header { display:flex; align-items:flex-start; gap:1rem; margin-bottom:1.5rem; }
+.detail-num { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; font-weight:900; flex-shrink:0; }
+.detail-title { font-size:1.4rem; font-weight:800; color:var(--text); line-height:1.2; }
+.detail-subtitle { font-size:.82rem; color:var(--muted); margin-top:.2rem; }
+
+.detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.25rem; }
+.detail-box { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); padding:1rem 1.1rem; }
+.detail-box h4 { font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin-bottom:.5rem; }
+.detail-box p { font-size:.85rem; color:var(--text); line-height:1.55; }
+
+.detail-full { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); padding:1rem 1.1rem; margin-bottom:1.25rem; }
+.detail-full h4 { font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin-bottom:.5rem; }
+.detail-full p { font-size:.85rem; color:var(--text); line-height:1.55; }
+
+.detail-code { background:#0f172a; border-radius:var(--radius); padding:1rem 1.1rem; margin-bottom:1.25rem; }
+.detail-code pre { font-family:'JetBrains Mono','Fira Code',monospace; font-size:.78rem; color:#e2e8f0; line-height:1.6; white-space:pre-wrap; }
+
+.detail-links { display:flex; gap:.75rem; flex-wrap:wrap; }
+.detail-link { display:inline-flex; align-items:center; gap:.35rem; font-size:.78rem; font-weight:600; padding:.35rem .85rem; border-radius:6px; text-decoration:none; transition:.15s; cursor:default; }
+.dl-adr  { background:var(--ind-lt); color:var(--indigo); }
+.dl-code { background:var(--grn-lt); color:var(--green); }
+
+/* ── ADRs tab ── */
+.adrs-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:1rem; padding:1.5rem 2rem; overflow-y:auto; }
+.adr-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1.25rem; transition:.15s; }
+.adr-card:hover { border-color:#c7d2fe; box-shadow:0 4px 16px rgba(67,56,202,.08); }
+.adr-num { font-size:.68rem; font-weight:700; color:var(--indigo); background:var(--ind-lt); padding:.2rem .55rem; border-radius:4px; display:inline-block; margin-bottom:.5rem; }
+.adr-title { font-size:.92rem; font-weight:700; color:var(--text); margin-bottom:.4rem; line-height:1.35; }
+.adr-status { font-size:.7rem; font-weight:600; padding:.15rem .5rem; border-radius:4px; }
+.s-aceito    { background:#f0fdf4; color:#166534; }
+.s-proposto  { background:#fffbeb; color:#92400e; }
+.adr-body { font-size:.8rem; color:var(--muted); line-height:1.55; margin-top:.6rem; }
+
+/* ── Flow tab ── */
+.flow-panel { overflow-y:auto; padding:2rem 2.5rem; }
+.flow-title { font-size:1.2rem; font-weight:800; color:var(--text); margin-bottom:.35rem; }
+.flow-sub { font-size:.85rem; color:var(--muted); margin-bottom:2rem; }
+.flow-steps { display:flex; flex-direction:column; gap:0; }
+.step { display:flex; gap:1.25rem; position:relative; }
+.step-line { display:flex; flex-direction:column; align-items:center; flex-shrink:0; }
+.step-dot { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.75rem; font-weight:800; color:#fff; flex-shrink:0; z-index:1; }
+.step-line::after { content:''; width:2px; flex:1; background:var(--border); margin:.2rem 0; }
+.step:last-child .step-line::after { display:none; }
+.step-body { padding-bottom:1.5rem; }
+.step-label { font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); }
+.step-text { font-size:.88rem; color:var(--text); line-height:1.6; margin-top:.15rem; }
+.step-mono { font-family:monospace; font-size:.78rem; background:#f1f5f9; padding:.2rem .5rem; border-radius:4px; color:#334155; margin-top:.3rem; display:inline-block; }
+
+/* hidden panels */
+.panel { display:none; }
+.panel.active { display:flex; flex-direction:column; flex:1; overflow:hidden; }
+#tab-pipeline.active { display:grid; }
+
+@media (max-width:700px) {
+  .main { grid-template-columns:1fr; }
+  .pipeline-panel { display:none; }
+  .detail-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">gov<span>-hub</span></div>
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('pipeline',this)">Pipeline</button>
+    <button class="tab" onclick="showTab('adrs',this)">ADRs</button>
+    <button class="tab" onclick="showTab('flow',this)">Fluxo E2E</button>
+  </div>
+  <div class="spacer"></div>
+  <span class="hint">← clique nos componentes para detalhes</span>
+</nav>
+
+<!-- ══════════════════════════════ PIPELINE TAB ══════════════════════════════ -->
+<div id="tab-pipeline" class="panel main active">
+
+  <div class="pipeline-panel">
+    <div class="layer-label">Config</div>
+    <div class="node l-config" onclick="show(0)">
+      <div class="node-num">1</div>
+      <div><div class="node-name">Source Registry</div><div class="node-tool">YAML + Pydantic</div></div>
+    </div>
+    <div class="connector"></div>
+
+    <div class="layer-label">Ingestão</div>
+    <div class="node l-ingest" onclick="show(1)">
+      <div class="node-num">2</div>
+      <div><div class="node-name">DAG Factory</div><div class="node-tool">astronomer/dag-factory</div></div>
+    </div>
+    <div class="connector"></div>
+    <div class="node l-ingest" onclick="show(2)">
+      <div class="node-num">3</div>
+      <div><div class="node-name">Generic Extractor</div><div class="node-tool">httpx + ClienteBase</div></div>
+    </div>
+    <div class="connector"></div>
+
+    <div class="layer-label">Bronze</div>
+    <div class="node l-bronze" onclick="show(3)">
+      <div class="node-num">4</div>
+      <div><div class="node-name">Bronze Store</div><div class="node-tool">MinIO (S3-compatible)</div></div>
+    </div>
+    <div class="connector"></div>
+    <div class="node l-bronze" onclick="show(4)">
+      <div class="node-num">5</div>
+      <div><div class="node-name">Transform + Validate</div><div class="node-tool">pandas + pandera</div></div>
+    </div>
+    <div class="connector"></div>
+
+    <div class="layer-label">Silver</div>
+    <div class="node l-silver" onclick="show(5)">
+      <div class="node-num">6</div>
+      <div><div class="node-name">Silver Store</div><div class="node-tool">PostgreSQL</div></div>
+    </div>
+    <div class="connector"></div>
+    <div class="node l-catalog" onclick="show(6)">
+      <div class="node-num">7</div>
+      <div><div class="node-name">Table Catalog</div><div class="node-tool">catalog.ingested_tables</div></div>
+    </div>
+    <div class="connector"></div>
+
+    <div class="layer-label">Integração</div>
+    <div class="node l-integ" onclick="show(7)">
+      <div class="node-num">8</div>
+      <div><div class="node-name">Integration Gateway</div><div class="node-tool">bridge.py + IntegrationAgent</div></div>
+    </div>
+    <div class="connector"></div>
+    <div class="node l-integ node-context" onclick="show(8)">
+      <div class="node-num">9</div>
+      <div><div class="node-name">Context Store</div><div class="node-tool">schema context — 4 tabelas</div></div>
+      <span class="context-tag">transversal</span>
+    </div>
+    <div class="connector"></div>
+    <div class="node l-integ" onclick="show(9)">
+      <div class="node-num">10</div>
+      <div><div class="node-name">ContextResolver</div><div class="node-tool">ingestion/context/resolver.py</div></div>
+    </div>
+    <div class="connector"></div>
+
+    <div class="layer-label">Gold</div>
+    <div class="node l-gold" onclick="show(10)">
+      <div class="node-num">11</div>
+      <div><div class="node-name">Gold Layer</div><div class="node-tool">dbt + DbtTaskGroup + Superset</div></div>
+    </div>
+  </div>
+
+  <div class="detail-panel" id="detail-panel">
+    <div class="detail-empty" id="detail-empty">
+      <span class="arrow">←</span>
+      <strong>Selecione um componente</strong>
+      <span style="font-size:.8rem">Clique em qualquer nó do pipeline para ver detalhes</span>
+    </div>
+
+    <!-- rendered by JS -->
+    <div class="detail-content" id="detail-content"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════ ADRs TAB ══════════════════════════════ -->
+<div id="tab-adrs" class="panel">
+  <div class="adrs-grid" id="adrs-grid"></div>
+</div>
+
+<!-- ══════════════════════════════ FLOW TAB ══════════════════════════════ -->
+<div id="tab-flow" class="panel flow-panel">
+  <div class="flow-title">Fluxo end-to-end — Ingestão SIAFI</div>
+  <div class="flow-sub">Cenário: nova nota de empenho disponível na API do Portal da Transparência</div>
+  <div class="flow-steps" id="flow-steps"></div>
+</div>
+
+<script>
+const COMPONENTS = [
+  {
+    num:1, id:"source-registry", name:"Source Registry", layer:"Config Layer",
+    color:"#4338ca", bg:"#eef2ff",
+    responsibility:"Declaração centralizada e versionada de todas as fontes de dados governamentais.",
+    detail:"Cada fonte é um YAML de ~20 linhas — declara URL, estratégia de autenticação, paginação, schedule, schema alvo e campos de conflito. Adicionar uma fonte nova não requer nenhum arquivo Python novo.",
+    tool:"YAML validado por Pydantic",
+    why:"Elimina os 73 arquivos de DAG hard-coded existentes. Todo comportamento (auth, paginação, retry) fica no repositório, revisável via PR. Rollback de config = reverter um YAML.",
+    code:"ingestion/configs/",
+    adr:null,
+    example:`source_name: siafi_notas_empenho
+type: api
+auth_strategy: api_key_header
+auth_env_var: SIAFI_API_KEY
+pagination_strategy: page_number
+target_schema: siafi
+target_table: notas_empenho`
+  },
+  {
+    num:2, id:"dag-factory", name:"DAG Factory", layer:"Ingestão",
+    color:"#0369a1", bg:"#e0f2fe",
+    responsibility:"Lê o Source Registry e gera todos os DAGs do Airflow dinamicamente — sem arquivos Python por fonte.",
+    detail:"Um único dag_factory.yaml substitui todos os scripts de DAG individuais. O Airflow carrega o arquivo via um loader mínimo de ~5 linhas. Alterações de schedule ou retry são mudanças de YAML, não de código.",
+    tool:"astronomer/dag-factory (Apache 2.0)",
+    why:"Zero arquivos Python de DAG por fonte. Alterar schedule ou adicionar retry é uma edição de YAML — sem deploy de código.",
+    code:"ingestion/dags/dag_factory_loader.py",
+    adr:{num:"ADR 0002", file:"adr/0002-dag-factory-config-driven.md"},
+    example:`# dags/load_dags.py
+from dagfactory import load_yaml_dags
+load_yaml_dags(globals_dict=globals(),
+               dags_folder="/opt/airflow/configs")`
+  },
+  {
+    num:3, id:"generic-extractor", name:"Generic Extractor", layer:"Ingestão",
+    color:"#0369a1", bg:"#e0f2fe",
+    responsibility:"Realiza a extração HTTP de qualquer fonte declarada no Source Registry — paginação, retry, auth parametrizados.",
+    detail:"Substitui os 15+ ClienteXXX com lógica duplicada. A ClienteBase existente é mantida como base — o Generic Extractor parametriza paginação (cursor, page_number, offset) e auth (bearer, api_key_header, none) via config, sem subclasse por fonte.",
+    tool:"httpx + ClienteBase existente",
+    why:"Uma única classe substitui 15+ implementações quase idênticas. Novos padrões de paginação se adicionam uma vez e ficam disponíveis para todas as fontes.",
+    code:"ingestion/extractors/base.py",
+    adr:null,
+    example:null
+  },
+  {
+    num:4, id:"bronze-store", name:"Bronze Store", layer:"Bronze",
+    color:"#d97706", bg:"#fffbeb",
+    responsibility:"Armazena o artefato bruto imutável de cada ingestão. Uma escrita por execução, nunca sobrescrita.",
+    detail:"Cada extração serializa o payload completo da API em MinIO antes de qualquer transformação. Path convencional: raw/<source>/<YYYY-MM-DD>/response.json. Reprocessamento lê o bronze sem nova requisição à API — dados governamentais podem ser removidos retroativamente.",
+    tool:"MinIO — S3-compatible, self-hosted (já no docker-compose)",
+    why:"O pipeline atual vai direto de API para PostgreSQL. Sem bronze, reprocessar dados históricos exige re-bater nas APIs — que têm limites de rate e janelas de disponibilidade.",
+    code:"ingestion/storage/bronze.py",
+    adr:{num:"ADR 0003", file:"adr/0003-bronze-store-minio.md"},
+    example:`# path: raw/siafi_notas_empenho/2026-06-07/response.json
+# imutável — uma escrita por execução`
+  },
+  {
+    num:5, id:"transform-validate", name:"Transform + Validate", layer:"Bronze → Silver",
+    color:"#d97706", bg:"#fffbeb",
+    responsibility:"Deserializa o artefato bronze, normaliza nomes de coluna, valida o schema declarado no YAML e descarta registros inválidos.",
+    detail:"Gate de qualidade entre a API e o PostgreSQL. Pandera valida o schema esperado (tipos, nulos, ranges) declarado junto da fonte no YAML. Problemas de qualidade falham a task do Airflow antes de sujar o silver.",
+    tool:"pandas + pandera",
+    why:"O pipeline atual não tem gate de qualidade — dados ruins chegam silenciosamente ao PostgreSQL. Com pandera, o contrato de schema fica versionado junto da fonte.",
+    code:"ingestion/validators/schema_validator.py",
+    adr:null,
+    example:null
+  },
+  {
+    num:6, id:"silver-store", name:"Silver Store", layer:"Silver",
+    color:"#059669", bg:"#ecfdf5",
+    responsibility:"Tabelas estruturadas por schema de origem, acessíveis por múltiplos processos concorrentes.",
+    detail:"Um schema PostgreSQL por sistema de origem (siafi, compras_gov, siape, siconv...). Sem mudança na estrutura atual — o Silver Store mantém a mesma organização. O dbt gerencia o schema como Schema Registry.",
+    tool:"PostgreSQL (já existente)",
+    why:"Sem mudança — o silver atual funciona bem. A inovação está nas camadas ao redor: bronze imutável antes e Context Store depois.",
+    code:"ingestion/storage/silver.py",
+    adr:null,
+    example:null
+  },
+  {
+    num:7, id:"table-catalog", name:"Table Catalog", layer:"Catalog",
+    color:"#0f766e", bg:"#f0fdfa",
+    responsibility:"Registra cada carga bem-sucedida com metadados de rastreabilidade operacional.",
+    detail:"Tabela catalog.ingested_tables com source_name, table_name, schema_name, row_count, quality_ok, loaded_at. O Integration Gateway consulta o Catalog para descobrir quais tabelas estão disponíveis para mapeamento — sem varredura do banco.",
+    tool:"PostgreSQL — schema catalog",
+    why:"Sem o Catalog, o Integration Gateway precisaria varrer o banco para descobrir tabelas. O Catalog torna a descoberta consultável, auditável e rápida.",
+    code:"ingestion/catalog/catalog.py",
+    adr:null,
+    example:`SELECT source_name, table_name, row_count
+FROM catalog.ingested_tables
+WHERE quality_ok = true
+ORDER BY loaded_at DESC`
+  },
+  {
+    num:8, id:"integration-gateway", name:"Integration Gateway", layer:"Integração",
+    color:"#7c3aed", bg:"#faf5ff",
+    responsibility:"Dado um par de tabelas, aciona o IntegrationAgent para identificação semântica de chaves de integração.",
+    detail:"Lê dois DataFrames do silver via Table Catalog, passa para o IntegrationAgent (pipeline de 5 etapas: perfilagem → candidatos → semântica → conteúdo → LLM), persiste o resultado no Context Store via bridge.py e salva o JSON de output.",
+    tool:"bridge.py + IntegrationAgent (integration/)",
+    why:"Desacopla a lógica de mapeamento da ingestão. O gateway é acionado via DAG separada com table_a e table_b como parâmetros — ou automaticamente via consulta ao Catalog.",
+    code:"ingestion/bridge/integration_bridge.py",
+    adr:{num:"ADR 0004", file:"adr/0004-integration-gateway.md"},
+    example:`# resultado: output/identificar_chave_notas_empenho__planos_acao.json
+{
+  "best_match": {
+    "columns_a": ["nr_empenho"],
+    "columns_b": ["num_empenho"],
+    "confidence": 0.94
+  }
+}`
+  },
+  {
+    num:9, id:"context-store", name:"Context Store", layer:"Transversal",
+    color:"#7c3aed", bg:"#faf5ff",
+    responsibility:"Acumula conhecimento de domínio e integrações ao longo das execuções — grupos semânticos, anotações de colunas, perfis e descobertas com evidências LLM.",
+    detail:"Quatro tabelas no schema context: domain_contexts (vocabulários persistidos, substitui o dict Python hardcoded), column_annotations (escrita pela task annotate_context na ingestão), table_profiles (task profile_table, paralela), integration_discoveries (escrita pelo bridge.py com justificativa LLM e flag is_validated para override humano).",
+    tool:"PostgreSQL — schema context (gerenciado pelo dbt)",
+    why:"Sem o Context Store cada run recalcula do zero. Grupos de domínio ficam hardcoded em Python. Novos domínios exigem deploy. O dbt não sabe quais modelos executar sem um mediador.",
+    code:"integration/src/store/context_store.py",
+    adr:{num:"ADR 0005 + 0007", file:"adr/0005-context-store-passivo.md"},
+    example:`-- Escrita na ingestão (annotate_context task)
+INSERT INTO context.column_annotations
+  (table_name, column_name, domain_group)
+VALUES ('siafi.notas_empenho', 'nr_empenho', 'empenho')
+ON CONFLICT DO UPDATE SET domain_group = EXCLUDED.domain_group;`
+  },
+  {
+    num:10, id:"context-resolver", name:"ContextResolver", layer:"Integração → Gold",
+    color:"#7c3aed", bg:"#faf5ff",
+    responsibility:"Mediador entre o Context Store e o DbtTaskGroup — decide o --select dinâmico antes de cada execução dbt.",
+    detail:"Consulta context.integration_discoveries com min_confidence=0.7 antes do DbtTaskGroup. Retorna 'models/' (pipeline completo) quando há integração confirmada, ou 'models/bronze/' (só bronze) quando não há. Com store=None retorna 'models/bronze/' como fallback seguro — funciona sem banco em dev.",
+    tool:"ingestion/context/resolver.py",
+    why:"O dbt não consegue consultar integration_discoveries diretamente para decidir quais modelos executar. Sem mediador, modelos gold rodariam sem joins definidos ou a ingestão precisaria conhecer detalhes do cosmos.",
+    code:"ingestion/context/resolver.py",
+    adr:{num:"ADR 0006", file:"adr/0006-profile-dois-momentos-context-resolver.md"},
+    example:`class ContextResolver:
+    def get_select(self, package_name, min_confidence=0.7):
+        discoveries = self._store.get_discoveries(
+            package_name, min_confidence=min_confidence)
+        return "models/" if discoveries else "models/bronze/"`
+  },
+  {
+    num:11, id:"gold-layer", name:"Gold Layer", layer:"Gold",
+    color:"#b45309", bg:"#fefce8",
+    responsibility:"Modelos analíticos sobre o silver, prontos para consumo pelo Superset. Um pacote dbt por órgão.",
+    detail:"Organizado como pacotes dbt locais em transformation/dbt_packages/<orgao>/. O transformation_dag_factory.py gera um DAG por pacote via DbtTaskGroup do cosmos. Cada DAG é agendado via Dataset (data-aware scheduling) — dispara após atualização real do silver layer, sem cron fixo.",
+    tool:"dbt local packages + astronomer-cosmos (DbtTaskGroup) + Apache Superset",
+    why:"Um pacote dbt por órgão isolado por configuração (Source Registry) — não por repositório (submodules). Mesmo resultado com menos overhead de versionamento distribuído.",
+    code:"ingestion/dags/transformation_dag_factory.py",
+    adr:null,
+    example:`# transformation/packages.yml
+packages:
+  - local: dbt_packages/mir
+  - local: dbt_packages/ipea
+
+# cosmos agenda por Dataset (data-aware)
+@dag(schedule=[Dataset("silver://mir_empenhos")])`
+  }
+];
+
+const ADRS = [
+  { num:"ADR 0001", title:"Caminho único de notificação", status:"Proposto",    body:"Centraliza saída de notificações em um único ponto para evitar duplicação de alertas entre tasks." },
+  { num:"ADR 0002", title:"Substituir DAGs individuais por DAG Factory config-driven", status:"Proposto", body:"Elimina 73 arquivos de DAG hard-coded. Cada fonte declarada em YAML; a biblioteca dag-factory gera os DAGs automaticamente." },
+  { num:"ADR 0003", title:"Adicionar Bronze Store (MinIO) antes do Silver", status:"Proposto", body:"Payload bruto imutável em MinIO antes de qualquer transformação. Reprocessamento sem nova requisição à API." },
+  { num:"ADR 0004", title:"Integration Gateway como ponte entre ingestion e IntegrationAgent", status:"Proposto", body:"Desacopla mapeamento de chaves da ingestão. Gateway acionado por DAG separada com table_a e table_b como parâmetros." },
+  { num:"ADR 0005", title:"Context Store passivo — quatro tabelas no schema context", status:"Aceito", body:"domain_contexts, column_annotations, table_profiles e integration_discoveries com justificativa LLM e flag is_validated para override humano." },
+  { num:"ADR 0006", title:"Profile em dois momentos + ContextResolver como mediador dbt", status:"Aceito", body:"annotate_context (leve, pós stage_silver) e profile_table (pesado, paralelo). ContextResolver consulta o store antes do DbtTaskGroup." },
+  { num:"ADR 0007", title:"Invalidação diferenciada + find_domain_group conectado ao banco", status:"Aceito", body:"annotations: upsert simples. discoveries: GREATEST(confidence) + is_validated. find_domain_group consulta domain_contexts antes do fallback Python." },
+];
+
+const FLOW_STEPS = [
+  { color:"#4338ca", label:"Source Registry", text:"O DAG siafi_notas_empenho_ingest foi gerado pelo DAG Factory a partir do YAML da fonte.", mono:"source_name: siafi_notas_empenho  |  schedule: @daily" },
+  { color:"#0369a1", label:"Generic Extractor", text:"Pagina a API do Portal da Transparência (pagina=1, 2, …) até hasNext=false. Resultado: 8.400 registros em IO.BytesIO.", mono:"GET /api-de-dados/notas-empenho?pagina=1…87" },
+  { color:"#d97706", label:"Bronze Store", text:"Serializa o buffer como JSON e escreve em MinIO. Uma escrita, imutável.", mono:"raw/siafi_notas_empenho/2026-06-07/response.json" },
+  { color:"#d97706", label:"Transform + Validate", text:"Lê o JSON do MinIO, normaliza colunas (numEmpenho → num_empenho), valida schema Pandera. 3 registros com anoEmpenho nulo descartados — warning logado.", mono:"8.400 → 8.397 registros válidos" },
+  { color:"#059669", label:"Silver Store", text:"Insere 8.397 linhas em siafi.notas_empenho via upsert.", mono:"INSERT … ON CONFLICT (num_empenho, ano_empenho) DO UPDATE" },
+  { color:"#0f766e", label:"Table Catalog + Context Store", text:"Catalog registra a carga. Tasks annotate_context e profile_table rodam em paralelo: anotam domain_group de cada coluna e calculam cardinalidade.", mono:"catalog.ingested_tables ← source=siafi_notas_empenho, row_count=8397\ncontext.column_annotations ← nr_empenho → domain_group: empenho" },
+  { color:"#7c3aed", label:"Integration Gateway", text:"DAG consulta o Catalog, encontra siafi.notas_empenho e transfere_gov.planos_acao como par candidato. IntegrationAgent identifica nr_empenho ↔ num_empenho com confiança 0.94.", mono:"output/identificar_chave_notas_empenho__planos_acao.json" },
+  { color:"#7c3aed", label:"Context Store ← bridge.py", text:"persist_discovery() grava a discovery com justificativa LLM, evidências e required_transforms.", mono:"context.integration_discoveries ← confidence=0.94, is_validated=NULL" },
+  { color:"#7c3aed", label:"ContextResolver", text:"Na próxima execução do DbtTaskGroup, ContextResolver encontra a discovery com confiança ≥ 0.7 e retorna --select models/ (pipeline completo).", mono:"get_select('siafi') → 'models/'" },
+  { color:"#b45309", label:"Gold Layer — dbt", text:"DbtTaskGroup executa os modelos bronze + silver + gold do pacote siafi. Dataset siafi prontos no Superset.", mono:"DbtTaskGroup(group_id='dbt_siafi', select='models/')" },
+];
+
+// ── Render ──────────────────────────────────────────────────────────────────
+
+function show(idx) {
+  const c = COMPONENTS[idx];
+  document.querySelectorAll('.node').forEach((n,i) => n.classList.toggle('active', i===idx));
+  document.getElementById('detail-empty').style.display = 'none';
+
+  const el = document.getElementById('detail-content');
+  el.classList.add('visible');
+
+  const adrHtml = c.adr
+    ? `<a class="detail-link dl-adr">${c.adr.num}</a>`
+    : '';
+  const codeHtml = `<a class="detail-link dl-code">${c.code}</a>`;
+  const exampleHtml = c.example
+    ? `<div class="detail-code"><pre>${escHtml(c.example)}</pre></div>`
+    : '';
+
+  el.innerHTML = `
+    <div class="detail-header">
+      <div class="detail-num" style="background:${c.color};color:#fff">${c.num}</div>
+      <div>
+        <div class="detail-title">${c.name}</div>
+        <div class="detail-subtitle">${c.layer}</div>
+      </div>
+    </div>
+    <div class="detail-full" style="border-color:${c.color}33; background:${c.bg}">
+      <h4>Responsabilidade</h4>
+      <p>${c.responsibility}</p>
+    </div>
+    <div class="detail-grid">
+      <div class="detail-box">
+        <h4>Ferramenta</h4>
+        <p>${c.tool}</p>
+      </div>
+      <div class="detail-box">
+        <h4>Por que esta escolha</h4>
+        <p>${c.why}</p>
+      </div>
+    </div>
+    ${exampleHtml}
+    <div class="detail-links">${adrHtml}${codeHtml}</div>
+  `;
+}
+
+function showTab(name, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// Build ADRs
+(function(){
+  const grid = document.getElementById('adrs-grid');
+  ADRS.forEach(a => {
+    const cls = a.status === 'Aceito' ? 's-aceito' : 's-proposto';
+    grid.innerHTML += `
+      <div class="adr-card">
+        <div class="adr-num">${a.num}</div>
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;">
+          <div class="adr-title">${a.title}</div>
+          <span class="adr-status ${cls}">${a.status}</span>
+        </div>
+        <div class="adr-body">${a.body}</div>
+      </div>`;
+  });
+})();
+
+// Build flow steps
+(function(){
+  const el = document.getElementById('flow-steps');
+  FLOW_STEPS.forEach((s,i) => {
+    el.innerHTML += `
+      <div class="step">
+        <div class="step-line">
+          <div class="step-dot" style="background:${s.color}">${i+1}</div>
+        </div>
+        <div class="step-body">
+          <div class="step-label">${s.label}</div>
+          <div class="step-text">${s.text}</div>
+          <div class="step-mono">${escHtml(s.mono)}</div>
+        </div>
+      </div>`;
+  });
+})();
+
+// Keyboard nav
+document.addEventListener('keydown', e => {
+  const active = [...document.querySelectorAll('.node')].findIndex(n => n.classList.contains('active'));
+  if (e.key === 'ArrowDown' && active < COMPONENTS.length-1) show(active+1);
+  if (e.key === 'ArrowUp'   && active > 0)                   show(active-1);
+});
+</script>
+</body>
+</html>
