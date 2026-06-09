@@ -35,9 +35,18 @@ Table Catalog ──── catalog.ingested_tables
         │
         ▼
 Integration Gateway ──── par de tabelas → IntegrationAgent
-        │
-        ▼
-output/identificar_chave_<a>__<b>.json
+        │                                        │
+        │                                        ▼
+        │                              Context Store (schema context)
+        │                              ┌─ domain_contexts
+        │                              ├─ column_annotations  ◀── annotate_context task
+        │                              ├─ table_profiles      ◀── profile_table task
+        │                              └─ integration_discoveries ◀── bridge.py
+        │                                        │
+        │                                 ContextResolver
+        │                                        │
+        ▼                                        ▼
+output/identificar_chave_<a>__<b>.json   DbtTaskGroup (--select dinâmico)
 ```
 
 ---
@@ -182,6 +191,33 @@ CREATE TABLE catalog.ingested_tables (
 
 ---
 
+### 11. Context Store
+
+**Responsabilidade:** acumular conhecimento de domínio e integrações ao longo das execuções do pipeline — grupos semânticos, anotações de colunas, perfis de tabelas e chaves de integração descobertas com evidências LLM.
+
+**Ferramenta:** schema `context` no PostgreSQL, gerenciado pelo dbt como Schema Registry.
+
+**Quatro tabelas:**
+
+| Tabela | Escrito por | Lido por |
+|---|---|---|
+| `context.domain_contexts` | CLI `/definir-contexto` | `find_domain_group`, `/mapear-integracoes` |
+| `context.column_annotations` | task `annotate_context` (pós `stage_silver`) | `mapear-integracoes`, `ContextResolver` |
+| `context.table_profiles` | task `profile_table` (paralela à `annotate_context`) | `mapear-integracoes` |
+| `context.integration_discoveries` | `bridge.py` (pós `IntegrationAgent`) | `ContextResolver` → `DbtTaskGroup` |
+
+**`ContextResolver`:** componente Python entre o Context Store e o cosmos. Antes do `DbtTaskGroup`, consulta `integration_discoveries` com `min_confidence=0.7` e retorna `--select models/` (pipeline completo) quando há integração confirmada, ou `--select models/bronze/` (só bronze) quando não há.
+
+**DAG de ingestão revisado:**
+```
+extract → write_bronze → stage_silver → annotate_context  (leve)
+                                    ↘ profile_table        (pesado, paralelo)
+```
+
+**Por quê:** sem o Context Store, cada run recalcula tudo do zero. Grupos de domínio ficam hardcoded em Python e novos domínios exigem deploy. O dbt não sabe quais modelos executar sem um mediador que consulte as integrações confirmadas.
+
+---
+
 ## Fluxo de dados — exemplo concreto
 
 **Cenário:** nova nota de empenho do SIAFI disponível na API do Portal da Transparência.
@@ -206,6 +242,9 @@ CREATE TABLE catalog.ingested_tables (
 | Substituir DAGs individuais por DAG Factory config-driven | [ADR 0002](adr/0002-dag-factory-config-driven.md) |
 | Adicionar Bronze Store (MinIO) antes do Silver | [ADR 0003](adr/0003-bronze-store-minio.md) |
 | Integration Gateway como ponte entre ingestion e IntegrationAgent | [ADR 0004](adr/0004-integration-gateway.md) |
+| Context Store passivo — quatro tabelas no schema `context` | [ADR 0005](adr/0005-context-store-passivo.md) |
+| Profile em dois momentos + `ContextResolver` como mediador dbt | [ADR 0006](adr/0006-profile-dois-momentos-context-resolver.md) |
+| Invalidação diferenciada + `find_domain_group` conectado ao banco | [ADR 0007](adr/0007-invalidacao-diferenciada-find-domain-group.md) |
 
 ---
 

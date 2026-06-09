@@ -778,6 +778,72 @@
   </div>
 
 
+  <div class="decision">
+    <div class="decision-head">
+      <span class="badge b-blue">ADR 0005</span>
+      <h4 style="font-size:.95rem; font-weight:700; color:var(--blue-dark);">Context Store Passivo — quatro tabelas no schema <code>context</code></h4>
+      <span class="badge b-purple">Arquitetura Transversal</span>
+    </div>
+    <div class="decision-body">
+      <div class="decision-col">
+        <h5>Problema</h5>
+        <p>O Integration Gateway recalcula tudo do zero a cada run. Os grupos de domínio ficam hardcoded em Python (<code>DOMAIN_SEMANTIC_GROUPS</code>) — novos domínios exigem edição de código. Contextos customizados criados via <code>/definir-contexto</code> não sobrevivem entre runs.</p>
+      </div>
+      <div class="decision-col">
+        <h5>Decisão</h5>
+        <p>Quatro tabelas no schema <code>context</code>: <code>domain_contexts</code> (vocabulários persistidos, substitui o dict Python), <code>column_annotations</code>, <code>table_profiles</code> e <code>integration_discoveries</code> (com justificativa LLM completa e flag <code>is_validated</code>). Schema gerenciado pelo dbt — não por código runtime.</p>
+      </div>
+      <div class="decision-col">
+        <h5>Consequência</h5>
+        <p>Novos domínios entram via INSERT em <code>domain_contexts</code> — sem PR de código. O <code>mapear-integracoes</code> parte das anotações já acumuladas. Conhecimento de integração persiste e melhora a cada run. Override humano via <code>is_validated = FALSE</code> invalida descobertas incorretas.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="decision">
+    <div class="decision-head">
+      <span class="badge b-blue">ADR 0006</span>
+      <h4 style="font-size:.95rem; font-weight:700; color:var(--blue-dark);">Profile em dois momentos + <code>ContextResolver</code> como mediador dbt</h4>
+      <span class="badge b-amber">Performance + Desacoplamento</span>
+    </div>
+    <div class="decision-body">
+      <div class="decision-col">
+        <h5>Problema</h5>
+        <p>Profile completo durante a ingestão bloqueia o <code>stage_silver</code>. O dbt não consegue consultar <code>integration_discoveries</code> diretamente para decidir quais modelos executar — não há mediador entre o Context Store e o cosmos.</p>
+      </div>
+      <div class="decision-col">
+        <h5>Decisão</h5>
+        <p>DAG revisada: <code>extract → write_bronze → stage_silver → annotate_context</code> (leve) e <code>↘ profile_table</code> (pesado, paralelo). <code>ContextResolver</code> consulta o store antes do <code>DbtTaskGroup</code> e retorna o <code>--select</code> correto: só <code>models/bronze/</code> sem integração confirmada, <code>models/</code> completo com.</p>
+      </div>
+      <div class="decision-col">
+        <h5>Consequência</h5>
+        <p>Falha do <code>profile_table</code> não bloqueia a ingestão. O dbt executa apenas os modelos que fazem sentido dado o estado atual das integrações — sem modelos gold orfãos rodando sem joins definidos.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="decision">
+    <div class="decision-head">
+      <span class="badge b-blue">ADR 0007</span>
+      <h4 style="font-size:.95rem; font-weight:700; color:var(--blue-dark);">Invalidação diferenciada + <code>find_domain_group</code> conectado ao banco</h4>
+      <span class="badge b-amber">Consistência</span>
+    </div>
+    <div class="decision-body">
+      <div class="decision-col">
+        <h5>Problema</h5>
+        <p>Re-ingestão pode deixar annotations desatualizadas. Discoveries com confiança alta mas incorretas não têm mecanismo de correção. <code>find_domain_group</code> só conhece domínios compilados em Python.</p>
+      </div>
+      <div class="decision-col">
+        <h5>Decisão</h5>
+        <p><code>column_annotations</code> e <code>table_profiles</code>: upsert simples — estado atual é a verdade. <code>integration_discoveries</code>: upsert com <code>GREATEST(confidence)</code> + <code>is_validated</code> para override humano. <code>find_domain_group</code> consulta <code>context.domain_contexts</code> antes do fallback Python.</p>
+      </div>
+      <div class="decision-col">
+        <h5>Consequência</h5>
+        <p>Annotations sempre refletem o schema atual. Discoveries acumulam sem crescimento descontrolado. Analistas podem rejeitar discoveries incorretas via <code>is_validated = FALSE</code> sem apagar o histórico. Grupos de domínio extensíveis sem editar código.</p>
+      </div>
+    </div>
+  </div>
+
   <!-- ══ 5. O AGENTE DE INTEGRAÇÃO ══ -->
   <div class="section">
     <div class="section-num">5</div>
@@ -1069,6 +1135,49 @@
           <div>
             <h5>Integration Gateway como ponte entre ingestion/ e integration/</h5>
             <p>O gateway consulta o Table Catalog para descobrir pares de tabelas e aciona o IntegrationAgent via DAG separada, desacoplando ingestão de identificação de chaves.</p>
+          </div>
+          <span class="badge b-amber">Proposto</span>
+        </div>
+        <div class="adr-ref">
+          <span class="adr-num">ADR 0005</span>
+          <div>
+            <h5>Context Store Passivo — quatro tabelas no schema <code>context</code></h5>
+            <p>
+              <code>domain_contexts</code> (vocabulários de domínio persistidos, substitui o dict Python hardcoded),
+              <code>column_annotations</code> (domain_group por coluna, escrita na ingestão),
+              <code>table_profiles</code> (perfil semântico, escrita em task separada),
+              <code>integration_discoveries</code> (chaves com justificativa completa do LLM e flag <code>is_validated</code>
+              para override humano). O schema é criado e versionado pelo dbt — não por código runtime.
+            </p>
+          </div>
+          <span class="badge b-amber">Proposto</span>
+        </div>
+        <div class="adr-ref">
+          <span class="adr-num">ADR 0006</span>
+          <div>
+            <h5>Profile em dois momentos + <code>ContextResolver</code> como mediador dbt</h5>
+            <p>
+              Na ingestão: task <code>annotate_context</code> anota apenas <code>domain_group</code> (custo zero).
+              Task <code>profile_table</code> roda separada pós-<code>stage_silver</code> — se falhar, a ingestão já está salva.
+              O <code>ContextResolver</code> consulta <code>integration_discoveries</code> antes do <code>DbtTaskGroup</code>
+              e decide o <code>--select</code> adequado: só <code>models/bronze/</code> se não há integração confirmada,
+              <code>models/</code> completo se há.
+            </p>
+          </div>
+          <span class="badge b-amber">Proposto</span>
+        </div>
+        <div class="adr-ref">
+          <span class="adr-num">ADR 0007</span>
+          <div>
+            <h5>Invalidação diferenciada + <code>find_domain_group</code> conectado ao banco</h5>
+            <p>
+              <code>column_annotations</code> e <code>table_profiles</code>: upsert simples — estado atual é a verdade.
+              <code>integration_discoveries</code>: upsert com <code>GREATEST(confidence)</code> preserva o melhor resultado;
+              campo <code>is_validated</code> (<code>NULL</code> = automático, <code>TRUE</code> = confirmado, <code>FALSE</code> = rejeitado)
+              permite override humano sem perda do histórico.
+              <code>find_domain_group</code> consulta <code>context.domain_contexts</code> antes do fallback Python,
+              tornando os grupos de domínio extensíveis sem editar código.
+            </p>
           </div>
           <span class="badge b-amber">Proposto</span>
         </div>
