@@ -4,7 +4,7 @@ Config keys used: file_path, columns, skip_rows, encoding, separator, sheet_name
 """
 import pandas as pd
 
-from .base import BaseExtractor
+from core.extractors.base import BaseExtractor
 
 
 class CsvExtractor(BaseExtractor):

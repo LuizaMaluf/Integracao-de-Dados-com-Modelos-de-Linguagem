@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 
 import pandas as pd
 
-from providers.storage.minio import MinIOProvider
+from core.providers.storage.minio import MinIOProvider
 
 
 def _provider():

@@ -12,9 +12,7 @@ import os
 from typing import Any
 
 import httpx
-import pandas as pd
-
-from .base import BaseExtractor
+from core.extractors.base import BaseExtractor
 
 
 class ApiExtractor(BaseExtractor):
@@ -56,9 +54,6 @@ class ApiExtractor(BaseExtractor):
                 page += 1
 
         return json.dumps(records)
-
-    def extract(self) -> pd.DataFrame:
-        return pd.read_json(self.extract_raw(), orient="records")
 
     def _build_headers(self) -> dict:
         headers = {"Accept": "application/json"}

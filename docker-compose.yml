@@ -6,6 +6,7 @@ x-airflow-env: &airflow-env
   AIRFLOW__CORE__LOAD_EXAMPLES: "false"
   AIRFLOW__API__AUTH_BACKENDS: airflow.api.auth.backend.basic_auth
   AIRFLOW__WEBSERVER__EXPOSE_CONFIG: "true"
+  PYTHONPATH: /opt/airflow
   _PIP_ADDITIONAL_REQUIREMENTS: >-
     httpx pandas pyarrow boto3 duckdb sqlalchemy psycopg2-binary PyYAML
   # Provider selection
@@ -26,8 +27,8 @@ x-airflow-common: &airflow-common
   volumes:
     - ./ingestion/dags:/opt/airflow/dags
     - ./ingestion/configs:/opt/airflow/configs
-    - ./ingestion/extractors:/opt/airflow/extractors
-    - ./ingestion/providers:/opt/airflow/providers
+    - ./ingestion:/opt/airflow/ingestion
+    - ./core:/opt/airflow/core
     - ./clients:/opt/airflow/clients
     - airflow-logs:/opt/airflow/logs
   depends_on:

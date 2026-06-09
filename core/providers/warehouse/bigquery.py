@@ -7,7 +7,7 @@ Not yet implemented — stub for future use.
 """
 import pandas as pd
 
-from .base import WarehouseProvider
+from core.providers.warehouse.base import WarehouseProvider
 
 
 class BigQueryProvider(WarehouseProvider):

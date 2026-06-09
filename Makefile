@@ -31,7 +31,7 @@ bucket:
 	docker compose exec minio mc mb --ignore-existing local/$${STORAGE_BUCKET_RAW:-raw}
 
 test:
-	cd ingestion && ../.venv/bin/python -m pytest tests/ -v
+	.venv/bin/python -m pytest core/tests/ -v
 
 lint:
-	cd ingestion && ../.venv/bin/python -m ruff check .
+	.venv/bin/python -m ruff check core/ ingestion/

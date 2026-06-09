@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, patch
 
 import pandas as pd
 
-from providers.warehouse.postgres import PostgreSQLProvider
+from core.providers.warehouse.postgres import PostgreSQLProvider
 
 
 def test_load_from_parquet_delegates_to_load():
@@ -13,7 +13,7 @@ def test_load_from_parquet_delegates_to_load():
     mock_storage = MagicMock()
     mock_storage.read_parquet.return_value = df
 
-    with patch("providers.get_storage", return_value=mock_storage), \
+    with patch("core.providers.factory.get_storage", return_value=mock_storage), \
          patch.object(provider, "load") as mock_load:
         provider.load_from_parquet(parquet_key, "bacen_sgs", "financiamentos_pf_total")
 

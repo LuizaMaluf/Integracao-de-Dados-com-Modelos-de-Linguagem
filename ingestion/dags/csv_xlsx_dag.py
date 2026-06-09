@@ -1,58 +1,43 @@
 """
 DAG: CSV / XLSX ingestion.
-Discovers all configs of type csv or xlsx in /opt/airflow/configs/
-and creates one DAG per source dynamically.
+Discovers all configs of type csv_xlsx in /opt/airflow/configs/.
 Flow: extract → write bronze → stage to silver
 """
-import sys
-from pathlib import Path
-
-import yaml
 from airflow.decorators import dag, task
 
-sys.path.insert(0, "/opt/airflow")
-
-CONFIGS_DIR = Path("/opt/airflow/configs")
-
-
-def _load_configs():
-    return [
-        yaml.safe_load(f.read_text())
-        for f in CONFIGS_DIR.glob("*.yaml")
-        if yaml.safe_load(f.read_text()).get("type") in ("csv", "xlsx")
-    ]
+from ingestion.dags.factory import register_dags
+from core.extractors.factory import get_extractor
+from core.providers.factory import get_storage
 
 
-for _cfg in _load_configs():
-    _source = _cfg["source_name"]
-
+def dag_factory(cfg: dict):
     @dag(
-        dag_id=f"ingest_csv_{_source}",
-        schedule=_cfg.get("schedule", "@daily"),
+        dag_id=f"ingest_csv_{cfg['source_name']}",
+        schedule=cfg.get("schedule", "@daily"),
         catchup=False,
         tags=["ingestion", "csv"],
     )
-    def _make_dag(cfg=_cfg):
+    def ingest():
         @task()
-        def extract(cfg):
-            from extractors.csv_extractor import CsvExtractor
-            return CsvExtractor(cfg).extract().to_json()
+        def extract():
+            return get_extractor(cfg).extract().to_json()
 
         @task()
-        def write_bronze(df_json: str, cfg):
+        def write_bronze(df_json: str):
             import pandas as pd
-            from providers import get_storage
             df = pd.read_json(df_json)
             return get_storage().write_parquet(df, cfg["source_name"], "data")
 
         @task()
-        def stage_silver(bronze_key: str, cfg):
-            from providers import get_storage
+        def stage_silver(bronze_key: str):
             from storage import silver
             df = get_storage().read_parquet(bronze_key)
             return silver.write(df, cfg["source_name"])
 
-        key = write_bronze(extract(cfg), cfg)
-        stage_silver(key, cfg)
+        key = write_bronze(extract())
+        stage_silver(key)
 
-    globals()[f"ingest_csv_{_source}"] = _make_dag()
+    return ingest()
+
+
+register_dags("csv_xlsx", dag_factory, globals())

@@ -16,12 +16,16 @@ series:
   - codigo: 20704
     descricao: "Financiamentos imobiliários PF - Total - Contratações (R$ mil)"
     tabela: financiamentos_pf_total
+  
   - codigo: 20705
     descricao: "Financiamentos imobiliários PF - Aquisição - Contratações (R$ mil)"
     tabela: financiamentos_pf_aquisicao
+  
   - codigo: 20706
     descricao: "Financiamentos imobiliários PF - Construção - Contratações (R$ mil)"
     tabela: financiamentos_pf_construcao
+  
   - codigo: 432
     descricao: "Taxa SELIC acumulada no mês (% a.a.)"
     tabela: taxa_selic
+    

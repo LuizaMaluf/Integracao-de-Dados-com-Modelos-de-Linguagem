@@ -1,7 +1,7 @@
 import json
 from unittest.mock import MagicMock, patch
 
-from extractors.api_extractor import ApiExtractor
+from core.extractors.api_extractor import ApiExtractor
 
 
 def _mock_http(records: list) -> MagicMock:
@@ -57,8 +57,7 @@ def test_extract_raw_uses_url_directly_when_no_serie():
     assert mock_client.get.call_args[0][0] == "https://example.com/data"
 
 
-def test_get_extractor_returns_api_extractor_for_api_series():
-    from extractors import get_extractor
+def test_api_extractor_instantiates_for_api_series():
     cfg = {"type": "api_series", "source_name": "test", "base_url": "http://x"}
-    extractor = get_extractor(cfg)
+    extractor = ApiExtractor(cfg)
     assert isinstance(extractor, ApiExtractor)

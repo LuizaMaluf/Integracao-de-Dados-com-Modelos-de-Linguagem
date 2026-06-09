@@ -11,7 +11,7 @@ import pandas as pd
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import IntegrityError
 
-from .base import WarehouseProvider
+from core.providers.warehouse.base import WarehouseProvider
 
 
 class PostgreSQLProvider(WarehouseProvider):
@@ -45,6 +45,6 @@ class PostgreSQLProvider(WarehouseProvider):
         normalized.to_sql(table, self._engine(), schema=schema, if_exists="replace", index=False)
 
     def load_from_parquet(self, parquet_key: str, schema: str, table: str) -> None:
-        from providers import get_storage
+        from core.providers.factory import get_storage
         df = get_storage().read_parquet(parquet_key)
         self.load(df, schema, table)

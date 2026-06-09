@@ -3,11 +3,9 @@ Integration Bridge: loads two staged tables from DuckDB silver zone
 and calls IntegrationAgent.run(), writing the result to the output directory.
 """
 import json
-import sys
 from pathlib import Path
 
-sys.path.insert(0, "/opt/airflow/agent_src")
-from agent.orchestrator import IntegrationAgent  # noqa: E402
+from agent.orchestrator import IntegrationAgent
 
 from storage import silver
 
@@ -16,10 +14,6 @@ OUTPUT_DIR = Path("/opt/airflow/output")
 
 
 def run_integration(table_a: str, table_b: str, use_llm: bool = True) -> Path:
-    """
-    Load two silver tables, run IntegrationAgent, and persist the result JSON.
-    Returns the output file path.
-    """
     df_a = silver.read(table_a)
     df_b = silver.read(table_b)
     meta_a = silver.build_metadata(df_a, table_a)
