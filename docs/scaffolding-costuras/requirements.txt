@@ -1,0 +1,9 @@
+# Dependências dos componentes do Config-Driven E2E Bridge.
+# Todas já presentes no projeto, exceto onde anotado.
+
+duckdb          # Costura A — leitura do silver local (já no projeto)
+pandas          # A e C — DataFrames (já no projeto)
+sqlalchemy      # A e C — engine de conexão ao PostgreSQL (já no projeto)
+psycopg2-binary # A e C — driver PostgreSQL
+PyYAML          # B — leitura do Source Registry (já no projeto)
+jinja2          # B — template dos models bronze (transitiva do dbt)
