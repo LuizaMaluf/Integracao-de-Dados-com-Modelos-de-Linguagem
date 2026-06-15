@@ -1,0 +1,696 @@
+[0m14:00:22.312790 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7a11433e2610>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7a11433e2310>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7a11433e24d0>]}
+
+
+============================== 14:00:22.319675 | 6fbaa2b6-01df-4356-9f38-795c6e95f7a4 ==============================
+[0m14:00:22.319675 [info ] [MainThread]: Running with dbt=1.7.19
+[0m14:00:22.320245 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'indirect_selection': 'eager', 'write_json': 'True', 'log_cache_events': 'False', 'partial_parse': 'True', 'cache_selected_only': 'False', 'profiles_dir': '/dbt', 'debug': 'False', 'version_check': 'True', 'log_path': '/dbt/logs', 'fail_fast': 'False', 'warn_error': 'None', 'use_colors': 'True', 'use_experimental_parser': 'False', 'no_print': 'None', 'quiet': 'False', 'log_format': 'default', 'invocation_command': 'dbt run --select ibge_municipios', 'introspect': 'True', 'warn_error_options': 'WarnErrorOptions(include=[], exclude=[])', 'target_path': 'None', 'static_parser': 'True', 'send_anonymous_usage_stats': 'True'}
+[0m14:00:22.468918 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': '6fbaa2b6-01df-4356-9f38-795c6e95f7a4', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7a11416994d0>]}
+[0m14:00:22.534930 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': '6fbaa2b6-01df-4356-9f38-795c6e95f7a4', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7a114165a5d0>]}
+[0m14:00:22.535928 [info ] [MainThread]: Registered adapter: postgres=1.7.19
+[0m14:00:22.536925 [error] [MainThread]: Encountered an error:
+Compilation Error
+  dbt found 1 package(s) specified in packages.yml, but only 0 package(s) installed in dbt_packages. Run "dbt deps" to install package dependencies.
+[0m14:00:22.538058 [debug] [MainThread]: Resource report: {"command_name": "run", "command_wall_clock_time": 0.27459723, "process_user_time": 2.29438, "process_kernel_time": 0.13408, "process_mem_max_rss": "100576", "process_in_blocks": "24", "process_out_blocks": "1232", "command_success": false}
+[0m14:00:22.538654 [debug] [MainThread]: Command `dbt run` failed at 14:00:22.538487 after 0.28 seconds
+[0m14:00:22.539029 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7a1142db0190>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7a114404b0d0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7a1146d78850>]}
+[0m14:00:22.539386 [debug] [MainThread]: Flushing usage events
+[0m14:00:35.765226 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7d6d2cdd6d10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7d6d2d416750>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7d6d2cdd63d0>]}
+
+
+============================== 14:00:35.777804 | d428fd02-9d20-4904-9057-0f78e80877ef ==============================
+[0m14:00:35.777804 [info ] [MainThread]: Running with dbt=1.7.19
+[0m14:00:35.778489 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'indirect_selection': 'eager', 'write_json': 'True', 'log_cache_events': 'False', 'partial_parse': 'True', 'cache_selected_only': 'False', 'profiles_dir': '/dbt', 'debug': 'False', 'warn_error': 'None', 'log_path': '/dbt/logs', 'fail_fast': 'False', 'version_check': 'True', 'use_colors': 'True', 'use_experimental_parser': 'False', 'no_print': 'None', 'quiet': 'False', 'log_format': 'default', 'invocation_command': 'dbt deps', 'warn_error_options': 'WarnErrorOptions(include=[], exclude=[])', 'introspect': 'True', 'target_path': 'None', 'static_parser': 'True', 'send_anonymous_usage_stats': 'True'}
+[0m14:00:35.873846 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': 'd428fd02-9d20-4904-9057-0f78e80877ef', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7d6d2cdc7ad0>]}
+[0m14:00:35.878093 [debug] [MainThread]: Set downloads directory='/tmp/dbt-downloads-lq5d9jrc'
+[0m14:00:35.878715 [debug] [MainThread]: Making package index registry request: GET https://hub.getdbt.com/api/v1/index.json
+[0m14:00:35.973135 [debug] [MainThread]: Response from registry index: GET https://hub.getdbt.com/api/v1/index.json 200
+[0m14:00:35.974324 [debug] [MainThread]: Making package registry request: GET https://hub.getdbt.com/api/v1/dbt-labs/dbt_utils.json
+[0m14:00:36.045065 [debug] [MainThread]: Response from registry: GET https://hub.getdbt.com/api/v1/dbt-labs/dbt_utils.json 200
+[0m14:00:36.056423 [info ] [MainThread]: Updating lock file in file path: /dbt/package-lock.yml
+[0m14:00:36.059225 [debug] [MainThread]: Set downloads directory='/tmp/dbt-downloads-v4_f_h1g'
+[0m14:00:36.064662 [info ] [MainThread]: Installing dbt-labs/dbt_utils
+[0m14:00:36.376223 [info ] [MainThread]: Installed from version 1.3.3
+[0m14:00:36.376662 [info ] [MainThread]: Up to date!
+[0m14:00:36.377078 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'package', 'label': 'd428fd02-9d20-4904-9057-0f78e80877ef', 'property_': 'install', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7d6d2cdc6e90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7d6d2ce29b90>]}
+[0m14:00:36.378295 [debug] [MainThread]: Resource report: {"command_name": "deps", "command_success": true, "command_wall_clock_time": 0.6621019, "process_user_time": 2.198888, "process_kernel_time": 0.125164, "process_mem_max_rss": "97044", "process_in_blocks": "40", "process_out_blocks": "3520"}
+[0m14:00:36.378838 [debug] [MainThread]: Command `dbt deps` succeeded at 14:00:36.378714 after 0.66 seconds
+[0m14:00:36.379155 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7d6d30d74550>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7d6d30d768d0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7d6d30ef8910>]}
+[0m14:00:36.379498 [debug] [MainThread]: Flushing usage events
+[0m14:00:39.160131 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x72c5f0ca6490>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x72c5f0ca6410>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x72c5f0ca6d90>]}
+
+
+============================== 14:00:39.166054 | d10b216a-f1e4-473d-864a-ecada9e202ae ==============================
+[0m14:00:39.166054 [info ] [MainThread]: Running with dbt=1.7.19
+[0m14:00:39.167388 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'indirect_selection': 'eager', 'write_json': 'True', 'log_cache_events': 'False', 'partial_parse': 'True', 'cache_selected_only': 'False', 'profiles_dir': '/dbt', 'debug': 'False', 'fail_fast': 'False', 'log_path': '/dbt/logs', 'version_check': 'True', 'warn_error': 'None', 'use_colors': 'True', 'use_experimental_parser': 'False', 'no_print': 'None', 'quiet': 'False', 'warn_error_options': 'WarnErrorOptions(include=[], exclude=[])', 'invocation_command': 'dbt run --select ibge_municipios', 'log_format': 'default', 'static_parser': 'True', 'target_path': 'None', 'introspect': 'True', 'send_anonymous_usage_stats': 'True'}
+[0m14:00:39.320593 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': 'd10b216a-f1e4-473d-864a-ecada9e202ae', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x72c5f0c0dd90>]}
+[0m14:00:39.385479 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': 'd10b216a-f1e4-473d-864a-ecada9e202ae', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x72c5f0d17810>]}
+[0m14:00:39.386339 [info ] [MainThread]: Registered adapter: postgres=1.7.19
+[0m14:00:39.398794 [debug] [MainThread]: checksum: a8d43cdff37d0f32d7fbe4c5c25bea4bb6c86e162f8ce8fdb1a38cdcf7495431, vars: {}, profile: , target: , version: 1.7.19
+[0m14:00:39.399523 [info ] [MainThread]: Unable to do partial parsing because saved manifest not found. Starting full parse.
+[0m14:00:39.399912 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'partial_parser', 'label': 'd10b216a-f1e4-473d-864a-ecada9e202ae', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x72c5ef474610>]}
+[0m14:00:40.582115 [warn ] [MainThread]: [[33mWARNING[0m]: Did not find matching node for patch with name 'transfere_planos_enriched' in the 'models' section of file 'models/silver/schema.yml'
+[0m14:00:40.583345 [warn ] [MainThread]: [[33mWARNING[0m]: Did not find matching node for patch with name 'contratos_enriched' in the 'models' section of file 'models/silver/schema.yml'
+[0m14:00:40.682981 [warn ] [MainThread]: [[33mWARNING[0m]: Did not find matching node for patch with name 'transfere_gov_planos_acao' in the 'models' section of file 'models/bronze/schema.yml'
+[0m14:00:40.684138 [warn ] [MainThread]: [[33mWARNING[0m]: Did not find matching node for patch with name 'compras_gov_contratos' in the 'models' section of file 'models/bronze/schema.yml'
+[0m14:00:40.685140 [warn ] [MainThread]: [[33mWARNING[0m]: Did not find matching node for patch with name 'siape_servidores' in the 'models' section of file 'models/bronze/schema.yml'
+[0m14:00:40.767282 [warn ] [MainThread]: [[33mWARNING[0m]: Did not find matching node for patch with name 'painel_contratos_resumo' in the 'models' section of file 'models/gold/schema.yml'
+[0m14:00:40.806557 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': 'd10b216a-f1e4-473d-864a-ecada9e202ae', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x72c5ed28a250>]}
+[0m14:00:40.820225 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': 'd10b216a-f1e4-473d-864a-ecada9e202ae', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x72c5ef2db890>]}
+[0m14:00:40.820782 [info ] [MainThread]: Found 4 models, 4 tests, 10 sources, 0 exposures, 0 metrics, 518 macros, 0 groups, 0 semantic models
+[0m14:00:40.821124 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': 'd10b216a-f1e4-473d-864a-ecada9e202ae', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x72c5ef3ad610>]}
+[0m14:00:40.822866 [info ] [MainThread]: 
+[0m14:00:40.823752 [debug] [MainThread]: Acquiring new postgres connection 'master'
+[0m14:00:40.825597 [debug] [ThreadPool]: Acquiring new postgres connection 'list_govhub'
+[0m14:00:40.836936 [debug] [ThreadPool]: Using postgres connection "list_govhub"
+[0m14:00:40.837365 [debug] [ThreadPool]: On list_govhub: /* {"app": "dbt", "dbt_version": "1.7.19", "profile_name": "gov_hub", "target_name": "prod", "connection_name": "list_govhub"} */
+
+    select distinct nspname from pg_namespace
+  
+[0m14:00:40.837652 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m14:00:40.846608 [debug] [ThreadPool]: SQL status: SELECT 5 in 0.0 seconds
+[0m14:00:40.848179 [debug] [ThreadPool]: On list_govhub: Close
+[0m14:00:40.850148 [debug] [ThreadPool]: Re-using an available connection from the pool (formerly list_govhub, now create_govhub_bronze)
+[0m14:00:40.851305 [debug] [ThreadPool]: Creating schema "database: "govhub"
+schema: "bronze"
+"
+[0m14:00:40.857221 [debug] [ThreadPool]: Using postgres connection "create_govhub_bronze"
+[0m14:00:40.857571 [debug] [ThreadPool]: On create_govhub_bronze: BEGIN
+[0m14:00:40.857834 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m14:00:40.865912 [debug] [ThreadPool]: SQL status: BEGIN in 0.0 seconds
+[0m14:00:40.866365 [debug] [ThreadPool]: Using postgres connection "create_govhub_bronze"
+[0m14:00:40.866681 [debug] [ThreadPool]: On create_govhub_bronze: /* {"app": "dbt", "dbt_version": "1.7.19", "profile_name": "gov_hub", "target_name": "prod", "connection_name": "create_govhub_bronze"} */
+create schema if not exists "bronze"
+[0m14:00:40.867481 [debug] [ThreadPool]: SQL status: CREATE SCHEMA in 0.0 seconds
+[0m14:00:40.868714 [debug] [ThreadPool]: On create_govhub_bronze: COMMIT
+[0m14:00:40.869050 [debug] [ThreadPool]: Using postgres connection "create_govhub_bronze"
+[0m14:00:40.869312 [debug] [ThreadPool]: On create_govhub_bronze: COMMIT
+[0m14:00:40.870255 [debug] [ThreadPool]: SQL status: COMMIT in 0.0 seconds
+[0m14:00:40.870552 [debug] [ThreadPool]: On create_govhub_bronze: Close
+[0m14:00:40.873901 [debug] [ThreadPool]: Re-using an available connection from the pool (formerly create_govhub_bronze, now list_govhub_silver)
+[0m14:00:40.881724 [debug] [ThreadPool]: Acquiring new postgres connection 'list_govhub_gold'
+[0m14:00:40.892255 [debug] [ThreadPool]: Using postgres connection "list_govhub_gold"
+[0m14:00:40.887827 [debug] [ThreadPool]: Using postgres connection "list_govhub_silver"
+[0m14:00:40.893690 [debug] [ThreadPool]: On list_govhub_gold: BEGIN
+[0m14:00:40.896231 [debug] [ThreadPool]: Acquiring new postgres connection 'list_govhub_bronze'
+[0m14:00:40.897546 [debug] [ThreadPool]: On list_govhub_silver: BEGIN
+[0m14:00:40.898371 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m14:00:40.903768 [debug] [ThreadPool]: Using postgres connection "list_govhub_bronze"
+[0m14:00:40.904715 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m14:00:40.906930 [debug] [ThreadPool]: On list_govhub_bronze: BEGIN
+[0m14:00:40.908314 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m14:00:40.919068 [debug] [ThreadPool]: SQL status: BEGIN in 0.0 seconds
+[0m14:00:40.920276 [debug] [ThreadPool]: SQL status: BEGIN in 0.0 seconds
+[0m14:00:40.921976 [debug] [ThreadPool]: Using postgres connection "list_govhub_gold"
+[0m14:00:40.923336 [debug] [ThreadPool]: SQL status: BEGIN in 0.0 seconds
+[0m14:00:40.924620 [debug] [ThreadPool]: Using postgres connection "list_govhub_silver"
+[0m14:00:40.925725 [debug] [ThreadPool]: On list_govhub_gold: /* {"app": "dbt", "dbt_version": "1.7.19", "profile_name": "gov_hub", "target_name": "prod", "connection_name": "list_govhub_gold"} */
+select
+      'govhub' as database,
+      tablename as name,
+      schemaname as schema,
+      'table' as type
+    from pg_tables
+    where schemaname ilike 'gold'
+    union all
+    select
+      'govhub' as database,
+      viewname as name,
+      schemaname as schema,
+      'view' as type
+    from pg_views
+    where schemaname ilike 'gold'
+    union all
+    select
+      'govhub' as database,
+      matviewname as name,
+      schemaname as schema,
+      'materialized_view' as type
+    from pg_matviews
+    where schemaname ilike 'gold'
+  
+[0m14:00:40.927472 [debug] [ThreadPool]: Using postgres connection "list_govhub_bronze"
+[0m14:00:40.928301 [debug] [ThreadPool]: On list_govhub_silver: /* {"app": "dbt", "dbt_version": "1.7.19", "profile_name": "gov_hub", "target_name": "prod", "connection_name": "list_govhub_silver"} */
+select
+      'govhub' as database,
+      tablename as name,
+      schemaname as schema,
+      'table' as type
+    from pg_tables
+    where schemaname ilike 'silver'
+    union all
+    select
+      'govhub' as database,
+      viewname as name,
+      schemaname as schema,
+      'view' as type
+    from pg_views
+    where schemaname ilike 'silver'
+    union all
+    select
+      'govhub' as database,
+      matviewname as name,
+      schemaname as schema,
+      'materialized_view' as type
+    from pg_matviews
+    where schemaname ilike 'silver'
+  
+[0m14:00:40.929656 [debug] [ThreadPool]: On list_govhub_bronze: /* {"app": "dbt", "dbt_version": "1.7.19", "profile_name": "gov_hub", "target_name": "prod", "connection_name": "list_govhub_bronze"} */
+select
+      'govhub' as database,
+      tablename as name,
+      schemaname as schema,
+      'table' as type
+    from pg_tables
+    where schemaname ilike 'bronze'
+    union all
+    select
+      'govhub' as database,
+      viewname as name,
+      schemaname as schema,
+      'view' as type
+    from pg_views
+    where schemaname ilike 'bronze'
+    union all
+    select
+      'govhub' as database,
+      matviewname as name,
+      schemaname as schema,
+      'materialized_view' as type
+    from pg_matviews
+    where schemaname ilike 'bronze'
+  
+[0m14:00:40.939091 [debug] [ThreadPool]: SQL status: SELECT 0 in 0.0 seconds
+[0m14:00:40.942348 [debug] [ThreadPool]: On list_govhub_gold: ROLLBACK
+[0m14:00:40.943590 [debug] [ThreadPool]: SQL status: SELECT 1 in 0.0 seconds
+[0m14:00:40.944881 [debug] [ThreadPool]: SQL status: SELECT 0 in 0.0 seconds
+[0m14:00:40.947957 [debug] [ThreadPool]: On list_govhub_silver: ROLLBACK
+[0m14:00:40.950845 [debug] [ThreadPool]: On list_govhub_bronze: ROLLBACK
+[0m14:00:40.951758 [debug] [ThreadPool]: On list_govhub_gold: Close
+[0m14:00:40.953404 [debug] [ThreadPool]: On list_govhub_silver: Close
+[0m14:00:40.955800 [debug] [ThreadPool]: On list_govhub_bronze: Close
+[0m14:00:40.976017 [debug] [MainThread]: Using postgres connection "master"
+[0m14:00:40.976939 [debug] [MainThread]: On master: BEGIN
+[0m14:00:40.977520 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m14:00:40.991287 [debug] [MainThread]: SQL status: BEGIN in 0.0 seconds
+[0m14:00:40.992227 [debug] [MainThread]: Using postgres connection "master"
+[0m14:00:40.993064 [debug] [MainThread]: On master: /* {"app": "dbt", "dbt_version": "1.7.19", "profile_name": "gov_hub", "target_name": "prod", "connection_name": "master"} */
+with relation as (
+        select
+            pg_rewrite.ev_class as class,
+            pg_rewrite.oid as id
+        from pg_rewrite
+    ),
+    class as (
+        select
+            oid as id,
+            relname as name,
+            relnamespace as schema,
+            relkind as kind
+        from pg_class
+    ),
+    dependency as (
+        select distinct
+            pg_depend.objid as id,
+            pg_depend.refobjid as ref
+        from pg_depend
+    ),
+    schema as (
+        select
+            pg_namespace.oid as id,
+            pg_namespace.nspname as name
+        from pg_namespace
+        where nspname != 'information_schema' and nspname not like 'pg\_%'
+    ),
+    referenced as (
+        select
+            relation.id AS id,
+            referenced_class.name ,
+            referenced_class.schema ,
+            referenced_class.kind
+        from relation
+        join class as referenced_class on relation.class=referenced_class.id
+        where referenced_class.kind in ('r', 'v', 'm')
+    ),
+    relationships as (
+        select
+            referenced.name as referenced_name,
+            referenced.schema as referenced_schema_id,
+            dependent_class.name as dependent_name,
+            dependent_class.schema as dependent_schema_id,
+            referenced.kind as kind
+        from referenced
+        join dependency on referenced.id=dependency.id
+        join class as dependent_class on dependency.ref=dependent_class.id
+        where
+            (referenced.name != dependent_class.name or
+             referenced.schema != dependent_class.schema)
+    )
+
+    select
+        referenced_schema.name as referenced_schema,
+        relationships.referenced_name as referenced_name,
+        dependent_schema.name as dependent_schema,
+        relationships.dependent_name as dependent_name
+    from relationships
+    join schema as dependent_schema on relationships.dependent_schema_id=dependent_schema.id
+    join schema as referenced_schema on relationships.referenced_schema_id=referenced_schema.id
+    group by referenced_schema, referenced_name, dependent_schema, dependent_name
+    order by referenced_schema, referenced_name, dependent_schema, dependent_name;
+[0m14:00:41.005827 [debug] [MainThread]: SQL status: SELECT 0 in 0.0 seconds
+[0m14:00:41.009550 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': 'd10b216a-f1e4-473d-864a-ecada9e202ae', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x72c5ed352f10>]}
+[0m14:00:41.010879 [debug] [MainThread]: On master: ROLLBACK
+[0m14:00:41.012518 [debug] [MainThread]: Using postgres connection "master"
+[0m14:00:41.013397 [debug] [MainThread]: On master: BEGIN
+[0m14:00:41.014935 [debug] [MainThread]: SQL status: BEGIN in 0.0 seconds
+[0m14:00:41.015921 [debug] [MainThread]: On master: COMMIT
+[0m14:00:41.016971 [debug] [MainThread]: Using postgres connection "master"
+[0m14:00:41.017930 [debug] [MainThread]: On master: COMMIT
+[0m14:00:41.019851 [debug] [MainThread]: SQL status: COMMIT in 0.0 seconds
+[0m14:00:41.021228 [debug] [MainThread]: On master: Close
+[0m14:00:41.023957 [info ] [MainThread]: Concurrency: 4 threads (target='prod')
+[0m14:00:41.024911 [info ] [MainThread]: 
+[0m14:00:41.051209 [debug] [Thread-1 (]: Began running node model.gov_hub.ibge_municipios
+[0m14:00:41.053349 [info ] [Thread-1 (]: 1 of 1 START sql incremental model bronze.ibge_municipios ...................... [RUN]
+[0m14:00:41.056141 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly list_govhub_bronze, now model.gov_hub.ibge_municipios)
+[0m14:00:41.057531 [debug] [Thread-1 (]: Began compiling node model.gov_hub.ibge_municipios
+[0m14:00:41.080601 [debug] [Thread-1 (]: Writing injected SQL for node "model.gov_hub.ibge_municipios"
+[0m14:00:41.082993 [debug] [Thread-1 (]: Timing info for model.gov_hub.ibge_municipios (compile): 14:00:41.058144 => 14:00:41.082107
+[0m14:00:41.084240 [debug] [Thread-1 (]: Began executing node model.gov_hub.ibge_municipios
+[0m14:00:41.215977 [debug] [Thread-1 (]: Writing runtime sql for node "model.gov_hub.ibge_municipios"
+[0m14:00:41.218310 [debug] [Thread-1 (]: Using postgres connection "model.gov_hub.ibge_municipios"
+[0m14:00:41.219663 [debug] [Thread-1 (]: On model.gov_hub.ibge_municipios: BEGIN
+[0m14:00:41.220607 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m14:00:41.230117 [debug] [Thread-1 (]: SQL status: BEGIN in 0.0 seconds
+[0m14:00:41.231036 [debug] [Thread-1 (]: Using postgres connection "model.gov_hub.ibge_municipios"
+[0m14:00:41.232126 [debug] [Thread-1 (]: On model.gov_hub.ibge_municipios: /* {"app": "dbt", "dbt_version": "1.7.19", "profile_name": "gov_hub", "target_name": "prod", "node_id": "model.gov_hub.ibge_municipios"} */
+
+      
+  
+    
+
+  create  table "govhub"."bronze"."ibge_municipios"
+  
+  
+    as
+  
+  (
+    -- Model bronze ESCRITO À MÃO para a fonte IBGE (config-driven não cobre esta camada)
+select * from "govhub"."silver"."ibge_municipios"
+  );
+  
+  
+[0m14:00:41.255303 [debug] [Thread-1 (]: SQL status: SELECT 5571 in 0.0 seconds
+[0m14:00:41.290648 [debug] [Thread-1 (]: On model.gov_hub.ibge_municipios: COMMIT
+[0m14:00:41.291134 [debug] [Thread-1 (]: Using postgres connection "model.gov_hub.ibge_municipios"
+[0m14:00:41.291484 [debug] [Thread-1 (]: On model.gov_hub.ibge_municipios: COMMIT
+[0m14:00:41.295504 [debug] [Thread-1 (]: SQL status: COMMIT in 0.0 seconds
+[0m14:00:41.296793 [debug] [Thread-1 (]: Timing info for model.gov_hub.ibge_municipios (execute): 14:00:41.084966 => 14:00:41.296490
+[0m14:00:41.297757 [debug] [Thread-1 (]: On model.gov_hub.ibge_municipios: Close
+[0m14:00:41.299085 [debug] [Thread-1 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': 'd10b216a-f1e4-473d-864a-ecada9e202ae', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x72c5ed0f6550>]}
+[0m14:00:41.300172 [info ] [Thread-1 (]: 1 of 1 OK created sql incremental model bronze.ibge_municipios ................. [[32mSELECT 5571[0m in 0.24s]
+[0m14:00:41.301790 [debug] [Thread-1 (]: Finished running node model.gov_hub.ibge_municipios
+[0m14:00:41.306428 [debug] [MainThread]: Using postgres connection "master"
+[0m14:00:41.306863 [debug] [MainThread]: On master: BEGIN
+[0m14:00:41.307135 [debug] [MainThread]: Opening a new connection, currently in state closed
+[0m14:00:41.315789 [debug] [MainThread]: SQL status: BEGIN in 0.0 seconds
+[0m14:00:41.316307 [debug] [MainThread]: On master: COMMIT
+[0m14:00:41.316832 [debug] [MainThread]: Using postgres connection "master"
+[0m14:00:41.317340 [debug] [MainThread]: On master: COMMIT
+[0m14:00:41.318413 [debug] [MainThread]: SQL status: COMMIT in 0.0 seconds
+[0m14:00:41.319306 [debug] [MainThread]: On master: Close
+[0m14:00:41.321248 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m14:00:41.322107 [debug] [MainThread]: Connection 'list_govhub_silver' was properly closed.
+[0m14:00:41.322805 [debug] [MainThread]: Connection 'list_govhub_gold' was properly closed.
+[0m14:00:41.323295 [debug] [MainThread]: Connection 'model.gov_hub.ibge_municipios' was properly closed.
+[0m14:00:41.324018 [info ] [MainThread]: 
+[0m14:00:41.324954 [info ] [MainThread]: Finished running 1 incremental model in 0 hours 0 minutes and 0.50 seconds (0.50s).
+[0m14:00:41.326413 [debug] [MainThread]: Command end result
+[0m14:00:41.338757 [info ] [MainThread]: 
+[0m14:00:41.339224 [info ] [MainThread]: [32mCompleted successfully[0m
+[0m14:00:41.339524 [info ] [MainThread]: 
+[0m14:00:41.339839 [info ] [MainThread]: Done. PASS=1 WARN=0 ERROR=0 SKIP=0 TOTAL=1
+[0m14:00:41.340754 [debug] [MainThread]: Resource report: {"command_name": "run", "command_success": true, "command_wall_clock_time": 2.2277005, "process_user_time": 4.001769, "process_kernel_time": 0.143385, "process_mem_max_rss": "117508", "process_in_blocks": "56", "process_out_blocks": "3368"}
+[0m14:00:41.341336 [debug] [MainThread]: Command `dbt run` succeeded at 14:00:41.341202 after 2.23 seconds
+[0m14:00:41.341743 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x72c5f1151c10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x72c5f0d05850>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x72c5f4b0b650>]}
+[0m14:00:41.342126 [debug] [MainThread]: Flushing usage events
+[0m14:21:20.804083 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7b45e2098790>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7b45e2098b50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7b45e2098050>]}
+
+
+============================== 14:21:20.813517 | b9e4e58c-3db2-42f3-a3af-d4b7d1f1768c ==============================
+[0m14:21:20.813517 [info ] [MainThread]: Running with dbt=1.7.19
+[0m14:21:20.814429 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'indirect_selection': 'eager', 'write_json': 'True', 'log_cache_events': 'False', 'partial_parse': 'True', 'cache_selected_only': 'False', 'warn_error': 'None', 'version_check': 'True', 'profiles_dir': '/dbt', 'log_path': '/dbt/logs', 'debug': 'False', 'fail_fast': 'False', 'use_colors': 'True', 'use_experimental_parser': 'False', 'no_print': 'None', 'quiet': 'False', 'warn_error_options': 'WarnErrorOptions(include=[], exclude=[])', 'static_parser': 'True', 'log_format': 'default', 'introspect': 'True', 'target_path': 'None', 'invocation_command': 'dbt deps', 'send_anonymous_usage_stats': 'True'}
+[0m14:21:20.938792 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': 'b9e4e58c-3db2-42f3-a3af-d4b7d1f1768c', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7b45e210bf90>]}
+[0m14:21:20.947466 [debug] [MainThread]: Set downloads directory='/tmp/dbt-downloads-lhiip56l'
+[0m14:21:20.947937 [debug] [MainThread]: Making package index registry request: GET https://hub.getdbt.com/api/v1/index.json
+[0m14:21:21.051323 [debug] [MainThread]: Response from registry index: GET https://hub.getdbt.com/api/v1/index.json 200
+[0m14:21:21.052550 [debug] [MainThread]: Making package registry request: GET https://hub.getdbt.com/api/v1/dbt-labs/dbt_utils.json
+[0m14:21:21.119811 [debug] [MainThread]: Response from registry: GET https://hub.getdbt.com/api/v1/dbt-labs/dbt_utils.json 200
+[0m14:21:21.126659 [info ] [MainThread]: Installing dbt-labs/dbt_utils
+[0m14:21:21.473468 [info ] [MainThread]: Installed from version 1.3.3
+[0m14:21:21.474263 [info ] [MainThread]: Up to date!
+[0m14:21:21.474940 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'package', 'label': 'b9e4e58c-3db2-42f3-a3af-d4b7d1f1768c', 'property_': 'install', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7b45e1f84250>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7b45e1fb68d0>]}
+[0m14:21:21.478399 [debug] [MainThread]: Resource report: {"command_name": "deps", "command_success": true, "command_wall_clock_time": 0.7336736, "process_user_time": 2.612355, "process_kernel_time": 0.25501, "process_mem_max_rss": "96140", "process_in_blocks": "78408", "process_out_blocks": "3512"}
+[0m14:21:21.479449 [debug] [MainThread]: Command `dbt deps` succeeded at 14:21:21.479222 after 0.73 seconds
+[0m14:21:21.480025 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7b45e20aea10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7b45e2613790>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7b45e607b410>]}
+[0m14:21:21.480738 [debug] [MainThread]: Flushing usage events
+[0m14:21:24.961116 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x78e4abfee650>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x78e4abfee450>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x78e4abfeee10>]}
+
+
+============================== 14:21:24.964269 | cffb65d9-5dca-4725-9600-fe805b3d1c64 ==============================
+[0m14:21:24.964269 [info ] [MainThread]: Running with dbt=1.7.19
+[0m14:21:24.964823 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'indirect_selection': 'eager', 'write_json': 'True', 'log_cache_events': 'False', 'partial_parse': 'True', 'cache_selected_only': 'False', 'warn_error': 'None', 'fail_fast': 'False', 'profiles_dir': '/dbt', 'log_path': '/dbt/logs', 'debug': 'False', 'version_check': 'True', 'use_colors': 'True', 'use_experimental_parser': 'False', 'no_print': 'None', 'quiet': 'False', 'warn_error_options': 'WarnErrorOptions(include=[], exclude=[])', 'introspect': 'True', 'log_format': 'default', 'static_parser': 'True', 'target_path': 'None', 'invocation_command': 'dbt run --select ibge_municipios', 'send_anonymous_usage_stats': 'True'}
+[0m14:21:25.172003 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': 'cffb65d9-5dca-4725-9600-fe805b3d1c64', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x78e4ac04d450>]}
+[0m14:21:25.238202 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': 'cffb65d9-5dca-4725-9600-fe805b3d1c64', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x78e4aa811550>]}
+[0m14:21:25.240489 [info ] [MainThread]: Registered adapter: postgres=1.7.19
+[0m14:21:25.263232 [debug] [MainThread]: checksum: a8d43cdff37d0f32d7fbe4c5c25bea4bb6c86e162f8ce8fdb1a38cdcf7495431, vars: {}, profile: , target: , version: 1.7.19
+[0m14:21:25.339700 [debug] [MainThread]: Partial parsing enabled: 0 files deleted, 0 files added, 0 files changed.
+[0m14:21:25.340628 [debug] [MainThread]: Partial parsing enabled, no changes found, skipping parsing
+[0m14:21:25.358347 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': 'cffb65d9-5dca-4725-9600-fe805b3d1c64', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x78e4aa771e90>]}
+[0m14:21:25.393503 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': 'cffb65d9-5dca-4725-9600-fe805b3d1c64', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x78e4aa85bed0>]}
+[0m14:21:25.394730 [info ] [MainThread]: Found 4 models, 4 tests, 10 sources, 0 exposures, 0 metrics, 518 macros, 0 groups, 0 semantic models
+[0m14:21:25.395581 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': 'cffb65d9-5dca-4725-9600-fe805b3d1c64', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x78e4ac018050>]}
+[0m14:21:25.398755 [info ] [MainThread]: 
+[0m14:21:25.399952 [debug] [MainThread]: Acquiring new postgres connection 'master'
+[0m14:21:25.402354 [debug] [ThreadPool]: Acquiring new postgres connection 'list_govhub'
+[0m14:21:25.425596 [debug] [ThreadPool]: Using postgres connection "list_govhub"
+[0m14:21:25.426527 [debug] [ThreadPool]: On list_govhub: /* {"app": "dbt", "dbt_version": "1.7.19", "profile_name": "gov_hub", "target_name": "prod", "connection_name": "list_govhub"} */
+
+    select distinct nspname from pg_namespace
+  
+[0m14:21:25.427173 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m14:21:25.449497 [debug] [ThreadPool]: SQL status: SELECT 6 in 0.0 seconds
+[0m14:21:25.452902 [debug] [ThreadPool]: On list_govhub: Close
+[0m14:21:25.457943 [debug] [ThreadPool]: Re-using an available connection from the pool (formerly list_govhub, now list_govhub_gold)
+[0m14:21:25.473159 [debug] [ThreadPool]: Acquiring new postgres connection 'list_govhub_bronze'
+[0m14:21:25.470693 [debug] [ThreadPool]: Using postgres connection "list_govhub_gold"
+[0m14:21:25.476321 [debug] [ThreadPool]: Acquiring new postgres connection 'list_govhub_silver'
+[0m14:21:25.482216 [debug] [ThreadPool]: Using postgres connection "list_govhub_bronze"
+[0m14:21:25.483045 [debug] [ThreadPool]: On list_govhub_gold: BEGIN
+[0m14:21:25.487637 [debug] [ThreadPool]: Using postgres connection "list_govhub_silver"
+[0m14:21:25.488531 [debug] [ThreadPool]: On list_govhub_bronze: BEGIN
+[0m14:21:25.489465 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m14:21:25.490637 [debug] [ThreadPool]: On list_govhub_silver: BEGIN
+[0m14:21:25.491527 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m14:21:25.493292 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m14:21:25.506901 [debug] [ThreadPool]: SQL status: BEGIN in 0.0 seconds
+[0m14:21:25.507895 [debug] [ThreadPool]: SQL status: BEGIN in 0.0 seconds
+[0m14:21:25.508981 [debug] [ThreadPool]: Using postgres connection "list_govhub_silver"
+[0m14:21:25.509724 [debug] [ThreadPool]: Using postgres connection "list_govhub_gold"
+[0m14:21:25.510440 [debug] [ThreadPool]: SQL status: BEGIN in 0.0 seconds
+[0m14:21:25.511210 [debug] [ThreadPool]: On list_govhub_silver: /* {"app": "dbt", "dbt_version": "1.7.19", "profile_name": "gov_hub", "target_name": "prod", "connection_name": "list_govhub_silver"} */
+select
+      'govhub' as database,
+      tablename as name,
+      schemaname as schema,
+      'table' as type
+    from pg_tables
+    where schemaname ilike 'silver'
+    union all
+    select
+      'govhub' as database,
+      viewname as name,
+      schemaname as schema,
+      'view' as type
+    from pg_views
+    where schemaname ilike 'silver'
+    union all
+    select
+      'govhub' as database,
+      matviewname as name,
+      schemaname as schema,
+      'materialized_view' as type
+    from pg_matviews
+    where schemaname ilike 'silver'
+  
+[0m14:21:25.512117 [debug] [ThreadPool]: On list_govhub_gold: /* {"app": "dbt", "dbt_version": "1.7.19", "profile_name": "gov_hub", "target_name": "prod", "connection_name": "list_govhub_gold"} */
+select
+      'govhub' as database,
+      tablename as name,
+      schemaname as schema,
+      'table' as type
+    from pg_tables
+    where schemaname ilike 'gold'
+    union all
+    select
+      'govhub' as database,
+      viewname as name,
+      schemaname as schema,
+      'view' as type
+    from pg_views
+    where schemaname ilike 'gold'
+    union all
+    select
+      'govhub' as database,
+      matviewname as name,
+      schemaname as schema,
+      'materialized_view' as type
+    from pg_matviews
+    where schemaname ilike 'gold'
+  
+[0m14:21:25.512883 [debug] [ThreadPool]: Using postgres connection "list_govhub_bronze"
+[0m14:21:25.514137 [debug] [ThreadPool]: On list_govhub_bronze: /* {"app": "dbt", "dbt_version": "1.7.19", "profile_name": "gov_hub", "target_name": "prod", "connection_name": "list_govhub_bronze"} */
+select
+      'govhub' as database,
+      tablename as name,
+      schemaname as schema,
+      'table' as type
+    from pg_tables
+    where schemaname ilike 'bronze'
+    union all
+    select
+      'govhub' as database,
+      viewname as name,
+      schemaname as schema,
+      'view' as type
+    from pg_views
+    where schemaname ilike 'bronze'
+    union all
+    select
+      'govhub' as database,
+      matviewname as name,
+      schemaname as schema,
+      'materialized_view' as type
+    from pg_matviews
+    where schemaname ilike 'bronze'
+  
+[0m14:21:25.518185 [debug] [ThreadPool]: SQL status: SELECT 1 in 0.0 seconds
+[0m14:21:25.519268 [debug] [ThreadPool]: SQL status: SELECT 0 in 0.0 seconds
+[0m14:21:25.523210 [debug] [ThreadPool]: On list_govhub_silver: ROLLBACK
+[0m14:21:25.525965 [debug] [ThreadPool]: On list_govhub_gold: ROLLBACK
+[0m14:21:25.526774 [debug] [ThreadPool]: SQL status: SELECT 1 in 0.0 seconds
+[0m14:21:25.528866 [debug] [ThreadPool]: On list_govhub_bronze: ROLLBACK
+[0m14:21:25.529518 [debug] [ThreadPool]: On list_govhub_silver: Close
+[0m14:21:25.530349 [debug] [ThreadPool]: On list_govhub_gold: Close
+[0m14:21:25.530892 [debug] [ThreadPool]: On list_govhub_bronze: Close
+[0m14:21:25.547030 [debug] [MainThread]: Using postgres connection "master"
+[0m14:21:25.547696 [debug] [MainThread]: On master: BEGIN
+[0m14:21:25.548162 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m14:21:25.561040 [debug] [MainThread]: SQL status: BEGIN in 0.0 seconds
+[0m14:21:25.562037 [debug] [MainThread]: Using postgres connection "master"
+[0m14:21:25.562878 [debug] [MainThread]: On master: /* {"app": "dbt", "dbt_version": "1.7.19", "profile_name": "gov_hub", "target_name": "prod", "connection_name": "master"} */
+with relation as (
+        select
+            pg_rewrite.ev_class as class,
+            pg_rewrite.oid as id
+        from pg_rewrite
+    ),
+    class as (
+        select
+            oid as id,
+            relname as name,
+            relnamespace as schema,
+            relkind as kind
+        from pg_class
+    ),
+    dependency as (
+        select distinct
+            pg_depend.objid as id,
+            pg_depend.refobjid as ref
+        from pg_depend
+    ),
+    schema as (
+        select
+            pg_namespace.oid as id,
+            pg_namespace.nspname as name
+        from pg_namespace
+        where nspname != 'information_schema' and nspname not like 'pg\_%'
+    ),
+    referenced as (
+        select
+            relation.id AS id,
+            referenced_class.name ,
+            referenced_class.schema ,
+            referenced_class.kind
+        from relation
+        join class as referenced_class on relation.class=referenced_class.id
+        where referenced_class.kind in ('r', 'v', 'm')
+    ),
+    relationships as (
+        select
+            referenced.name as referenced_name,
+            referenced.schema as referenced_schema_id,
+            dependent_class.name as dependent_name,
+            dependent_class.schema as dependent_schema_id,
+            referenced.kind as kind
+        from referenced
+        join dependency on referenced.id=dependency.id
+        join class as dependent_class on dependency.ref=dependent_class.id
+        where
+            (referenced.name != dependent_class.name or
+             referenced.schema != dependent_class.schema)
+    )
+
+    select
+        referenced_schema.name as referenced_schema,
+        relationships.referenced_name as referenced_name,
+        dependent_schema.name as dependent_schema,
+        relationships.dependent_name as dependent_name
+    from relationships
+    join schema as dependent_schema on relationships.dependent_schema_id=dependent_schema.id
+    join schema as referenced_schema on relationships.referenced_schema_id=referenced_schema.id
+    group by referenced_schema, referenced_name, dependent_schema, dependent_name
+    order by referenced_schema, referenced_name, dependent_schema, dependent_name;
+[0m14:21:25.574194 [debug] [MainThread]: SQL status: SELECT 0 in 0.0 seconds
+[0m14:21:25.578005 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': 'cffb65d9-5dca-4725-9600-fe805b3d1c64', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x78e4aa937350>]}
+[0m14:21:25.579477 [debug] [MainThread]: On master: ROLLBACK
+[0m14:21:25.581046 [debug] [MainThread]: Using postgres connection "master"
+[0m14:21:25.582209 [debug] [MainThread]: On master: BEGIN
+[0m14:21:25.584544 [debug] [MainThread]: SQL status: BEGIN in 0.0 seconds
+[0m14:21:25.585450 [debug] [MainThread]: On master: COMMIT
+[0m14:21:25.587001 [debug] [MainThread]: Using postgres connection "master"
+[0m14:21:25.587926 [debug] [MainThread]: On master: COMMIT
+[0m14:21:25.589324 [debug] [MainThread]: SQL status: COMMIT in 0.0 seconds
+[0m14:21:25.590350 [debug] [MainThread]: On master: Close
+[0m14:21:25.592544 [info ] [MainThread]: Concurrency: 4 threads (target='prod')
+[0m14:21:25.593693 [info ] [MainThread]: 
+[0m14:21:25.618209 [debug] [Thread-1 (]: Began running node model.gov_hub.ibge_municipios
+[0m14:21:25.619989 [info ] [Thread-1 (]: 1 of 1 START sql incremental model bronze.ibge_municipios ...................... [RUN]
+[0m14:21:25.621943 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly list_govhub_bronze, now model.gov_hub.ibge_municipios)
+[0m14:21:25.623035 [debug] [Thread-1 (]: Began compiling node model.gov_hub.ibge_municipios
+[0m14:21:25.647435 [debug] [Thread-1 (]: Writing injected SQL for node "model.gov_hub.ibge_municipios"
+[0m14:21:25.649854 [debug] [Thread-1 (]: Timing info for model.gov_hub.ibge_municipios (compile): 14:21:25.623946 => 14:21:25.648832
+[0m14:21:25.651177 [debug] [Thread-1 (]: Began executing node model.gov_hub.ibge_municipios
+[0m14:21:25.762368 [debug] [Thread-1 (]: Using postgres connection "model.gov_hub.ibge_municipios"
+[0m14:21:25.762886 [debug] [Thread-1 (]: On model.gov_hub.ibge_municipios: /* {"app": "dbt", "dbt_version": "1.7.19", "profile_name": "gov_hub", "target_name": "prod", "node_id": "model.gov_hub.ibge_municipios"} */
+
+    
+  
+    
+
+  create temporary table "ibge_municipios__dbt_tmp142125719323"
+  
+  
+    as
+  
+  (
+    -- Model bronze ESCRITO À MÃO para a fonte IBGE (config-driven não cobre esta camada)
+select * from "govhub"."silver"."ibge_municipios"
+  );
+  
+  
+[0m14:21:25.763240 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m14:21:25.782264 [debug] [Thread-1 (]: SQL status: SELECT 5571 in 0.0 seconds
+[0m14:21:25.797127 [debug] [Thread-1 (]: Using postgres connection "model.gov_hub.ibge_municipios"
+[0m14:21:25.798345 [debug] [Thread-1 (]: On model.gov_hub.ibge_municipios: BEGIN
+[0m14:21:25.799662 [debug] [Thread-1 (]: SQL status: BEGIN in 0.0 seconds
+[0m14:21:25.800357 [debug] [Thread-1 (]: Using postgres connection "model.gov_hub.ibge_municipios"
+[0m14:21:25.801167 [debug] [Thread-1 (]: On model.gov_hub.ibge_municipios: /* {"app": "dbt", "dbt_version": "1.7.19", "profile_name": "gov_hub", "target_name": "prod", "node_id": "model.gov_hub.ibge_municipios"} */
+
+      select
+          column_name,
+          data_type,
+          character_maximum_length,
+          numeric_precision,
+          numeric_scale
+
+      from INFORMATION_SCHEMA.columns
+      where table_name = 'ibge_municipios__dbt_tmp142125719323'
+        
+      order by ordinal_position
+
+  
+[0m14:21:25.825472 [debug] [Thread-1 (]: SQL status: SELECT 4 in 0.0 seconds
+[0m14:21:25.837845 [debug] [Thread-1 (]: Using postgres connection "model.gov_hub.ibge_municipios"
+[0m14:21:25.838942 [debug] [Thread-1 (]: On model.gov_hub.ibge_municipios: /* {"app": "dbt", "dbt_version": "1.7.19", "profile_name": "gov_hub", "target_name": "prod", "node_id": "model.gov_hub.ibge_municipios"} */
+
+      select
+          column_name,
+          data_type,
+          character_maximum_length,
+          numeric_precision,
+          numeric_scale
+
+      from "govhub".INFORMATION_SCHEMA.columns
+      where table_name = 'ibge_municipios'
+        
+        and table_schema = 'bronze'
+        
+      order by ordinal_position
+
+  
+[0m14:21:25.846718 [debug] [Thread-1 (]: SQL status: SELECT 4 in 0.0 seconds
+[0m14:21:25.871057 [debug] [Thread-1 (]: Using postgres connection "model.gov_hub.ibge_municipios"
+[0m14:21:25.872348 [debug] [Thread-1 (]: On model.gov_hub.ibge_municipios: /* {"app": "dbt", "dbt_version": "1.7.19", "profile_name": "gov_hub", "target_name": "prod", "node_id": "model.gov_hub.ibge_municipios"} */
+
+      select
+          column_name,
+          data_type,
+          character_maximum_length,
+          numeric_precision,
+          numeric_scale
+
+      from "govhub".INFORMATION_SCHEMA.columns
+      where table_name = 'ibge_municipios'
+        
+        and table_schema = 'bronze'
+        
+      order by ordinal_position
+
+  
+[0m14:21:25.880164 [debug] [Thread-1 (]: SQL status: SELECT 4 in 0.0 seconds
+[0m14:21:25.915928 [debug] [Thread-1 (]: Writing runtime sql for node "model.gov_hub.ibge_municipios"
+[0m14:21:25.917877 [debug] [Thread-1 (]: Using postgres connection "model.gov_hub.ibge_municipios"
+[0m14:21:25.918993 [debug] [Thread-1 (]: On model.gov_hub.ibge_municipios: /* {"app": "dbt", "dbt_version": "1.7.19", "profile_name": "gov_hub", "target_name": "prod", "node_id": "model.gov_hub.ibge_municipios"} */
+
+      insert into "govhub"."bronze"."ibge_municipios" ("id", "nome", "microrregiao", "regiao_imediata")
+    (
+        select "id", "nome", "microrregiao", "regiao_imediata"
+        from "ibge_municipios__dbt_tmp142125719323"
+    )
+
+
+  
+[0m14:21:25.942149 [debug] [Thread-1 (]: SQL status: INSERT 0 5571 in 0.0 seconds
+[0m14:21:25.971438 [debug] [Thread-1 (]: On model.gov_hub.ibge_municipios: COMMIT
+[0m14:21:25.972352 [debug] [Thread-1 (]: Using postgres connection "model.gov_hub.ibge_municipios"
+[0m14:21:25.973315 [debug] [Thread-1 (]: On model.gov_hub.ibge_municipios: COMMIT
+[0m14:21:25.977712 [debug] [Thread-1 (]: SQL status: COMMIT in 0.0 seconds
+[0m14:21:25.980371 [debug] [Thread-1 (]: Timing info for model.gov_hub.ibge_municipios (execute): 14:21:25.651975 => 14:21:25.979843
+[0m14:21:25.981244 [debug] [Thread-1 (]: On model.gov_hub.ibge_municipios: Close
+[0m14:21:25.983067 [debug] [Thread-1 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': 'cffb65d9-5dca-4725-9600-fe805b3d1c64', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x78e4aa6c3b10>]}
+[0m14:21:25.984504 [info ] [Thread-1 (]: 1 of 1 OK created sql incremental model bronze.ibge_municipios ................. [[32mINSERT 0 5571[0m in 0.36s]
+[0m14:21:25.986726 [debug] [Thread-1 (]: Finished running node model.gov_hub.ibge_municipios
+[0m14:21:25.992446 [debug] [MainThread]: Using postgres connection "master"
+[0m14:21:25.993337 [debug] [MainThread]: On master: BEGIN
+[0m14:21:25.994051 [debug] [MainThread]: Opening a new connection, currently in state closed
+[0m14:21:26.002390 [debug] [MainThread]: SQL status: BEGIN in 0.0 seconds
+[0m14:21:26.002930 [debug] [MainThread]: On master: COMMIT
+[0m14:21:26.003320 [debug] [MainThread]: Using postgres connection "master"
+[0m14:21:26.003825 [debug] [MainThread]: On master: COMMIT
+[0m14:21:26.005127 [debug] [MainThread]: SQL status: COMMIT in 0.0 seconds
+[0m14:21:26.006614 [debug] [MainThread]: On master: Close
+[0m14:21:26.008821 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m14:21:26.009561 [debug] [MainThread]: Connection 'list_govhub_gold' was properly closed.
+[0m14:21:26.010181 [debug] [MainThread]: Connection 'model.gov_hub.ibge_municipios' was properly closed.
+[0m14:21:26.010791 [debug] [MainThread]: Connection 'list_govhub_silver' was properly closed.
+[0m14:21:26.011654 [info ] [MainThread]: 
+[0m14:21:26.012450 [info ] [MainThread]: Finished running 1 incremental model in 0 hours 0 minutes and 0.61 seconds (0.61s).
+[0m14:21:26.013955 [debug] [MainThread]: Command end result
+[0m14:21:26.041573 [info ] [MainThread]: 
+[0m14:21:26.042675 [info ] [MainThread]: [32mCompleted successfully[0m
+[0m14:21:26.043861 [info ] [MainThread]: 
+[0m14:21:26.044942 [info ] [MainThread]: Done. PASS=1 WARN=0 ERROR=0 SKIP=0 TOTAL=1
+[0m14:21:26.046901 [debug] [MainThread]: Resource report: {"command_name": "run", "command_success": true, "command_wall_clock_time": 1.1345313, "process_user_time": 3.133459, "process_kernel_time": 0.185317, "process_mem_max_rss": "110536", "process_in_blocks": "14760", "process_out_blocks": "2312"}
+[0m14:21:26.047910 [debug] [MainThread]: Command `dbt run` succeeded at 14:21:26.047670 after 1.14 seconds
+[0m14:21:26.048571 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x78e4ad2c69d0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x78e4affec750>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x78e4affeeb10>]}
+[0m14:21:26.049229 [debug] [MainThread]: Flushing usage events
