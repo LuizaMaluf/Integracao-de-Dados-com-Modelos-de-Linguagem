@@ -37,6 +37,11 @@ nav .brand span { color:#f59e0b; }
 .tab { padding:.35rem .85rem; border-radius:6px; font-size:.78rem; font-weight:600; cursor:pointer; color:rgba(255,255,255,.6); transition:.15s; border:none; background:none; }
 .tab:hover { color:#fff; background:rgba(255,255,255,.1); }
 .tab.active { color:#fff; background:rgba(255,255,255,.18); }
+.poc-pill { padding:.4rem .9rem; border-radius:999px; font-size:.8rem; font-weight:600; cursor:pointer; color:#475569; background:#f1f5f9; border:1px solid #e2e8f0; transition:.15s; }
+.poc-pill:hover { background:#e2e8f0; }
+.poc-pill-active { color:#fff; background:#0f172a; border-color:#0f172a; }
+.poc-version { display:none; }
+.poc-version-active { display:block; }
 .spacer { flex:1; }
 .hint { font-size:.72rem; opacity:.45; }
 
@@ -180,7 +185,7 @@ nav .brand span { color:#f59e0b; }
     <button class="tab active" onclick="showTab('pipeline',this)">Pipeline</button>
     <button class="tab" onclick="showTab('adrs',this)">ADRs</button>
     <button class="tab" onclick="showTab('flow',this)">Fluxo E2E</button>
-    <button class="tab" onclick="showTab('poc',this)">PoC Viabilidade</button>
+    <button class="tab" onclick="showTab('poc',this)">PoCs</button>
   </div>
   <div class="spacer"></div>
   <span class="hint">← clique nos componentes · ↑↓ para navegar</span>
@@ -290,8 +295,17 @@ nav .brand span { color:#f59e0b; }
 <!-- ══════════════════════════════ PoC TAB ══════════════════════════════ -->
 <div id="tab-poc" class="panel">
   <div style="padding:1.5rem 2rem; overflow-y:auto;">
-    <div class="flow-title">PoC de Viabilidade — Arquitetura ponta a ponta</div>
-    <div class="flow-sub">2026-06-15 · 3 camadas executadas ao vivo com dados governamentais reais (IBGE). Documento: docs/poc-viabilidade-e2e.md</div>
+
+    <!-- Seletor de PoCs (versionado) -->
+    <div style="display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1.5rem; border-bottom:1px solid #e2e8f0; padding-bottom:1rem;">
+      <button class="poc-pill poc-pill-active" onclick="showPoc('01',this)">PoC 01 — Viabilidade E2E</button>
+      <!-- Próximas PoCs entram aqui como novos botões: <button class="poc-pill" onclick="showPoc('02',this)">PoC 02 — …</button> -->
+    </div>
+
+    <!-- ─────────── PoC 01 ─────────── -->
+    <div class="poc-version poc-version-active" id="poc-01">
+    <div class="flow-title">PoC 01 — Viabilidade da arquitetura ponta a ponta</div>
+    <div class="flow-sub">2026-06-15 · 3 camadas executadas ao vivo com dados governamentais reais (IBGE). Documento: docs/pocs/01-viabilidade-e2e/poc-viabilidade-e2e.md</div>
 
     <div style="max-width:62rem; margin:1.5rem 0; line-height:1.7; color:#334155; font-size:.92rem; text-align:justify;">
 
@@ -316,8 +330,10 @@ nav .brand span { color:#f59e0b; }
     <div class="adrs-grid" id="poc-grid" style="padding:0;"></div>
 
     <div class="flow-title" style="margin-top:2rem;">Artefatos — logs de evidência</div>
-    <div class="flow-sub">Saída real de comando capturada do sistema vivo (não texto redigido). Arquivos em docs/poc-artefatos/</div>
+    <div class="flow-sub">Saída real de comando capturada do sistema vivo (não texto redigido). Arquivos em docs/pocs/01-viabilidade-e2e/artefatos/</div>
     <div id="poc-logs" style="margin-top:1rem;"></div>
+    </div><!-- /poc-01 -->
+
   </div>
 </div>
 
@@ -809,6 +825,13 @@ function showTab(name, btn) {
   document.getElementById('tab-'+name).classList.add('active');
 }
 
+function showPoc(id, btn) {
+  document.querySelectorAll('.poc-pill').forEach(p => p.classList.remove('poc-pill-active'));
+  btn.classList.add('poc-pill-active');
+  document.querySelectorAll('.poc-version').forEach(v => v.classList.remove('poc-version-active'));
+  document.getElementById('poc-'+id).classList.add('poc-version-active');
+}
+
 function escHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
@@ -914,7 +937,7 @@ const POC_CARDS = [
   });
 })();
 
-// PoC — logs de evidência (conteúdo fiel dos arquivos em docs/poc-artefatos/)
+// PoC — logs de evidência (conteúdo fiel dos arquivos em docs/pocs/01-viabilidade-e2e/artefatos/)
 const POC_LOGS = [
   { file:"01-camada1-dags-config-driven.log", title:"Camada 1 — DAGs config-driven (airflow dags list)",
     text:`dag_id                            | fileloc                      | is_paused

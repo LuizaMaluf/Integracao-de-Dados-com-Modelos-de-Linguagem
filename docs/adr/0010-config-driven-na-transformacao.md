@@ -4,7 +4,7 @@
 
 ## Contexto
 
-A PoC de viabilidade ponta a ponta (2026-06-15, ver `docs/poc-viabilidade-e2e.md`) confirmou que a promessa "adicionar uma fonte = só um YAML" vale na camada de ingestão, mas **não se estende à transformação dbt**. Os sources (`transformation/models/bronze/sources.yml`) e os models são escritos à mão, hardcoded nas fontes SIAFI/Transfere/Compras. Ao ingerir uma fonte nova (IBGE) via o pipeline config-driven, o dado chegou ao PostgreSQL, mas o dbt não tinha como reconhecê-lo: foi necessário escrever manualmente uma entrada de source e um model `.sql` por camada para o dado atravessar.
+A PoC de viabilidade ponta a ponta (2026-06-15, ver `docs/pocs/01-viabilidade-e2e/poc-viabilidade-e2e.md`) confirmou que a promessa "adicionar uma fonte = só um YAML" vale na camada de ingestão, mas **não se estende à transformação dbt**. Os sources (`transformation/models/bronze/sources.yml`) e os models são escritos à mão, hardcoded nas fontes SIAFI/Transfere/Compras. Ao ingerir uma fonte nova (IBGE) via o pipeline config-driven, o dado chegou ao PostgreSQL, mas o dbt não tinha como reconhecê-lo: foi necessário escrever manualmente uma entrada de source e um model `.sql` por camada para o dado atravessar.
 
 ## Decisão
 
