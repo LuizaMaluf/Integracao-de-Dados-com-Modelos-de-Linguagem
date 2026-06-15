@@ -1,0 +1,11 @@
+# Artefato 2 — Camada 1: execução real do DAG ingest_api_ibge_municipios
+# Capturado de: airflow tasks states-for-dag-run (run poc_run2)
+
+dag_id                     | execution_date            | task_id              | state   | start_date                       | end_date                        
+===========================+===========================+======================+=========+==================================+=================================
+ingest_api_ibge_municipios | 2026-06-15T13:56:36+00:00 | extract              | success | 2026-06-15T13:56:37.882174+00:00 | 2026-06-15T13:56:39.187980+00:00
+ingest_api_ibge_municipios | 2026-06-15T13:56:36+00:00 | stage_silver         | success | 2026-06-15T13:56:41.948991+00:00 | 2026-06-15T13:56:43.289245+00:00
+ingest_api_ibge_municipios | 2026-06-15T13:56:36+00:00 | run_profile_table    | failed  | 2026-06-15T13:56:39.809048+00:00 | 2026-06-15T13:56:40.677469+00:00
+ingest_api_ibge_municipios | 2026-06-15T13:56:36+00:00 | run_annotate_context | failed  | 2026-06-15T13:56:39.805396+00:00 | 2026-06-15T13:56:40.684441+00:00
+ingest_api_ibge_municipios | 2026-06-15T13:56:36+00:00 | write_bronze         | success | 2026-06-15T13:56:39.820526+00:00 | 2026-06-15T13:56:41.102957+00:00
+                                                                                                                                                             

@@ -1,0 +1,9 @@
+# Artefato 3 — Camada 1: artefatos bronze (MinIO) e silver (DuckDB)
+# Capturado do sistema vivo após a execução do DAG
+
+## BRONZE (MinIO) — artefato bruto imutável:
+[2026-06-15 13:56:41 UTC] 170KiB STANDARD raw/ibge_municipios/2026-06-15/data.parquet
+
+## SILVER (DuckDB) — tabela e contagem real:
+  ibge_municipios_20260615: 5571 linhas
+  amostra (3 municípios): ["Alta Floresta D'Oeste", 'Ariquemes', 'Cabixi']

@@ -1,0 +1,15 @@
+# PoC TCC — fonte real config-driven (IBGE / Localidades)
+# Array JSON cru no top-level, sem paginação. Mesmo ramo do PostgREST.
+source_name: ibge_municipios
+type: api
+schedule: "@daily"
+
+url: "https://servicodados.ibge.gov.br/api/v1/localidades/municipios"
+auth_strategy: none
+pagination_strategy: none
+
+# array cru no top-level → records_path vazio
+records_path: ""
+
+target_schema: ibge
+target_table: municipios

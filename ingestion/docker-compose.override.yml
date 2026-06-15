@@ -1,0 +1,14 @@
+# Override de PoC: enxuga as deps instaladas no boot.
+# A stack original instala unstructured[pdf]/camelot/google-vision, que travam o
+# pip em backtracking por 25+ min. A PoC da camada 1 (API config-driven) só precisa
+# de httpx/pandas/PyYAML/duckdb. PDF semântico e dbt/cosmos ficam de fora da PoC.
+x-poc-deps: &poc-deps
+  _PIP_ADDITIONAL_REQUIREMENTS: "httpx pandas PyYAML duckdb pyarrow boto3 s3fs"
+
+services:
+  airflow-init:
+    environment: *poc-deps
+  airflow-webserver:
+    environment: *poc-deps
+  airflow-scheduler:
+    environment: *poc-deps

@@ -1,0 +1,19 @@
+# PoC TCC — fonte real config-driven (Banco Central / Olinda OData)
+# Resposta OData: objeto com wrapper {"value": [...]}. Exercita records_path aninhado.
+source_name: bcb_ptax_moedas
+type: api
+schedule: "@daily"
+
+url: "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/Moedas"
+auth_strategy: none
+pagination_strategy: none
+
+# força resposta JSON (OData usa $format)
+params:
+  $format: json
+
+# registros ficam dentro de "value"
+records_path: value
+
+target_schema: bcb
+target_table: ptax_moedas

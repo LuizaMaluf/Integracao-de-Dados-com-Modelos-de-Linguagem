@@ -19,3 +19,11 @@ skip_rows: 0
 # CSV encoding and separator
 encoding: utf-8
 separator: ";"
+
+# dbt package this source feeds — used by transformation_dag_factory to group DAGs
+dbt_packages:
+  - name: fgts
+    select: models/silver/
+
+# Airflow Dataset URI produced after silver write — triggers transform_fgts DAG
+silver_dataset: "silver://fgts_operacoes"

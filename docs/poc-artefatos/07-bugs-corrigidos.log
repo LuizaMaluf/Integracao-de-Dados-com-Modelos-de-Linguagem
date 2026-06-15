@@ -1,0 +1,25 @@
+# Artefato 7 — Bugs encontrados na PoC (a arquitetura nunca tinha rodado E2E)
+# Cada bug abaixo bloqueou o pipeline e foi corrigido durante a PoC.
+
+## BUG 1 — Ciclo de YAML anchor no docker-compose (Compose v5 recusa subir)
+   ERRO ORIGINAL: cycle detected: node at path services.airflow-init.environment
+                  references node at path services.airflow-init
+   STATUS APÓS FIX: docker compose config agora parseia ->
+     (sem erros — corrigido com anchor próprio &airflow-env)
+
+## BUG 2 — DAGs sem start_date (nenhum ingest_api_* carregava)
+   ERRO ORIGINAL: ValueError: DAG is missing the start_date parameter
+   STATUS APÓS FIX: import-errors do api_dag.py ->
+     api_dag.py em import-errors: 0
+
+## BUG 3 — Permissão do volume DuckDB (silver falhava)
+   ERRO ORIGINAL: _duckdb.IOException: Cannot open file ".../silver.duckdb": Permission denied
+   STATUS APÓS FIX: dono do diretório ->
+     drwxr-xr-x airflow:root /opt/airflow/data
+
+## BUG 4 — _PIP_ADDITIONAL_REQUIREMENTS pesado travava init ~27min (backtracking unstructured[pdf])
+   FIX: docker-compose.override.yml com deps enxutas p/ a PoC ->
+       _PIP_ADDITIONAL_REQUIREMENTS: "httpx pandas PyYAML duckdb pyarrow boto3 s3fs"
+
+## Achado menor — dir context/ não montado nos volumes (tasks de context falham)
+   ERRO: ModuleNotFoundError: No module named 'context'

@@ -1,0 +1,15 @@
+# Artefato 5 — Camada 3: Decision Layer (LLM via subscrição Claude Code)
+# Fonte: integration/output/poc_e2e_ibge.json (gerado por main.py, LLM_BACKEND=cli)
+# Par: ibge_municipios x ibge_estados (dados que atravessaram o pipeline)
+
+CHAVE IDENTIFICADA PELO LLM:
+   ['uf_id'] ↔ ['id'] | confiança: 0.78
+
+JUSTIFICATIVA:
+  Apesar do match_rate automático de 0%, a junção semanticamente correta é ibge_municipios.uf_id = ibge_estados.id (FK município→estado). O score 0% é um falso negativo causado pela incompatibilidade de tipos (uf_id float64 vs id int64): valores como 35.0 não casam textualmente com 35. Após o CAST de uf_id para inteiro, espera-se match_rate próximo de 100%, pois toda UF de município deve existir em estados. O candidato municipio_id→id, embora tenha score numérico maior, é apenas uma Derived Key (prefixo de 2 dígitos do código IBGE) que reproduz a mesma informação já presente em uf_id, sendo portanto redundante para a integração.
+
+CANDIDATOS AUTOMÁTICOS (match_rate estatístico — note que o escolhido tinha 0%):
+   ['uf_id'] ↔ ['id'] | score: 0.4 | match_rate: 0.0 | relação: foreign_key (recomendada)
+   ['municipio_id'] ↔ ['id'] | score: 0.4489 | match_rate: 0.0 | relação: derived_key (não é junção direta)
+   ['municipio_nome'] ↔ ['nome'] | score: 0.356 | match_rate: 0.0015 | relação: spurious
+   ['municipio_nome'] ↔ ['regiao_nome'] | score: 0.396 | match_rate: 0.0 | relação: spurious

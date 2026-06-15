@@ -13,3 +13,11 @@ tables:
 
 encoding: utf-8
 separator: ","
+
+# dbt package this source feeds — used by transformation_dag_factory to group DAGs
+dbt_packages:
+  - name: gold
+    select: models/silver/
+
+# Airflow Dataset URI produced after silver write — triggers transform_gold DAG
+silver_dataset: "silver://gold_financiamentos"

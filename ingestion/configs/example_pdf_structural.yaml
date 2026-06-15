@@ -13,3 +13,11 @@ page_selector:
 
 # How many tables to extract per matched page: all | first | last | N
 tables_per_page: all
+
+# dbt package this source feeds — used by transformation_dag_factory to group DAGs
+dbt_packages:
+  - name: siafi
+    select: models/silver/
+
+# Airflow Dataset URI produced after silver write — triggers transform_siafi DAG
+silver_dataset: "silver://siafi_relatorio_mensal"

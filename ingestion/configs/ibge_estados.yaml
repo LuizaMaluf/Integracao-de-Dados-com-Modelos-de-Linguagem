@@ -1,0 +1,12 @@
+# PoC TCC — 2ª fonte IBGE p/ par integrável real (chave: id do estado/UF)
+source_name: ibge_estados
+type: api
+schedule: "@daily"
+
+url: "https://servicodados.ibge.gov.br/api/v1/localidades/estados"
+auth_strategy: none
+pagination_strategy: none
+records_path: ""
+
+target_schema: ibge
+target_table: estados

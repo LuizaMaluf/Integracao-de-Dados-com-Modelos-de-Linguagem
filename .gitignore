@@ -1,4 +1,10 @@
 .env
+.env.*
+!.env.example
+dbt_packages/
+target/
+.user.yml
+logs/
 __pycache__/
 *.py[cod]
 *.egg-info/
