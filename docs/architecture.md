@@ -100,7 +100,7 @@ conflict_fields: [numEmpenho, anoEmpenho]
 
 **Por quê:** substitui os 15+ `ClienteXXX` com lógica duplicada. A `ClienteBase` já implementa retry e HTTP; o Generic Extractor parametriza o comportamento de paginação e auth via config, sem subclasse por fonte.
 
-**Famílias de API cobertas:** array cru no top-level (`records_path` vazio, ex.: IBGE) e objeto OData com wrapper (`records_path: value`, ex.: BCB Olinda) — ambas validadas com dado real na PoC E2E. Há também a estratégia `offset`/`limit` (PostgREST), implementada no extractor e validada por teste com mock. A primeira fonte de uma família nova custou ~14 linhas na classe genérica — não por fonte. Ver `docs/poc-viabilidade-e2e.md`.
+**Famílias de API cobertas:** array cru no top-level (`records_path` vazio, ex.: IBGE) e objeto OData com wrapper (`records_path: value`, ex.: BCB Olinda) — ambas validadas com dado real na PoC E2E. Há também a estratégia `offset`/`limit` (PostgREST), implementada no extractor e validada por teste com mock. A primeira fonte de uma família nova custou ~14 linhas na classe genérica — não por fonte. Ver `docs/pocs/01-viabilidade-e2e/poc-viabilidade-e2e.md`.
 
 ---
 
