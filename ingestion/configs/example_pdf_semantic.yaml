@@ -18,3 +18,11 @@ semantic_prompt: >
   programa (string), acao (string), vl_dotacao (number),
   vl_empenhado (number), exercicio (integer).
   Return only the JSON array, no explanation.
+
+# dbt package this source feeds — used by transformation_dag_factory to group DAGs
+dbt_packages:
+  - name: orcamento
+    select: models/silver/
+
+# Airflow Dataset URI produced after silver write — triggers transform_orcamento DAG
+silver_dataset: "silver://orcamento_narrativo"

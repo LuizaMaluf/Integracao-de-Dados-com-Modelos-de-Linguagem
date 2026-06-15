@@ -19,16 +19,21 @@ class ApiExtractor(BaseExtractor):
     def extract(self) -> pd.DataFrame:
         headers = self._build_headers()
         records: list[dict] = []
+        strategy = self.config.get("pagination_strategy", "none")
         page = 1
+        offset = 0
+        page_size = self.config.get("page_size", 100)
 
         with httpx.Client(timeout=30) as client:
             while True:
                 params = dict(self.config.get("params", {}))
-                strategy = self.config.get("pagination_strategy", "none")
 
                 if strategy == "page_number":
                     params[self.config["page_param"]] = page
-                    params[self.config.get("page_size_param", "size")] = self.config.get("page_size", 100)
+                    params[self.config.get("page_size_param", "size")] = page_size
+                elif strategy == "offset":
+                    params[self.config["page_param"]] = page_size
+                    params[self.config["offset_param"]] = offset
 
                 response = client.get(self.config["url"], headers=headers, params=params)
                 response.raise_for_status()
@@ -37,9 +42,10 @@ class ApiExtractor(BaseExtractor):
                 page_records = self._extract_records(data)
                 records.extend(page_records)
 
-                if not self._has_more(data, strategy):
+                if not self._has_more(data, strategy, len(page_records), page_size):
                     break
                 page += 1
+                offset += page_size
 
         return pd.DataFrame(records)
 
@@ -55,16 +61,19 @@ class ApiExtractor(BaseExtractor):
 
     def _extract_records(self, data: Any) -> list[dict]:
         path = self.config.get("records_path")
-        if path:
+        if path:  # empty string / None → array cru no top-level (ex: PostgREST)
             for key in path.split("."):
                 data = data[key]
         if isinstance(data, list):
             return data
         return [data]
 
-    def _has_more(self, data: Any, strategy: str) -> bool:
+    def _has_more(self, data: Any, strategy: str, n_records: int, page_size: int) -> bool:
         if strategy == "none":
             return False
+        # offset/PostgREST: sem flag de "tem mais" — para quando a página veio incompleta
+        if strategy == "offset":
+            return n_records >= page_size
         field = self.config.get("has_more_field")
         if field and not data.get(field):
             return False

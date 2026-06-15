@@ -1,0 +1,10 @@
+# Artefato 4 — Camada 2: dbt run da fonte IBGE no PostgreSQL
+# Capturado de: dbt run --select ibge_municipios (container dbt na rede docker)
+# NOTA: source + model escritos À MÃO (Costura B) — config-driven não cobre esta camada
+
+14:21:24  Running with dbt=1.7.19
+14:21:25  1 of 1 START sql incremental model bronze.ibge_municipios ...................... [RUN]
+14:21:25  1 of 1 OK created sql incremental model bronze.ibge_municipios ................. [INSERT 0 5571 in 0.36s]
+14:21:26  Finished running 1 incremental model in 0 hours 0 minutes and 0.61 seconds (0.61s).
+14:21:26  Completed successfully
+14:21:26  Done. PASS=1 WARN=0 ERROR=0 SKIP=0 TOTAL=1

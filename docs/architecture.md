@@ -100,6 +100,8 @@ conflict_fields: [numEmpenho, anoEmpenho]
 
 **Por quê:** substitui os 15+ `ClienteXXX` com lógica duplicada. A `ClienteBase` já implementa retry e HTTP; o Generic Extractor parametriza o comportamento de paginação e auth via config, sem subclasse por fonte.
 
+**Famílias de API cobertas:** array cru no top-level (`records_path` vazio, ex.: IBGE) e objeto OData com wrapper (`records_path: value`, ex.: BCB Olinda) — ambas validadas com dado real na PoC E2E. Há também a estratégia `offset`/`limit` (PostgREST), implementada no extractor e validada por teste com mock. A primeira fonte de uma família nova custou ~14 linhas na classe genérica — não por fonte. Ver `docs/poc-viabilidade-e2e.md`.
+
 ---
 
 ### 4. Bronze Store
@@ -235,6 +237,18 @@ extract → write_bronze → stage_silver → annotate_context  (leve)
 
 ---
 
+### 12. Transformation DAG Factory
+
+**Responsabilidade:** lê os Source Registry YAMLs, extrai as declarações `dbt_packages` de cada fonte e gera um DAG de transformação `transform_<pkg>` por pacote dbt — com data-aware scheduling e `--select` dinâmico.
+
+**Ferramenta:** `ingestion/dags/transformation_dag_factory.py` + Airflow Datasets + ContextResolver.
+
+**Por quê:** o `transformation_dag.py` manual executava todos os modelos dbt em cron fixo, sem discriminar pacote ou estado de integração. A factory elimina esse problema em dois eixos: (1) data-aware scheduling — o DAG `transform_<pkg>` só dispara quando o Dataset correspondente do silver é produzido, sem runs em vazio; (2) `--select` dinâmico via ContextResolver — roda só `models/bronze/` enquanto não há integração confirmada, e `models/` (pipeline completo) quando há discovery com confiança ≥ 0.7.
+
+**Relação com o DAG Factory de ingestão (Componente 2):** são factories distintas. A de ingestão gera DAGs `ingest_<source>` a partir de `dag_factory.yaml`. A de transformação gera DAGs `transform_<pkg>` a partir do campo `dbt_packages` nos YAMLs das fontes. Ambas seguem o mesmo princípio config-driven: adicionar uma fonte ou pacote novo não requer código Python.
+
+---
+
 ## Decisões de design — referência rápida
 
 | Decisão | ADR |
@@ -245,6 +259,9 @@ extract → write_bronze → stage_silver → annotate_context  (leve)
 | Context Store passivo — quatro tabelas no schema `context` | [ADR 0005](adr/0005-context-store-passivo.md) |
 | Profile em dois momentos + `ContextResolver` como mediador dbt | [ADR 0006](adr/0006-profile-dois-momentos-context-resolver.md) |
 | Invalidação diferenciada + `find_domain_group` conectado ao banco | [ADR 0007](adr/0007-invalidacao-diferenciada-find-domain-group.md) |
+| Transformation DAG Factory config-driven com data-aware scheduling | [ADR 0008](adr/0008-transformation-dag-factory-data-aware.md) |
+| Backend de inferência LLM selecionável (API ou CLI de subscrição) | [ADR 0009](adr/0009-llm-backend-selecionavel.md) |
+| Estender o princípio config-driven à camada de transformação (proposto) | [ADR 0010](adr/0010-config-driven-na-transformacao.md) |
 
 ---
 

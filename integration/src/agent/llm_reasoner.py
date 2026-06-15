@@ -1,8 +1,13 @@
 """
 LLM-based reasoning layer: sends candidates to Claude for final judgment.
+
+Backend selecionável via env LLM_BACKEND:
+  - "api" (default): SDK Anthropic, cobra créditos de API.
+  - "cli": chama o binário `claude -p` (headless), usando a subscrição Claude Code.
 """
 import json
-import anthropic
+import os
+import subprocess
 from src.agent.candidate_generator import CandidateKey
 from src.loaders.base import TableMetadata
 from src.config.settings import settings
@@ -60,23 +65,39 @@ Produza um JSON com a estrutura:
 """
 
 
+def _call_api(prompt: str) -> str:
+    import anthropic
+    client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
+    response = client.messages.create(
+        model=settings.model_name,
+        max_tokens=4096,
+        system=SYSTEM_PROMPT,
+        messages=[{"role": "user", "content": prompt}],
+    )
+    return response.content[0].text
+
+
+def _call_cli(prompt: str) -> str:
+    """Roda a inferência via CLI `claude -p` (subscrição Claude Code)."""
+    full = f"{SYSTEM_PROMPT}\n\n{prompt}"
+    proc = subprocess.run(
+        ["claude", "-p", full],
+        capture_output=True, text=True, timeout=180,
+    )
+    if proc.returncode != 0:
+        raise RuntimeError(f"claude CLI falhou: {proc.stderr[:300]}")
+    return proc.stdout
+
+
 def reason_with_llm(
     meta_a: TableMetadata,
     meta_b: TableMetadata,
     candidates: list[CandidateKey],
 ) -> dict:
-    client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
+    prompt = build_user_prompt(meta_a, meta_b, candidates)
+    backend = os.environ.get("LLM_BACKEND", "api")
+    raw = _call_cli(prompt) if backend == "cli" else _call_api(prompt)
 
-    response = client.messages.create(
-        model=settings.model_name,
-        max_tokens=4096,
-        system=SYSTEM_PROMPT,
-        messages=[
-            {"role": "user", "content": build_user_prompt(meta_a, meta_b, candidates)}
-        ],
-    )
-
-    raw = response.content[0].text
     try:
         start = raw.index("{")
         end = raw.rindex("}") + 1

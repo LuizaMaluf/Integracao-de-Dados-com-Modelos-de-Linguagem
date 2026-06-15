@@ -14,3 +14,9 @@ sources:
       - name: compras_gov_faturas
       - name: siape_servidores
       - name: siconv_convenios
+
+  - name: silver_poc
+    description: Fontes da PoC E2E (ingeridas via Airflow config-driven)
+    schema: silver
+    tables:
+      - name: ibge_municipios

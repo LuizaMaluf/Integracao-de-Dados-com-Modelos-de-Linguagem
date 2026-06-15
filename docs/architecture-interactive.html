@@ -17,6 +17,7 @@
   --grn-lt:   #ecfdf5;
   --purple:   #7c3aed;
   --pur-lt:   #faf5ff;
+  --teal:     #0f766e;
   --slate:    #475569;
   --border:   #e2e8f0;
   --bg:       #f8fafc;
@@ -40,7 +41,7 @@ nav .brand span { color:#f59e0b; }
 .hint { font-size:.72rem; opacity:.45; }
 
 /* ── Main layout ── */
-.main { flex:1; display:grid; grid-template-columns:320px 1fr; overflow:hidden; }
+.main { flex:1; display:grid; grid-template-columns:300px 1fr; overflow:hidden; }
 
 /* ── Pipeline panel ── */
 .pipeline-panel { border-right:1px solid var(--border); overflow-y:auto; padding:1.25rem 1rem; background:var(--surface); }
@@ -76,6 +77,7 @@ nav .brand span { color:#f59e0b; }
 .l-catalog  .node-num { background:#0f766e; color:#fff; }
 .l-integ    .node-num { background:#7c3aed; color:#fff; }
 .l-gold     .node-num { background:#b45309; color:#fff; }
+.l-transf   .node-num { background:#4338ca; color:#fff; }
 
 /* ── Detail panel ── */
 .detail-panel { overflow-y:auto; padding:2rem 2.5rem; }
@@ -83,7 +85,7 @@ nav .brand span { color:#f59e0b; }
 .detail-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--muted); text-align:center; gap:.5rem; }
 .detail-empty .arrow { font-size:2rem; opacity:.3; }
 
-.detail-content { display:none; max-width:680px; }
+.detail-content { display:none; max-width:720px; }
 .detail-content.visible { display:block; }
 
 .detail-header { display:flex; align-items:flex-start; gap:1rem; margin-bottom:1.5rem; }
@@ -103,21 +105,45 @@ nav .brand span { color:#f59e0b; }
 .detail-code { background:#0f172a; border-radius:var(--radius); padding:1rem 1.1rem; margin-bottom:1.25rem; }
 .detail-code pre { font-family:'JetBrains Mono','Fira Code',monospace; font-size:.78rem; color:#e2e8f0; line-height:1.6; white-space:pre-wrap; }
 
+/* IO grid */
+.io-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.25rem; }
+.io-box { border-radius:var(--radius); padding:1rem 1.1rem; }
+.io-box.input  { background:#f0fdf4; border:1px solid #86efac; }
+.io-box.output { background:#eff6ff; border:1px solid #93c5fd; }
+.io-box h4 { font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; margin-bottom:.5rem; }
+.io-box.input  h4 { color:#166534; }
+.io-box.output h4 { color:#1e40af; }
+.io-box p { font-size:.82rem; line-height:1.55; color:var(--text); }
+
+/* Tests chip */
+.tests-row { display:flex; align-items:center; gap:.5rem; margin-bottom:1.25rem; flex-wrap:wrap; }
+.test-chip { font-size:.72rem; font-weight:600; background:#f1f5f9; color:#334155; border:1px solid var(--border); padding:.25rem .65rem; border-radius:20px; font-family:'JetBrains Mono','Fira Code',monospace; }
+.tests-label { font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); }
+
 .detail-links { display:flex; gap:.75rem; flex-wrap:wrap; }
 .detail-link { display:inline-flex; align-items:center; gap:.35rem; font-size:.78rem; font-weight:600; padding:.35rem .85rem; border-radius:6px; text-decoration:none; transition:.15s; cursor:default; }
 .dl-adr  { background:var(--ind-lt); color:var(--indigo); }
 .dl-code { background:var(--grn-lt); color:var(--green); }
 
+/* Section divider */
+.section-divider { height:1px; background:var(--border); margin:1.25rem 0; }
+
 /* ── ADRs tab ── */
-.adrs-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:1rem; padding:1.5rem 2rem; overflow-y:auto; }
-.adr-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1.25rem; transition:.15s; }
+.adrs-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(380px,1fr)); gap:1.25rem; padding:1.5rem 2rem; overflow-y:auto; }
+.adr-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1.4rem; transition:.15s; }
 .adr-card:hover { border-color:#c7d2fe; box-shadow:0 4px 16px rgba(67,56,202,.08); }
 .adr-num { font-size:.68rem; font-weight:700; color:var(--indigo); background:var(--ind-lt); padding:.2rem .55rem; border-radius:4px; display:inline-block; margin-bottom:.5rem; }
-.adr-title { font-size:.92rem; font-weight:700; color:var(--text); margin-bottom:.4rem; line-height:1.35; }
+.adr-title { font-size:.95rem; font-weight:700; color:var(--text); margin-bottom:.4rem; line-height:1.35; }
 .adr-status { font-size:.7rem; font-weight:600; padding:.15rem .5rem; border-radius:4px; }
 .s-aceito    { background:#f0fdf4; color:#166534; }
 .s-proposto  { background:#fffbeb; color:#92400e; }
 .adr-body { font-size:.8rem; color:var(--muted); line-height:1.55; margin-top:.6rem; }
+.adr-section { margin-top:.85rem; }
+.adr-section-label { font-size:.65rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin-bottom:.3rem; }
+.adr-section-body { font-size:.8rem; color:var(--text); line-height:1.55; background:var(--bg); border-radius:6px; padding:.6rem .8rem; border-left:3px solid var(--border); }
+.adr-section.decision .adr-section-body { border-left-color:var(--indigo); }
+.adr-section.rejected .adr-section-body { border-left-color:#ef4444; }
+.adr-section.consequence .adr-section-body { border-left-color:var(--green); }
 
 /* ── Flow tab ── */
 .flow-panel { overflow-y:auto; padding:2rem 2.5rem; }
@@ -132,7 +158,7 @@ nav .brand span { color:#f59e0b; }
 .step-body { padding-bottom:1.5rem; }
 .step-label { font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); }
 .step-text { font-size:.88rem; color:var(--text); line-height:1.6; margin-top:.15rem; }
-.step-mono { font-family:monospace; font-size:.78rem; background:#f1f5f9; padding:.2rem .5rem; border-radius:4px; color:#334155; margin-top:.3rem; display:inline-block; }
+.step-mono { font-family:monospace; font-size:.78rem; background:#f1f5f9; padding:.2rem .5rem; border-radius:4px; color:#334155; margin-top:.3rem; display:inline-block; white-space:pre; }
 
 /* hidden panels */
 .panel { display:none; }
@@ -142,7 +168,7 @@ nav .brand span { color:#f59e0b; }
 @media (max-width:700px) {
   .main { grid-template-columns:1fr; }
   .pipeline-panel { display:none; }
-  .detail-grid { grid-template-columns:1fr; }
+  .detail-grid, .io-grid { grid-template-columns:1fr; }
 }
 </style>
 </head>
@@ -154,9 +180,10 @@ nav .brand span { color:#f59e0b; }
     <button class="tab active" onclick="showTab('pipeline',this)">Pipeline</button>
     <button class="tab" onclick="showTab('adrs',this)">ADRs</button>
     <button class="tab" onclick="showTab('flow',this)">Fluxo E2E</button>
+    <button class="tab" onclick="showTab('poc',this)">PoC Viabilidade</button>
   </div>
   <div class="spacer"></div>
-  <span class="hint">← clique nos componentes para detalhes</span>
+  <span class="hint">← clique nos componentes · ↑↓ para navegar</span>
 </nav>
 
 <!-- ══════════════════════════════ PIPELINE TAB ══════════════════════════════ -->
@@ -229,16 +256,21 @@ nav .brand span { color:#f59e0b; }
       <div class="node-num">11</div>
       <div><div class="node-name">Gold Layer</div><div class="node-tool">dbt + DbtTaskGroup + Superset</div></div>
     </div>
+    <div class="connector"></div>
+
+    <div class="layer-label">Transformação</div>
+    <div class="node l-transf" onclick="show(11)">
+      <div class="node-num">12</div>
+      <div><div class="node-name">Transformation DAG Factory</div><div class="node-tool">transformation_dag_factory.py</div></div>
+    </div>
   </div>
 
   <div class="detail-panel" id="detail-panel">
     <div class="detail-empty" id="detail-empty">
       <span class="arrow">←</span>
       <strong>Selecione um componente</strong>
-      <span style="font-size:.8rem">Clique em qualquer nó do pipeline para ver detalhes</span>
+      <span style="font-size:.8rem">Clique em qualquer nó do pipeline para ver detalhes completos</span>
     </div>
-
-    <!-- rendered by JS -->
     <div class="detail-content" id="detail-content"></div>
   </div>
 </div>
@@ -255,186 +287,452 @@ nav .brand span { color:#f59e0b; }
   <div class="flow-steps" id="flow-steps"></div>
 </div>
 
+<!-- ══════════════════════════════ PoC TAB ══════════════════════════════ -->
+<div id="tab-poc" class="panel">
+  <div style="padding:1.5rem 2rem; overflow-y:auto;">
+    <div class="flow-title">PoC de Viabilidade — Arquitetura ponta a ponta</div>
+    <div class="flow-sub">2026-06-15 · 3 camadas executadas ao vivo com dados governamentais reais (IBGE). Documento: docs/poc-viabilidade-e2e.md</div>
+
+    <div style="max-width:62rem; margin:1.5rem 0; line-height:1.7; color:#334155; font-size:.92rem; text-align:justify;">
+
+      <h3 style="color:#0f172a; font-size:1.05rem; margin:1.5rem 0 .5rem;">Objetivo</h3>
+      <p style="margin:.3rem 0;">Verificar se a arquitetura de três camadas — ingestão config-driven, transformação dbt e integração semântica via LLM — é viável na prática, executando o processo completo de ponta a ponta com dados governamentais reais. A questão central: a promessa <em>"adicionar uma fonte nova = apenas um arquivo YAML, sem código"</em> se sustenta ao longo de todo o pipeline?</p>
+
+      <h3 style="color:#0f172a; font-size:1.05rem; margin:1.5rem 0 .5rem;">Método</h3>
+      <p style="margin:.3rem 0;">Em vez de validar a arquitetura no papel, optou-se por <strong>executá-la de fato</strong>: subir a stack real (Apache Airflow + MinIO + DuckDB + PostgreSQL + dbt + Decision Layer) numa máquina local e fazê-la ingerir, transformar e integrar fontes públicas reais do IBGE. Cada etapa foi atravessada manualmente, registrando-se tanto o que funcionou quanto onde a arquitetura apresentou lacunas. Toda afirmação de resultado é embasada em <strong>logs reais capturados do sistema vivo</strong> (ver seção "Artefatos"), não em descrição redigida a posteriori. A escolha do IBGE como fonte deve-se a serem APIs públicas, estáveis e sem autenticação, com duas bases relacionáveis por uma chave comum (município → estado) — adequadas para exercitar também a camada de integração.</p>
+
+      <h3 style="color:#0f172a; font-size:1.05rem; margin:1.5rem 0 .5rem;">Como foi feito — execução por camada</h3>
+      <p style="margin:.3rem 0;"><strong>Camada 1 (ingestão).</strong> Foram criados três arquivos YAML novos (IBGE municípios, IBGE estados e BCB PTAX) declarando cada fonte, sem escrever nenhuma linha de código de DAG. O Airflow gerou automaticamente um DAG <code>ingest_api_*</code> por YAML a partir de um único arquivo <code>api_dag.py</code>. O DAG do IBGE municípios foi então disparado e executado de verdade: a API foi consultada, o artefato bruto gravado em MinIO (camada bronze) e a tabela limpa materializada em DuckDB (camada silver).</p>
+      <p style="margin:.3rem 0;"><strong>Camada 2 (transformação).</strong> Para o dado chegar ao dbt foi necessário transpô-lo do DuckDB para um PostgreSQL analítico (ponte inexistente no projeto) e declarar a fonte e o modelo bronze manualmente, em SQL — pois o dbt é acoplado às fontes pré-existentes. O <code>dbt run</code> então materializou a tabela bronze do IBGE.</p>
+      <p style="margin:.3rem 0;"><strong>Camada 3 (integração semântica).</strong> Duas tabelas IBGE que atravessaram o pipeline (municípios e estados) foram submetidas à Decision Layer, que usa raciocínio LLM (executado via assinatura Claude Code) para identificar a chave de junção entre bases. O resultado foi comparado com os candidatos gerados pela análise estatística automática.</p>
+
+      <h3 style="color:#0f172a; font-size:1.05rem; margin:1.5rem 0 .5rem;">Resultado</h3>
+      <p style="margin:.3rem 0;">A arquitetura é <strong>viável</strong>. A camada de ingestão cumpriu integralmente a promessa config-driven: três fontes novas foram adicionadas só com YAML, e o dado real do IBGE (5.571 municípios) atravessou API → MinIO → DuckDB sem código por fonte. Na camada de integração, o raciocínio semântico produziu a evidência mais forte da tese: identificou a chave correta <code>uf_id ↔ id</code> mesmo com <code>match_rate</code> estatístico de 0% — diagnosticando que se tratava de um falso negativo por incompatibilidade de tipo (float vs. inteiro) — e rejeitou um candidato concorrente de score numérico maior por reconhecê-lo como chave derivada redundante. <strong>O LLM acertou onde a heurística estatística falhou completamente.</strong></p>
+      <p style="margin:.3rem 0;">A PoC também delimitou com precisão <strong>onde a arquitetura ainda não se sustenta</strong>: a promessa config-driven não se estende à transformação (o dbt exige SQL manual por fonte — a "Costura B", lacuna central), e as camadas não compartilham storage (DuckDB, PostgreSQL e CSV não se conectam sem pontes ausentes no código). Por fim, quatro bugs que impediam a execução ponta a ponta foram encontrados e corrigidos, evidenciando que a arquitetura havia sido projetada mas nunca executada de fato. As lacunas são trabalho futuro bem delimitado, não falhas conceituais — exatamente a fronteira que um trabalho de conclusão deve mapear com honestidade.</p>
+
+    </div>
+
+    <div id="poc-verdict" style="margin:1rem 0;"></div>
+    <div class="adrs-grid" id="poc-grid" style="padding:0;"></div>
+
+    <div class="flow-title" style="margin-top:2rem;">Artefatos — logs de evidência</div>
+    <div class="flow-sub">Saída real de comando capturada do sistema vivo (não texto redigido). Arquivos em docs/poc-artefatos/</div>
+    <div id="poc-logs" style="margin-top:1rem;"></div>
+  </div>
+</div>
+
 <script>
 const COMPONENTS = [
   {
     num:1, id:"source-registry", name:"Source Registry", layer:"Config Layer",
     color:"#4338ca", bg:"#eef2ff",
     responsibility:"Declaração centralizada e versionada de todas as fontes de dados governamentais.",
-    detail:"Cada fonte é um YAML de ~20 linhas — declara URL, estratégia de autenticação, paginação, schedule, schema alvo e campos de conflito. Adicionar uma fonte nova não requer nenhum arquivo Python novo.",
+    detail:"Cada fonte é um arquivo YAML de ~20 linhas que declara URL, estratégia de autenticação, paginação, schedule Airflow, schema alvo no PostgreSQL e campos de conflito para upsert. É a única fonte de verdade sobre como uma fonte deve ser extraída — sem lógica duplicada em arquivos Python. Adicionar uma fonte nova significa apenas criar um YAML; adicionar um campo de conflito novo é um PR de uma linha.",
     tool:"YAML validado por Pydantic",
-    why:"Elimina os 73 arquivos de DAG hard-coded existentes. Todo comportamento (auth, paginação, retry) fica no repositório, revisável via PR. Rollback de config = reverter um YAML.",
+    why:"Elimina os 73 arquivos de DAG hard-coded existentes. Todo comportamento (auth, paginação, retry) fica no repositório, revisável via PR. Rollback de configuração = reverter um YAML. Auditores e pesquisadores podem entender a configuração de cada fonte sem ler código Python.",
     code:"ingestion/configs/",
     adr:null,
+    inputs:"Desenvolvedor ou engenheiro cria/edita um arquivo YAML em ingestion/configs/ e faz commit no repositório.",
+    outputs:"Arquivo YAML validado por Pydantic lido pelo DAG Factory (ingestão), pela Transformation DAG Factory (transformação) e pelo Generic Extractor (extração HTTP).",
+    tests:"ingestion/tests/test_dag_tasks.py",
     example:`source_name: siafi_notas_empenho
 type: api
+schedule: "@daily"
+url: "https://api.portaldatransparencia.gov.br/api-de-dados/..."
 auth_strategy: api_key_header
+auth_header: chave-api
 auth_env_var: SIAFI_API_KEY
 pagination_strategy: page_number
+page_param: pagina
+page_size: 500
+records_path: data
+has_more_field: hasNext
 target_schema: siafi
-target_table: notas_empenho`
+target_table: notas_empenho
+conflict_fields: [numEmpenho, anoEmpenho]
+dbt_packages:
+  - name: siafi
+    select: models/`
   },
   {
     num:2, id:"dag-factory", name:"DAG Factory", layer:"Ingestão",
     color:"#0369a1", bg:"#e0f2fe",
-    responsibility:"Lê o Source Registry e gera todos os DAGs do Airflow dinamicamente — sem arquivos Python por fonte.",
-    detail:"Um único dag_factory.yaml substitui todos os scripts de DAG individuais. O Airflow carrega o arquivo via um loader mínimo de ~5 linhas. Alterações de schedule ou retry são mudanças de YAML, não de código.",
+    responsibility:"Lê o Source Registry e gera todos os DAGs de ingestão do Airflow dinamicamente — sem arquivos Python por fonte.",
+    detail:"Um único dag_factory.yaml substitui todos os scripts de DAG individuais de ingestão. O Airflow carrega o arquivo via um loader mínimo de ~5 linhas (dag_factory_loader.py). Cada entrada no YAML gera um DAG completo com tasks de extract, upload_bronze, stage_silver, annotate_context e profile_table. Alterações de schedule ou configuração de retry são edições de YAML, não de código Python.",
     tool:"astronomer/dag-factory (Apache 2.0)",
-    why:"Zero arquivos Python de DAG por fonte. Alterar schedule ou adicionar retry é uma edição de YAML — sem deploy de código.",
+    why:"Zero arquivos Python de DAG por fonte. Alterar schedule ou adicionar retry é uma edição de YAML — sem deploy de código. A biblioteca dag-factory é open-source e amplamente usada em ambientes Airflow de produção.",
     code:"ingestion/dags/dag_factory_loader.py",
     adr:{num:"ADR 0002", file:"adr/0002-dag-factory-config-driven.md"},
-    example:`# dags/load_dags.py
+    inputs:"Source Registry YAMLs em ingestion/configs/ + arquivo dag_factory.yaml com a definição das tasks padrão de ingestão.",
+    outputs:"DAGs de ingestão registrados no Airflow Scheduler: um DAG ingest_<source_name> por fonte declarada.",
+    tests:"ingestion/tests/test_dag_tasks.py",
+    example:`# dag_factory_loader.py — loader de 5 linhas
 from dagfactory import load_yaml_dags
-load_yaml_dags(globals_dict=globals(),
-               dags_folder="/opt/airflow/configs")`
+load_yaml_dags(
+    globals_dict=globals(),
+    dags_folder="/opt/airflow/configs"
+)`
   },
   {
     num:3, id:"generic-extractor", name:"Generic Extractor", layer:"Ingestão",
     color:"#0369a1", bg:"#e0f2fe",
-    responsibility:"Realiza a extração HTTP de qualquer fonte declarada no Source Registry — paginação, retry, auth parametrizados.",
-    detail:"Substitui os 15+ ClienteXXX com lógica duplicada. A ClienteBase existente é mantida como base — o Generic Extractor parametriza paginação (cursor, page_number, offset) e auth (bearer, api_key_header, none) via config, sem subclasse por fonte.",
-    tool:"httpx + ClienteBase existente",
-    why:"Uma única classe substitui 15+ implementações quase idênticas. Novos padrões de paginação se adicionam uma vez e ficam disponíveis para todas as fontes.",
+    responsibility:"Realiza a extração HTTP de qualquer fonte declarada no Source Registry — paginação, retry e autenticação parametrizados por config.",
+    detail:"Substitui os 15+ ClienteXXX com lógica duplicada. A ClienteBase existente é mantida como base — o Generic Extractor parametriza o comportamento de paginação (cursor, page_number, offset) e autenticação (bearer, api_key_header, none) via campos do YAML, sem necessidade de subclasse por fonte. Retry com backoff exponencial configurável por fonte. Streaming do resultado para IO.BytesIO para evitar materializar grandes payloads em memória. PoC E2E validou 2 famílias de API com dado real por config: array cru no top-level (IBGE) e objeto OData com wrapper (BCB Olinda). A estratégia offset/limit (PostgREST) está implementada e validada por teste com mock — a primeira fonte de uma família nova custou ~14 linhas na classe genérica, não por fonte.",
+    tool:"httpx + ClienteBase (ingestion/extractors/base.py)",
+    why:"Uma única classe substitui 15+ implementações quase idênticas. Novos padrões de paginação ou autenticação são adicionados uma vez e ficam disponíveis para todas as fontes sem nenhuma edição nas classes existentes.",
     code:"ingestion/extractors/base.py",
     adr:null,
+    inputs:"Configuração da fonte (url, auth_strategy, pagination_strategy, page_size, has_more_field) + credenciais via variáveis de ambiente Airflow.",
+    outputs:"IO.BytesIO com o payload JSON completo da API — todos os registros paginados concatenados em memória.",
+    tests:"ingestion/tests/test_dag_tasks.py",
     example:null
   },
   {
     num:4, id:"bronze-store", name:"Bronze Store", layer:"Bronze",
     color:"#d97706", bg:"#fffbeb",
-    responsibility:"Armazena o artefato bruto imutável de cada ingestão. Uma escrita por execução, nunca sobrescrita.",
-    detail:"Cada extração serializa o payload completo da API em MinIO antes de qualquer transformação. Path convencional: raw/<source>/<YYYY-MM-DD>/response.json. Reprocessamento lê o bronze sem nova requisição à API — dados governamentais podem ser removidos retroativamente.",
-    tool:"MinIO — S3-compatible, self-hosted (já no docker-compose)",
-    why:"O pipeline atual vai direto de API para PostgreSQL. Sem bronze, reprocessar dados históricos exige re-bater nas APIs — que têm limites de rate e janelas de disponibilidade.",
+    responsibility:"Armazena o artefato bruto imutável de cada ingestão. Uma escrita por execução; o arquivo nunca é sobrescrito.",
+    detail:"Cada extração serializa o payload completo da API como JSON e escreve em MinIO antes de qualquer transformação ou validação. A convenção de path garante rastreabilidade por data: raw/<source_name>/<YYYY-MM-DD>/response.json. Reprocessamento lê o bronze sem nova requisição à API — importante porque dados governamentais podem ser removidos retroativamente, e APIs do Portal da Transparência têm limites de rate e janelas de manutenção.",
+    tool:"MinIO (S3-compatible, self-hosted, já no docker-compose do projeto)",
+    why:"O pipeline atual vai direto de API → PostgreSQL. Sem bronze, reprocessar dados históricos (por mudança de schema, bug no parser ou auditoria) exige re-bater nas APIs governamentais — que têm rate limits, janelas de manutenção e podem remover dados retroativamente.",
     code:"ingestion/storage/bronze.py",
     adr:{num:"ADR 0003", file:"adr/0003-bronze-store-minio.md"},
-    example:`# path: raw/siafi_notas_empenho/2026-06-07/response.json
-# imutável — uma escrita por execução`
+    inputs:"IO.BytesIO produzido pelo Generic Extractor + metadados da execução (source_name, data de execução).",
+    outputs:"Arquivo JSON imutável gravado em MinIO: raw/<source_name>/<YYYY-MM-DD>/response.json. Lido pela task Transform + Validate.",
+    tests:"ingestion/tests/test_dag_tasks.py",
+    example:`# Convenção de path — imutável por design
+# raw/siafi_notas_empenho/2026-06-07/response.json
+
+# Reprocessamento sem nova requisição:
+bronze = BronzeStore()
+payload = bronze.read("siafi_notas_empenho", "2026-06-07")
+# → IO.BytesIO com o JSON original intacto`
   },
   {
     num:5, id:"transform-validate", name:"Transform + Validate", layer:"Bronze → Silver",
     color:"#d97706", bg:"#fffbeb",
-    responsibility:"Deserializa o artefato bronze, normaliza nomes de coluna, valida o schema declarado no YAML e descarta registros inválidos.",
-    detail:"Gate de qualidade entre a API e o PostgreSQL. Pandera valida o schema esperado (tipos, nulos, ranges) declarado junto da fonte no YAML. Problemas de qualidade falham a task do Airflow antes de sujar o silver.",
-    tool:"pandas + pandera",
-    why:"O pipeline atual não tem gate de qualidade — dados ruins chegam silenciosamente ao PostgreSQL. Com pandera, o contrato de schema fica versionado junto da fonte.",
+    responsibility:"Deserializa o artefato bronze, normaliza nomes de coluna para snake_case, valida o schema declarado no YAML e descarta registros inválidos antes de escrever no silver.",
+    detail:"Gate de qualidade entre a camada bronze e o PostgreSQL. O schema esperado (tipos, nulos obrigatórios, ranges numéricos) é declarado no YAML da fonte e traduzido para um schema Pandera em runtime. Problemas de qualidade falham a task do Airflow antes de sujar o silver — o erro fica visível no log do DAG com o registro exato que falhou. Registros inválidos são descartados com warning; o pipeline continua com os registros válidos restantes.",
+    tool:"pandas + pandera (schema validation)",
+    why:"O pipeline atual não tem gate de qualidade — dados ruins chegam silenciosamente ao PostgreSQL e corrompem análises downstream. Com Pandera, o contrato de schema fica versionado junto da definição da fonte no YAML.",
     code:"ingestion/validators/schema_validator.py",
     adr:null,
-    example:null
+    inputs:"Arquivo JSON do Bronze Store (MinIO) + definição de schema do YAML da fonte.",
+    outputs:"DataFrame pandas com colunas normalizadas e registros válidos, pronto para upsert no Silver Store. Registros inválidos são logados como warnings.",
+    tests:"ingestion/tests/test_dag_tasks.py",
+    example:`# Schema declarado no YAML da fonte
+schema:
+  num_empenho: {dtype: str, nullable: false}
+  ano_empenho: {dtype: int, nullable: false, min: 2000}
+  valor_empenhado: {dtype: float, nullable: true}
+
+# Pandera valida antes do upsert:
+# 3 registros com ano_empenho=None → descartados + warning
+# 8.397 registros válidos → passam para o Silver Store`
   },
   {
     num:6, id:"silver-store", name:"Silver Store", layer:"Silver",
     color:"#059669", bg:"#ecfdf5",
-    responsibility:"Tabelas estruturadas por schema de origem, acessíveis por múltiplos processos concorrentes.",
-    detail:"Um schema PostgreSQL por sistema de origem (siafi, compras_gov, siape, siconv...). Sem mudança na estrutura atual — o Silver Store mantém a mesma organização. O dbt gerencia o schema como Schema Registry.",
-    tool:"PostgreSQL (já existente)",
-    why:"Sem mudança — o silver atual funciona bem. A inovação está nas camadas ao redor: bronze imutável antes e Context Store depois.",
+    responsibility:"Tabelas estruturadas e validadas por schema de origem, acessíveis por múltiplos processos concorrentes.",
+    detail:"Um schema PostgreSQL por sistema de origem (siafi, compras_gov, siape, siconv, transfere_gov...). O schema é gerenciado pelo dbt como Schema Registry — nenhum CREATE TABLE é executado em runtime pelo código de ingestão. Dados são inseridos via upsert ON CONFLICT usando os campos declarados em conflict_fields no YAML da fonte. Sem mudança na estrutura atual — a inovação está nas camadas ao redor: bronze imutável antes e Context Store depois.",
+    tool:"PostgreSQL (já existente no projeto)",
+    why:"Sem mudança estrutural — o silver atual funciona bem. A chave é que o schema agora é contrato do dbt (revisável via PR), não runtime do código Python.",
     code:"ingestion/storage/silver.py",
     adr:null,
-    example:null
+    inputs:"DataFrame pandas validado do Transform + Validate + metadados de target_schema e target_table do YAML.",
+    outputs:"Linhas persistidas em <schema>.<tabela> via upsert. Ex: siafi.notas_empenho, 8.397 linhas com ON CONFLICT (num_empenho, ano_empenho) DO UPDATE.",
+    tests:"ingestion/tests/test_dag_tasks.py",
+    example:`-- Organização por schema de origem
+-- siafi.notas_empenho
+-- siafi.notas_credito
+-- compras_gov.contratos
+-- transfere_gov.planos_acao
+-- siape.servidores
+
+-- Upsert gerado automaticamente a partir do YAML:
+INSERT INTO siafi.notas_empenho (...)
+VALUES (...)
+ON CONFLICT (num_empenho, ano_empenho)
+DO UPDATE SET valor_empenhado = EXCLUDED.valor_empenhado, ...`
   },
   {
     num:7, id:"table-catalog", name:"Table Catalog", layer:"Catalog",
     color:"#0f766e", bg:"#f0fdfa",
-    responsibility:"Registra cada carga bem-sucedida com metadados de rastreabilidade operacional.",
-    detail:"Tabela catalog.ingested_tables com source_name, table_name, schema_name, row_count, quality_ok, loaded_at. O Integration Gateway consulta o Catalog para descobrir quais tabelas estão disponíveis para mapeamento — sem varredura do banco.",
+    responsibility:"Registra cada carga bem-sucedida no silver com metadados de rastreabilidade operacional.",
+    detail:"Tabela catalog.ingested_tables com campos: source_name, table_name, schema_name, row_count, quality_ok, loaded_at. É consultada pelo Integration Gateway para descobrir quais tabelas estão disponíveis para mapeamento de chaves — sem varredura do banco. Permite auditoria de cargas (quando, quantas linhas, com ou sem problemas de qualidade) e descoberta automática de novos pares de tabelas para integração.",
     tool:"PostgreSQL — schema catalog",
-    why:"Sem o Catalog, o Integration Gateway precisaria varrer o banco para descobrir tabelas. O Catalog torna a descoberta consultável, auditável e rápida.",
+    why:"Sem o Catalog, o Integration Gateway precisaria varrer o information_schema do PostgreSQL para descobrir tabelas. O Catalog é consultável, auditável e rápido — e separa o conhecimento operacional (o que foi carregado) do schema estrutural (o que existe).",
     code:"ingestion/catalog/catalog.py",
     adr:null,
-    example:`SELECT source_name, table_name, row_count
+    inputs:"Metadados de cada execução bem-sucedida de ingestão: source_name, row_count, quality_ok, timestamp.",
+    outputs:"Registro em catalog.ingested_tables consultável pelo Integration Gateway para descoberta de pares candidatos à integração.",
+    tests:"ingestion/tests/test_dag_tasks.py",
+    example:`CREATE TABLE catalog.ingested_tables (
+    id          SERIAL PRIMARY KEY,
+    source_name TEXT NOT NULL,
+    table_name  TEXT NOT NULL,
+    schema_name TEXT NOT NULL,
+    row_count   INTEGER,
+    quality_ok  BOOLEAN,
+    loaded_at   TIMESTAMPTZ DEFAULT now()
+);
+
+-- Consulta do Integration Gateway:
+SELECT schema_name || '.' || table_name AS full_name
 FROM catalog.ingested_tables
 WHERE quality_ok = true
-ORDER BY loaded_at DESC`
+ORDER BY loaded_at DESC;`
   },
   {
     num:8, id:"integration-gateway", name:"Integration Gateway", layer:"Integração",
     color:"#7c3aed", bg:"#faf5ff",
-    responsibility:"Dado um par de tabelas, aciona o IntegrationAgent para identificação semântica de chaves de integração.",
-    detail:"Lê dois DataFrames do silver via Table Catalog, passa para o IntegrationAgent (pipeline de 5 etapas: perfilagem → candidatos → semântica → conteúdo → LLM), persiste o resultado no Context Store via bridge.py e salva o JSON de output.",
-    tool:"bridge.py + IntegrationAgent (integration/)",
-    why:"Desacopla a lógica de mapeamento da ingestão. O gateway é acionado via DAG separada com table_a e table_b como parâmetros — ou automaticamente via consulta ao Catalog.",
+    responsibility:"Dado um par de tabelas do silver, aciona o IntegrationAgent para identificação semântica de chaves de integração e persiste o resultado.",
+    detail:"Lê dois DataFrames do silver via Table Catalog, passa ambos para o IntegrationAgent (pipeline de 5 etapas: (1) perfilagem estrutural → (2) geração de candidatos → (3) análise semântica → (4) análise de conteúdo → (5) raciocínio LLM), persiste o resultado no Context Store via bridge.py e salva o JSON de output. A DAG de integração é separada da DAG de ingestão — pode ser acionada manualmente via parâmetros ou automaticamente após cada carga.",
+    tool:"bridge.py + IntegrationAgent (integration/src/)",
+    why:"Desacopla a lógica de mapeamento de chaves da ingestão. A integração é um processo custoso (LLM + análise estatística) que não deve bloquear o pipeline de ingestão. O gateway encapsula toda a orquestração do IntegrationAgent.",
     code:"ingestion/bridge/integration_bridge.py",
     adr:{num:"ADR 0004", file:"adr/0004-integration-gateway.md"},
-    example:`# resultado: output/identificar_chave_notas_empenho__planos_acao.json
+    inputs:"Dois nomes de tabela (table_a, table_b) via parâmetros de DAG ou consulta ao Table Catalog. DataFrames lidos do silver (PostgreSQL).",
+    outputs:"Arquivo output/identificar_chave_<a>__<b>.json com Integration Key, confiança e evidências. Registro em context.integration_discoveries via bridge.py.",
+    tests:"ingestion/tests/test_bridge_context.py",
+    example:`# output/identificar_chave_notas_empenho__planos_acao.json
 {
   "best_match": {
     "columns_a": ["nr_empenho"],
     "columns_b": ["num_empenho"],
-    "confidence": 0.94
+    "confidence": 0.94,
+    "justification": "Ambas as colunas representam o identificador único de Nota de Empenho (SIAFI). Overlap de valores: 89.3%. Mesma semântica de domínio orçamentário.",
+    "required_transforms": ["strip_leading_zeros"]
   }
 }`
   },
   {
     num:9, id:"context-store", name:"Context Store", layer:"Transversal",
     color:"#7c3aed", bg:"#faf5ff",
-    responsibility:"Acumula conhecimento de domínio e integrações ao longo das execuções — grupos semânticos, anotações de colunas, perfis e descobertas com evidências LLM.",
-    detail:"Quatro tabelas no schema context: domain_contexts (vocabulários persistidos, substitui o dict Python hardcoded), column_annotations (escrita pela task annotate_context na ingestão), table_profiles (task profile_table, paralela), integration_discoveries (escrita pelo bridge.py com justificativa LLM e flag is_validated para override humano).",
-    tool:"PostgreSQL — schema context (gerenciado pelo dbt)",
-    why:"Sem o Context Store cada run recalcula do zero. Grupos de domínio ficam hardcoded em Python. Novos domínios exigem deploy. O dbt não sabe quais modelos executar sem um mediador.",
+    responsibility:"Acumula conhecimento de domínio e integrações ao longo das execuções — grupos semânticos, anotações de colunas, perfis de tabelas e chaves descobertas com evidências LLM.",
+    detail:"Quatro tabelas no schema context, cada uma com responsabilidade e escritor distintos: (1) domain_contexts — vocabulários de domínio persistidos, substitui o dicionário Python DOMAIN_SEMANTIC_GROUPS hard-coded; novos domínios entram via INSERT sem PR de código. (2) column_annotations — domain_group detectado por coluna, escrito pela task annotate_context após stage_silver; upsert simples pois o schema é determinístico. (3) table_profiles — métricas analíticas (row_count, cardinalidade, qualidade, distribuição de exercício), escrito pela task profile_table em paralelo com annotate_context. (4) integration_discoveries — chaves descobertas com justificativa LLM, confiança acumulada via GREATEST() e flag is_validated para override humano (NULL=auto, TRUE=confirmado, FALSE=rejeitado).",
+    tool:"PostgreSQL — schema context gerenciado pelo dbt como Schema Registry",
+    why:"Sem o Context Store cada run recalcula tudo do zero. Grupos de domínio ficam hard-coded em Python — novos domínios exigem deploy. Contextos criados via CLI não sobrevivem entre runs. O dbt não sabe quais modelos executar sem um mediador que consulte as integrações confirmadas.",
     code:"integration/src/store/context_store.py",
     adr:{num:"ADR 0005 + 0007", file:"adr/0005-context-store-passivo.md"},
-    example:`-- Escrita na ingestão (annotate_context task)
-INSERT INTO context.column_annotations
-  (table_name, column_name, domain_group)
-VALUES ('siafi.notas_empenho', 'nr_empenho', 'empenho')
-ON CONFLICT DO UPDATE SET domain_group = EXCLUDED.domain_group;`
+    inputs:"annotate_context task → column_annotations | profile_table task → table_profiles | bridge.py → integration_discoveries | CLI /definir-contexto → domain_contexts.",
+    outputs:"Lido por: ContextResolver (integration_discoveries), find_domain_group (domain_contexts), IntegrationAgent (column_annotations + table_profiles), skill mapear-integracoes.",
+    tests:"integration/tests/unit/test_context_store.py",
+    example:`-- Quatro tabelas do schema context
+CREATE TABLE context.domain_contexts (
+    domain_name     TEXT PRIMARY KEY,
+    semantic_groups TEXT[] NOT NULL,
+    created_at      TIMESTAMPTZ DEFAULT now()
+);
+CREATE TABLE context.column_annotations (
+    table_name   TEXT, column_name TEXT,
+    domain_group TEXT,
+    PRIMARY KEY (table_name, column_name)
+);
+CREATE TABLE context.table_profiles (
+    table_name TEXT PRIMARY KEY,
+    row_count  INTEGER, null_ratio FLOAT,
+    top_exercicio TEXT, profiled_at TIMESTAMPTZ
+);
+CREATE TABLE context.integration_discoveries (
+    table_a TEXT, table_b TEXT,
+    col_a TEXT, col_b TEXT,
+    confidence     FLOAT,
+    justification  TEXT,
+    is_validated   BOOLEAN,  -- NULL=auto TRUE=ok FALSE=rejeitado
+    PRIMARY KEY (table_a, table_b, col_a, col_b)
+);`
   },
   {
     num:10, id:"context-resolver", name:"ContextResolver", layer:"Integração → Gold",
     color:"#7c3aed", bg:"#faf5ff",
-    responsibility:"Mediador entre o Context Store e o DbtTaskGroup — decide o --select dinâmico antes de cada execução dbt.",
-    detail:"Consulta context.integration_discoveries com min_confidence=0.7 antes do DbtTaskGroup. Retorna 'models/' (pipeline completo) quando há integração confirmada, ou 'models/bronze/' (só bronze) quando não há. Com store=None retorna 'models/bronze/' como fallback seguro — funciona sem banco em dev.",
-    tool:"ingestion/context/resolver.py",
-    why:"O dbt não consegue consultar integration_discoveries diretamente para decidir quais modelos executar. Sem mediador, modelos gold rodariam sem joins definidos ou a ingestão precisaria conhecer detalhes do cosmos.",
+    responsibility:"Mediador entre o Context Store e o DbtTaskGroup — decide o --select dinâmico antes de cada execução dbt, baseado nas integrações confirmadas.",
+    detail:"Consulta context.integration_discoveries com min_confidence=0.7 antes do DbtTaskGroup de cada pacote. Retorna 'models/' (pipeline completo: bronze + silver + gold) quando há ao menos uma integração confirmada com confiança suficiente; retorna 'models/bronze/' (só modelos bronze) quando não há. Com store=None retorna 'models/bronze/' como fallback seguro — funciona sem banco de contexto em dev e CI. O método get_select_all resolve todos os pacotes de uma vez, retornando um dict {package: select_path} pronto para zipar com o loop da Transformation DAG Factory.",
+    tool:"ingestion/context/resolver.py (Python puro, sem dependência de Airflow)",
+    why:"O cosmos/DbtTaskGroup não consegue consultar integration_discoveries diretamente para decidir quais modelos executar. Sem mediador, modelos gold rodariam sem joins definidos — resultando em CTEs vazias ou erros de dbt. Com o ContextResolver, a decisão fica em Python testável em vez de diluída em configuração YAML.",
     code:"ingestion/context/resolver.py",
     adr:{num:"ADR 0006", file:"adr/0006-profile-dois-momentos-context-resolver.md"},
+    inputs:"package_name (str) + instância de ContextStore com integration_discoveries. Opcionalmente: min_confidence (default 0.7).",
+    outputs:"String de --select para o DbtTaskGroup: 'models/' (pipeline completo) ou 'models/bronze/' (só bronze).",
+    tests:"ingestion/tests/test_resolver.py",
     example:`class ContextResolver:
-    def get_select(self, package_name, min_confidence=0.7):
+    def __init__(self, store):
+        self._store = store  # ContextStore ou MagicMock em testes
+
+    def get_select(self, package_name: str, min_confidence=0.7) -> str:
         discoveries = self._store.get_discoveries(
-            package_name, min_confidence=min_confidence)
-        return "models/" if discoveries else "models/bronze/"`
+            package_name, min_confidence=min_confidence
+        )
+        return "models/" if discoveries else "models/bronze/"
+
+    def get_select_all(self, packages: list[str], min_confidence=0.7) -> dict:
+        return {pkg: self.get_select(pkg, min_confidence) for pkg in packages}
+
+# Uso na Transformation DAG Factory:
+resolver = ContextResolver(store=ContextStore(conn))
+select = resolver.get_select("siafi")  # → "models/" ou "models/bronze/"`
   },
   {
     num:11, id:"gold-layer", name:"Gold Layer", layer:"Gold",
     color:"#b45309", bg:"#fefce8",
-    responsibility:"Modelos analíticos sobre o silver, prontos para consumo pelo Superset. Um pacote dbt por órgão.",
-    detail:"Organizado como pacotes dbt locais em transformation/dbt_packages/<orgao>/. O transformation_dag_factory.py gera um DAG por pacote via DbtTaskGroup do cosmos. Cada DAG é agendado via Dataset (data-aware scheduling) — dispara após atualização real do silver layer, sem cron fixo.",
+    responsibility:"Modelos analíticos sobre o silver, prontos para consumo pelo Superset. Um pacote dbt local por órgão/sistema de origem.",
+    detail:"Organizado como pacotes dbt locais em transformation/dbt_packages/<orgao>/. Cada pacote tem modelos bronze (materializa as tabelas do silver como views/tables dbt), silver (joins, limpezas) e gold (agregações, KPIs para Superset). O DbtTaskGroup do astronomer-cosmos executa o pacote selecionado com o --select resolvido pelo ContextResolver. Um pacote por órgão isola domínios sem precisar de múltiplos repositórios ou submódulos git.",
     tool:"dbt local packages + astronomer-cosmos (DbtTaskGroup) + Apache Superset",
-    why:"Um pacote dbt por órgão isolado por configuração (Source Registry) — não por repositório (submodules). Mesmo resultado com menos overhead de versionamento distribuído.",
+    why:"Isolar pacotes por órgão via configuração (Source Registry) em vez de por repositório elimina o overhead de submodules git. O cosmos fornece integração nativa dbt + Airflow com task por modelo e retry granular.",
     code:"ingestion/dags/transformation_dag_factory.py",
     adr:null,
-    example:`# transformation/packages.yml
-packages:
-  - local: dbt_packages/mir
-  - local: dbt_packages/ipea
+    inputs:"Airflow Dataset produzido pelo Silver Store após ingestão bem-sucedida (data-aware scheduling) + --select path do ContextResolver.",
+    outputs:"Modelos dbt materializados no PostgreSQL (views, tables) prontos para dashboards no Apache Superset.",
+    tests:"transformation/tests/ (dbt tests — schema.yml)",
+    example:`# transformation/dbt_packages/siafi/models/gold/empenhos_por_orgao.sql
+{{ config(materialized='table') }}
 
-# cosmos agenda por Dataset (data-aware)
-@dag(schedule=[Dataset("silver://mir_empenhos")])`
+SELECT
+    ug_emitente,
+    sum(valor_empenhado) AS total_empenhado,
+    count(distinct num_empenho) AS qtd_empenhos
+FROM {{ ref('siafi_notas_empenho') }}
+JOIN {{ ref('transfere_planos_acao') }}  -- join só existe com integration key confirmada
+  ON num_empenho = nr_empenho
+GROUP BY ug_emitente`
+  },
+  {
+    num:12, id:"transformation-dag-factory", name:"Transformation DAG Factory", layer:"Transformação",
+    color:"#4338ca", bg:"#eef2ff",
+    responsibility:"Lê os Source Registry YAMLs, extrai declarações dbt_packages e gera um DAG transform_<pkg> por pacote — com data-aware scheduling e --select dinâmico via ContextResolver.",
+    detail:"Substitui o arquivo transformation_dag.py manual (que rodava todos os modelos dbt com cron fixo e --select estático) por uma factory config-driven. Dois mecanismos centrais: (1) data-aware scheduling — cada DAG transform_<pkg> é agendado via Airflow Dataset produzido pela ingestão correspondente; dispara apenas após atualização real do silver, eliminando runs em vazio; (2) --select dinâmico — o caminho dbt é resolvido em runtime pelo ContextResolver consultando integration_discoveries, não fixo em YAML. Funções puras collect_dbt_packages e get_dbt_select são testáveis sem Airflow. O bloco de geração de DAGs é protegido por try/except ImportError — o módulo é importável em ambientes de CI sem Airflow instalado.",
+    tool:"ingestion/dags/transformation_dag_factory.py + Airflow Datasets + ContextResolver",
+    why:"Cron fixo gera execuções em vazio quando o silver não foi atualizado. --select estático roda modelos gold sem joins definidos. Novos pacotes dbt exigiam PR de código Python. A factory resolve os três problemas mantendo o princípio config-driven do Source Registry.",
+    code:"ingestion/dags/transformation_dag_factory.py",
+    adr:{num:"ADR 0008", file:"adr/0008-transformation-dag-factory-data-aware.md"},
+    inputs:"Source Registry YAMLs com campo dbt_packages declarado + Airflow Dataset do silver layer (produzido após stage_silver bem-sucedido).",
+    outputs:"DAGs transform_<pkg> registrados no Airflow Scheduler, um por pacote dbt. Cada DAG executa DbtTaskGroup com --select dinâmico.",
+    tests:"ingestion/tests/test_transformation_dag_factory.py",
+    example:`# YAML da fonte — campo que alimenta a factory
+dbt_packages:
+  - name: siafi
+    select: models/     # --select base (override pelo ContextResolver)
+
+# DAG gerado automaticamente
+@dag(
+    dag_id="transform_siafi",
+    schedule=[Dataset("silver://siafi_notas_empenho")],  # data-aware
+    tags=["transformation", "dbt", "siafi"],
+)
+def transform_siafi():
+    resolver = ContextResolver(store=ContextStore(conn))
+    dbt_select = get_dbt_select("siafi", resolver)  # "models/" ou "models/bronze/"
+    DbtTaskGroup(
+        group_id="dbt_siafi",
+        project_config=ProjectConfig(TRANSFORMATION_DIR / "dbt_packages/siafi"),
+        operator_args={"select": dbt_select},
+    )`
   }
 ];
 
 const ADRS = [
-  { num:"ADR 0001", title:"Caminho único de notificação", status:"Proposto",    body:"Centraliza saída de notificações em um único ponto para evitar duplicação de alertas entre tasks." },
-  { num:"ADR 0002", title:"Substituir DAGs individuais por DAG Factory config-driven", status:"Proposto", body:"Elimina 73 arquivos de DAG hard-coded. Cada fonte declarada em YAML; a biblioteca dag-factory gera os DAGs automaticamente." },
-  { num:"ADR 0003", title:"Adicionar Bronze Store (MinIO) antes do Silver", status:"Proposto", body:"Payload bruto imutável em MinIO antes de qualquer transformação. Reprocessamento sem nova requisição à API." },
-  { num:"ADR 0004", title:"Integration Gateway como ponte entre ingestion e IntegrationAgent", status:"Proposto", body:"Desacopla mapeamento de chaves da ingestão. Gateway acionado por DAG separada com table_a e table_b como parâmetros." },
-  { num:"ADR 0005", title:"Context Store passivo — quatro tabelas no schema context", status:"Aceito", body:"domain_contexts, column_annotations, table_profiles e integration_discoveries com justificativa LLM e flag is_validated para override humano." },
-  { num:"ADR 0006", title:"Profile em dois momentos + ContextResolver como mediador dbt", status:"Aceito", body:"annotate_context (leve, pós stage_silver) e profile_table (pesado, paralelo). ContextResolver consulta o store antes do DbtTaskGroup." },
-  { num:"ADR 0007", title:"Invalidação diferenciada + find_domain_group conectado ao banco", status:"Aceito", body:"annotations: upsert simples. discoveries: GREATEST(confidence) + is_validated. find_domain_group consulta domain_contexts antes do fallback Python." },
+  {
+    num:"ADR 0001",
+    title:"Caminho único de notificação",
+    status:"Proposto",
+    context:"Tasks distintas do pipeline emitiam alertas via canais diferentes (log do Airflow, e-mail, Slack), causando duplicação e inconsistência nas notificações de falha.",
+    decision:"Centralizar toda saída de notificação em um único ponto — um callback on_failure_callback padrão configurado no default_args da DAG Factory — para garantir consistência.",
+    rejected:"Manter callbacks individuais por task ou por DAG.",
+    consequence:"Alterar o canal de notificação é uma edição em um único lugar. Risco: callback centralizado que falha silencia todas as notificações."
+  },
+  {
+    num:"ADR 0002",
+    title:"Substituir DAGs individuais por DAG Factory config-driven",
+    status:"Proposto",
+    context:"73 arquivos de DAG Python hard-coded para fontes de dados distintas. Adicionar uma fonte nova exigia criar um novo arquivo Python. Alterar schedule ou retry em múltiplas fontes exigia N edições simultâneas com risco de divergência.",
+    decision:"Um único dag_factory.yaml substitui todos os arquivos de DAG. A biblioteca astronomer/dag-factory gera os DAGs dinamicamente no boot do Airflow. Cada fonte é declarada em seu YAML de Source Registry.",
+    rejected:"Manter os 73 arquivos de DAG com um gerador de código (cookiecutter). Rejeitado porque o código gerado ainda precisaria ser revisado e mantido manualmente.",
+    consequence:"Zero arquivos Python de DAG por fonte. Rollback = reverter um YAML. Curva de aprendizado: equipe precisa conhecer a DSL da dag-factory."
+  },
+  {
+    num:"ADR 0003",
+    title:"Adicionar Bronze Store (MinIO) antes do Silver",
+    status:"Proposto",
+    context:"O pipeline atual vai direto de API → PostgreSQL. Reprocessar dados históricos (mudança de schema, bug no parser, auditoria) exige re-bater nas APIs governamentais, que têm rate limits e podem remover dados retroativamente.",
+    decision:"Armazenar o payload bruto completo em MinIO antes de qualquer transformação. Path convencional: raw/<source>/<YYYY-MM-DD>/response.json. Imutável — uma escrita por execução.",
+    rejected:"Armazenar no próprio PostgreSQL como JSONB. Rejeitado pelo tamanho dos payloads e custo de queries sobre dados brutos em banco relacional.",
+    consequence:"Reprocessamento ilimitado sem nova requisição à API. Overhead de escrita adicional por execução. MinIO já estava no docker-compose do projeto."
+  },
+  {
+    num:"ADR 0004",
+    title:"Integration Gateway como ponte entre ingestion e IntegrationAgent",
+    status:"Proposto",
+    context:"A lógica de mapeamento de chaves (IntegrationAgent) estava acoplada ao pipeline de ingestão. Rodar o agente em toda ingestão é custoso (LLM + análise estatística). Nem todo par de tabelas é candidato à integração.",
+    decision:"Componente bridge.py separado, acionado via DAG independente com table_a e table_b como parâmetros. Consulta o Table Catalog para descoberta automática de pares candidatos.",
+    rejected:"Rodar o IntegrationAgent como task final de cada DAG de ingestão. Rejeitado porque bloqueia ingestões curtas com processamento pesado.",
+    consequence:"Ingestão e integração são pipelines independentes. O gateway pode ser acionado manualmente ou em batch após múltiplas ingestões."
+  },
+  {
+    num:"ADR 0005",
+    title:"Context Store passivo — quatro tabelas no schema context",
+    status:"Aceito",
+    context:"O Integration Gateway recalculava tudo do zero a cada run. Grupos de domínio ficavam hard-coded em Python (DOMAIN_SEMANTIC_GROUPS). Contextos customizados via CLI não sobreviviam entre runs. Nenhuma memória acumulada de descobertas anteriores.",
+    decision:"Schema context no PostgreSQL com quatro tabelas de responsabilidades distintas: domain_contexts, column_annotations, table_profiles, integration_discoveries. O campo is_validated aceita NULL (auto), TRUE (confirmado) e FALSE (rejeitado) — override humano sem apagar histórico. Schema gerenciado pelo dbt.",
+    rejected:"Manter grupos de domínio em dicionário Python e resultados de integração em arquivos JSON em output/. Rejeitado porque não acumula conhecimento entre runs e novos domínios exigem PR de código.",
+    consequence:"Novos domínios entram via INSERT sem deploy. Conhecimento acumulado cresce a cada run. Requer PostgreSQL ativo em dev para testes de integração."
+  },
+  {
+    num:"ADR 0006",
+    title:"Profile em dois momentos + ContextResolver como mediador dbt",
+    status:"Aceito",
+    context:"Profile completo de tabela dentro da task stage_silver bloqueava a ingestão por vários minutos. O cosmos/DbtTaskGroup não consegue consultar integration_discoveries diretamente para decidir o --select em runtime.",
+    decision:"Separar anotação leve (annotate_context: domain_group por coluna) de profile pesado (profile_table: cardinalidade, qualidade) — paralelos após stage_silver. ContextResolver Python decide o --select consultando o Context Store antes do DbtTaskGroup.",
+    rejected:"Passar --select fixo por pacote no YAML do Source Registry. Rejeitado porque o --select correto depende do estado em runtime do Context Store — não é estático.",
+    consequence:"Falha do profile_table não bloqueia a ingestão. dbt executa apenas modelos que fazem sentido dado o estado das integrações. ContextResolver com store=None retorna models/bronze/ como fallback seguro."
+  },
+  {
+    num:"ADR 0007",
+    title:"Invalidação diferenciada + find_domain_group conectado ao banco",
+    status:"Aceito",
+    context:"Re-ingestão de uma fonte podia deixar column_annotations desatualizadas se o schema mudou. Discoveries com confiança alta mas semanticamente incorretas não tinham mecanismo de correção sem apagar o registro. find_domain_group só conhecia domínios compilados em Python.",
+    decision:"Invalidação diferenciada por tabela: column_annotations e table_profiles usam upsert simples (estado atual é a verdade); integration_discoveries usam GREATEST(confidence) + is_validated para acumulação controlada. find_domain_group aceita store opcional — consulta domain_contexts antes do fallback Python.",
+    rejected:"Apagar integration_discoveries e reannotar a cada run (invalidação total). Rejeitado porque perde histórico de validações humanas, forçando re-validação manual.",
+    consequence:"Annotations sempre refletem schema atual. Discoveries acumulam sem crescimento descontrolado. Analistas podem rejeitar discoveries via is_validated=FALSE sem apagar o registro."
+  },
+  {
+    num:"ADR 0008",
+    title:"Transformation DAG Factory config-driven com data-aware scheduling",
+    status:"Aceito",
+    context:"transformation_dag.py existente rodava todos os modelos dbt com cron fixo independente de o silver ter sido atualizado. O --select era estático, rodando modelos gold mesmo sem integração confirmada. Adicionar novo pacote dbt exigia PR de código Python.",
+    decision:"Factory que lê dbt_packages dos Source Registry YAMLs e gera um DAG transform_<pkg> por pacote. Cada DAG usa Airflow Dataset para data-aware scheduling (dispara só após ingestão real) e --select dinâmico via ContextResolver em runtime.",
+    rejected:"Manter transformation_dag.py manual com cron fixo e --select models/ estático. Rejeitado pelos três problemas: runs em vazio, modelos gold sem joins, novos pacotes exigem código.",
+    consequence:"Novos pacotes dbt entram via YAML sem código Python. Transformação dispara apenas após ingestão real. --select evolui automaticamente conforme integrações são confirmadas. Fallback models/bronze/ garante execução mínima em dev sem banco de contexto."
+  },
+  {
+    num:"ADR 0009",
+    title:"Backend de inferência LLM selecionável (API ou CLI de subscrição)",
+    status:"Aceito",
+    context:"A Decision Layer chamava o SDK da API Anthropic, que cobra créditos pré-pagos. Na PoC E2E a conta de API estava sem saldo (erro 400 credit balance too low), embora houvesse assinatura Claude Code disponível — a assinatura autentica o CLI claude, não o SDK de API.",
+    decision:"Backend selecionável via env LLM_BACKEND: 'api' (default, SDK Anthropic) ou 'cli' (chama claude -p via subprocess, usando a assinatura). Prompt, parsing e formato de saída idênticos entre os dois.",
+    rejected:"Migrar permanentemente para o CLI e remover o SDK. Rejeitado porque o SDK é o caminho padrão para execução headless/CI, onde não há assinatura interativa.",
+    consequence:"A integração roda sem créditos de API quando há assinatura disponível — útil para a realidade de recursos do TCC. O backend cli acopla a execução ao binário claude autenticado e tem maior latência (overhead de processo)."
+  },
+  {
+    num:"ADR 0010",
+    title:"Estender o princípio config-driven à camada de transformação",
+    status:"Proposto",
+    context:"A PoC E2E confirmou que 'adicionar fonte = só um YAML' vale na ingestão mas não na transformação: sources e models dbt são hardcoded em SIAFI/Transfere/Compras. Ao ingerir o IBGE, o dado chegou ao Postgres mas o dbt não o reconheceu — foi preciso escrever source + model SQL à mão.",
+    decision:"Proposta (não implementada): gerar sources e models bronze do dbt a partir do mesmo Source Registry que alimenta a ingestão, para que fontes novas fluam até o bronze sem SQL por fonte. Silver/gold permanecem manuais por exigir conhecimento de domínio.",
+    rejected:"Manter a transformação inteiramente manual. Rejeitado por contradizer o princípio config-driven que sustenta a tese de portabilidade.",
+    consequence:"Fecha a Costura B identificada na PoC: a portabilidade passa a valer da ingestão até o bronze. Exige um gerador análogo ao DAG Factory. Enquanto não implementado, cada fonte nova custa ~8 linhas de source + model bronze à mão."
+  }
 ];
 
 const FLOW_STEPS = [
-  { color:"#4338ca", label:"Source Registry", text:"O DAG siafi_notas_empenho_ingest foi gerado pelo DAG Factory a partir do YAML da fonte.", mono:"source_name: siafi_notas_empenho  |  schedule: @daily" },
-  { color:"#0369a1", label:"Generic Extractor", text:"Pagina a API do Portal da Transparência (pagina=1, 2, …) até hasNext=false. Resultado: 8.400 registros em IO.BytesIO.", mono:"GET /api-de-dados/notas-empenho?pagina=1…87" },
-  { color:"#d97706", label:"Bronze Store", text:"Serializa o buffer como JSON e escreve em MinIO. Uma escrita, imutável.", mono:"raw/siafi_notas_empenho/2026-06-07/response.json" },
-  { color:"#d97706", label:"Transform + Validate", text:"Lê o JSON do MinIO, normaliza colunas (numEmpenho → num_empenho), valida schema Pandera. 3 registros com anoEmpenho nulo descartados — warning logado.", mono:"8.400 → 8.397 registros válidos" },
-  { color:"#059669", label:"Silver Store", text:"Insere 8.397 linhas em siafi.notas_empenho via upsert.", mono:"INSERT … ON CONFLICT (num_empenho, ano_empenho) DO UPDATE" },
-  { color:"#0f766e", label:"Table Catalog + Context Store", text:"Catalog registra a carga. Tasks annotate_context e profile_table rodam em paralelo: anotam domain_group de cada coluna e calculam cardinalidade.", mono:"catalog.ingested_tables ← source=siafi_notas_empenho, row_count=8397\ncontext.column_annotations ← nr_empenho → domain_group: empenho" },
-  { color:"#7c3aed", label:"Integration Gateway", text:"DAG consulta o Catalog, encontra siafi.notas_empenho e transfere_gov.planos_acao como par candidato. IntegrationAgent identifica nr_empenho ↔ num_empenho com confiança 0.94.", mono:"output/identificar_chave_notas_empenho__planos_acao.json" },
-  { color:"#7c3aed", label:"Context Store ← bridge.py", text:"persist_discovery() grava a discovery com justificativa LLM, evidências e required_transforms.", mono:"context.integration_discoveries ← confidence=0.94, is_validated=NULL" },
-  { color:"#7c3aed", label:"ContextResolver", text:"Na próxima execução do DbtTaskGroup, ContextResolver encontra a discovery com confiança ≥ 0.7 e retorna --select models/ (pipeline completo).", mono:"get_select('siafi') → 'models/'" },
-  { color:"#b45309", label:"Gold Layer — dbt", text:"DbtTaskGroup executa os modelos bronze + silver + gold do pacote siafi. Dataset siafi prontos no Superset.", mono:"DbtTaskGroup(group_id='dbt_siafi', select='models/')" },
+  { color:"#4338ca", label:"Source Registry", text:"O DAG siafi_notas_empenho_ingest foi gerado pelo DAG Factory a partir do YAML da fonte. O schedule @daily disparou o Airflow Scheduler.", mono:"source_name: siafi_notas_empenho  |  schedule: @daily" },
+  { color:"#0369a1", label:"DAG Factory → Generic Extractor", text:"O DAG executa a task extract. O Generic Extractor pagina a API do Portal da Transparência (pagina=1, 2, …) até hasNext=false. Resultado: 8.400 registros em IO.BytesIO.", mono:"GET /api-de-dados/notas-empenho?pagina=1…87" },
+  { color:"#d97706", label:"Bronze Store", text:"A task write_bronze serializa o buffer como JSON e escreve em MinIO. Uma escrita, imutável. O objeto nunca será sobrescrito.", mono:"raw/siafi_notas_empenho/2026-06-07/response.json  (8.4 MB)" },
+  { color:"#d97706", label:"Transform + Validate", text:"A task stage_silver lê o JSON do MinIO, normaliza colunas (numEmpenho → num_empenho), valida schema Pandera. 3 registros com anoEmpenho=None são descartados com warning.", mono:"8.400 → 8.397 registros válidos  |  3 descartados (anoEmpenho=None)" },
+  { color:"#059669", label:"Silver Store", text:"Insere 8.397 linhas em siafi.notas_empenho via upsert ON CONFLICT. O Airflow Dataset silver://siafi_notas_empenho é produzido após commit.", mono:"INSERT … ON CONFLICT (num_empenho, ano_empenho) DO UPDATE SET ..." },
+  { color:"#0f766e", label:"Table Catalog + Context Store", text:"Catalog registra a carga. Em paralelo: annotate_context detecta domain_group de cada coluna (leve, ~2s); profile_table calcula cardinalidade e distribuição de exercício (pesado, ~45s).", mono:"catalog.ingested_tables ← source=siafi_notas_empenho, row_count=8397\ncontext.column_annotations ← nr_empenho → domain_group: empenho" },
+  { color:"#7c3aed", label:"Integration Gateway", text:"DAG consulta o Catalog, encontra siafi.notas_empenho e transfere_gov.planos_acao como par candidato. IntegrationAgent (5 etapas) identifica nr_empenho ↔ num_empenho com confiança 0.94.", mono:"output/identificar_chave_notas_empenho__planos_acao.json  |  confidence=0.94" },
+  { color:"#7c3aed", label:"Context Store ← bridge.py", text:"persist_discovery() grava a discovery com justificativa LLM, evidências estatísticas e required_transforms. is_validated=NULL (aguarda revisão humana).", mono:"context.integration_discoveries ← confidence=0.94, is_validated=NULL" },
+  { color:"#7c3aed", label:"ContextResolver", text:"Dataset silver://siafi_notas_empenho dispara transform_siafi. ContextResolver encontra a discovery com confiança ≥ 0.7 e retorna --select models/ (pipeline completo).", mono:"get_select('siafi') → 'models/'  (integração confirmada, confiança 0.94)" },
+  { color:"#b45309", label:"Gold Layer — dbt + Superset", text:"DbtTaskGroup executa os modelos bronze + silver + gold do pacote siafi via astronomer-cosmos. Tabela empenhos_por_orgao materializada com join confirmado. Dataset disponível no Superset.", mono:"DbtTaskGroup(group_id='dbt_siafi', select='models/')  |  3 modelos executados" },
 ];
 
 // ── Render ──────────────────────────────────────────────────────────────────
@@ -451,9 +749,20 @@ function show(idx) {
     ? `<a class="detail-link dl-adr">${c.adr.num}</a>`
     : '';
   const codeHtml = `<a class="detail-link dl-code">${c.code}</a>`;
+
   const exampleHtml = c.example
     ? `<div class="detail-code"><pre>${escHtml(c.example)}</pre></div>`
     : '';
+
+  const testsHtml = c.tests
+    ? `<div class="tests-row"><span class="tests-label">Testes</span><span class="test-chip">${c.tests}</span></div>`
+    : '';
+
+  const ioHtml = (c.inputs || c.outputs) ? `
+    <div class="io-grid">
+      ${c.inputs  ? `<div class="io-box input"><h4>Entrada</h4><p>${c.inputs}</p></div>`  : '<div></div>'}
+      ${c.outputs ? `<div class="io-box output"><h4>Saída</h4><p>${c.outputs}</p></div>` : '<div></div>'}
+    </div>` : '';
 
   el.innerHTML = `
     <div class="detail-header">
@@ -463,10 +772,19 @@ function show(idx) {
         <div class="detail-subtitle">${c.layer}</div>
       </div>
     </div>
+
     <div class="detail-full" style="border-color:${c.color}33; background:${c.bg}">
       <h4>Responsabilidade</h4>
       <p>${c.responsibility}</p>
     </div>
+
+    <div class="detail-full">
+      <h4>Descrição detalhada</h4>
+      <p>${c.detail}</p>
+    </div>
+
+    ${ioHtml}
+
     <div class="detail-grid">
       <div class="detail-box">
         <h4>Ferramenta</h4>
@@ -477,7 +795,9 @@ function show(idx) {
         <p>${c.why}</p>
       </div>
     </div>
+
     ${exampleHtml}
+    ${testsHtml}
     <div class="detail-links">${adrHtml}${codeHtml}</div>
   `;
 }
@@ -497,15 +817,31 @@ function escHtml(s) {
 (function(){
   const grid = document.getElementById('adrs-grid');
   ADRS.forEach(a => {
-    const cls = a.status === 'Aceito' ? 's-aceito' : 's-proposto';
+    const statusCls = a.status === 'Aceito' ? 's-aceito' : 's-proposto';
     grid.innerHTML += `
       <div class="adr-card">
-        <div class="adr-num">${a.num}</div>
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;">
-          <div class="adr-title">${a.title}</div>
-          <span class="adr-status ${cls}">${a.status}</span>
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:.5rem; margin-bottom:.4rem;">
+          <div class="adr-num">${a.num}</div>
+          <span class="adr-status ${statusCls}">${a.status}</span>
         </div>
-        <div class="adr-body">${a.body}</div>
+        <div class="adr-title">${a.title}</div>
+
+        <div class="adr-section">
+          <div class="adr-section-label">Contexto</div>
+          <div class="adr-section-body">${a.context}</div>
+        </div>
+        <div class="adr-section decision">
+          <div class="adr-section-label">Decisão</div>
+          <div class="adr-section-body">${a.decision}</div>
+        </div>
+        <div class="adr-section rejected">
+          <div class="adr-section-label">Alternativa rejeitada</div>
+          <div class="adr-section-body">${a.rejected}</div>
+        </div>
+        <div class="adr-section consequence">
+          <div class="adr-section-label">Consequências</div>
+          <div class="adr-section-body">${a.consequence}</div>
+        </div>
       </div>`;
   });
 })();
@@ -528,9 +864,139 @@ function escHtml(s) {
   });
 })();
 
+// PoC de viabilidade E2E
+const POC_VERDICT = {
+  text:"A arquitetura é viável para a realidade do TCC. A promessa \"adicionar fonte = só um YAML\" vale plenamente na ingestão, mas não se estende à transformação e integração. O raciocínio semântico via LLM (a tese principal) funcionou e superou a análise estatística num caso real.",
+  rows:[
+    ["1 — Ingestão","Viável, validada ao vivo","Sim (só YAML)"],
+    ["2 — Transformação (dbt)","Funciona","Não (SQL manual por fonte)"],
+    ["3 — Integração (LLM)","Supera a estatística","n/a (lê CSV)"],
+    ["Costuras entre camadas","Exigem pontes manuais","—"],
+  ]
+};
+const POC_CARDS = [
+  { kind:"proof", label:"Camada 1 — Ingestão config-driven", status:"Provado",
+    body:"3 YAMLs novos → 5 DAGs ingest_api_* gerados pelo Airflow real, zero código de DAG. O IBGE atravessou API → MinIO (bronze, parquet 170KiB) → DuckDB (silver, 5.571 linhas reais). O ApiExtractor cobriu 2 famílias de API com dado real (array cru — IBGE; OData — BCB) só por config; offset/PostgREST implementado e testado por mock." },
+  { kind:"proof", label:"Camada 3 — Integração semântica via LLM", status:"Provado",
+    body:"A Decision Layer (via subscrição Claude Code) identificou a chave correta municipios.uf_id ↔ estados.id. Superou um falso negativo — todos os candidatos tinham match_rate 0% por incompatibilidade de tipo (float 35.0 vs int 35) — e rejeitou a armadilha municipio_id↔id (Derived Key redundante). O raciocínio semântico acertou onde a estatística falhou." },
+  { kind:"seam", label:"Costura A — Ingestão → Transformação", status:"Lacuna",
+    body:"A camada 1 grava em DuckDB; o dbt lê de PostgreSQL. Não existe ponte no código, e o docker-compose não sobe Postgres analítico. Foi necessário um script ad-hoc (DuckDB → achatar structs → Postgres) para as 5.571 linhas chegarem ao silver." },
+  { kind:"seam", label:"Costura B — Transformação não é config-driven (achado central)", status:"Lacuna",
+    body:"O dbt é hardcoded em SIAFI/Transfere/Compras: sources e models escritos à mão. O dado IBGE estava no Postgres, mas o dbt não o reconhecia. Foi preciso escrever +6 linhas de source e um model .sql à mão. A promessa \"sem código novo\" quebra na transformação. (ver ADR 0010)" },
+  { kind:"seam", label:"Costura C — Integração lê CSV, não o banco", status:"Lacuna",
+    body:"A camada 3 consome CSV, mas o dado está em DuckDB/Postgres. Foi necessário exportar as tabelas para CSV antes de integrar." },
+  { kind:"bug", label:"4 bugs corrigidos (nunca rodou E2E)", status:"Corrigido",
+    body:"(1) Ciclo de YAML anchor no docker-compose — Compose v5 recusava subir. (2) DAGs sem start_date — nenhum ingest_api_* carregava. (3) Permissão do volume DuckDB (root:root) — silver falhava. (4) _PIP_ADDITIONAL_REQUIREMENTS pesado travava o init 27min. Menor: dir context/ não montado no compose." },
+];
+(function(){
+  const v = document.getElementById('poc-verdict');
+  if (v) {
+    v.innerHTML = `<div class="adr-card" style="border-left:4px solid #16a34a;">
+      <div class="adr-title">Veredito</div>
+      <div class="adr-section-body" style="margin-bottom:.75rem;">${POC_VERDICT.text}</div>
+      <table style="width:100%; border-collapse:collapse; font-size:.82rem;">
+        <tr style="text-align:left; color:#64748b;"><th style="padding:.3rem .5rem;">Camada</th><th style="padding:.3rem .5rem;">Viável?</th><th style="padding:.3rem .5rem;">Config-driven real?</th></tr>
+        ${POC_VERDICT.rows.map(r=>`<tr style="border-top:1px solid #e2e8f0;"><td style="padding:.3rem .5rem;">${r[0]}</td><td style="padding:.3rem .5rem;">${r[1]}</td><td style="padding:.3rem .5rem;">${r[2]}</td></tr>`).join('')}
+      </table>
+    </div>`;
+  }
+  const grid = document.getElementById('poc-grid');
+  const palette = { proof:'#16a34a', seam:'#dc2626', bug:'#d97706' };
+  POC_CARDS.forEach(c => {
+    grid.innerHTML += `
+      <div class="adr-card" style="border-left:4px solid ${palette[c.kind]};">
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:.5rem; margin-bottom:.4rem;">
+          <div class="adr-title" style="margin:0;">${c.label}</div>
+          <span class="adr-status" style="background:${palette[c.kind]}22; color:${palette[c.kind]}; white-space:nowrap;">${c.status}</span>
+        </div>
+        <div class="adr-section-body">${c.body}</div>
+      </div>`;
+  });
+})();
+
+// PoC — logs de evidência (conteúdo fiel dos arquivos em docs/poc-artefatos/)
+const POC_LOGS = [
+  { file:"01-camada1-dags-config-driven.log", title:"Camada 1 — DAGs config-driven (airflow dags list)",
+    text:`dag_id                            | fileloc                      | is_paused
+ingest_api_bcb_ptax_moedas        | /opt/airflow/dags/api_dag.py | True
+ingest_api_convenios_transferegov | /opt/airflow/dags/api_dag.py | True
+ingest_api_ibge_estados           | /opt/airflow/dags/api_dag.py | True
+ingest_api_ibge_municipios        | /opt/airflow/dags/api_dag.py | False
+
+# DAGs gerados por um único api_dag.py — 1 YAML = 1 DAG, zero código de DAG.
+# (ingest_api_convenios_transferegov vem do example_api.yaml já presente no repo.)` },
+  { file:"02-camada1-execucao-dag-ibge.log", title:"Camada 1 — execução real do DAG (tasks states)",
+    text:`task_id              | state
+extract              | success
+write_bronze         | success
+stage_silver         | success
+run_profile_table    | failed    (dir context/ não montado — achado menor)
+run_annotate_context | failed    (idem)
+
+# Caminho principal API->bronze->silver completo no Airflow real.` },
+  { file:"03-camada1-bronze-silver.log", title:"Camada 1 — bronze (MinIO) + silver (DuckDB)",
+    text:`## BRONZE (MinIO) — artefato bruto imutável:
+[2026-06-15 13:56:41 UTC] 170KiB STANDARD raw/ibge_municipios/2026-06-15/data.parquet
+
+## SILVER (DuckDB):
+  ibge_municipios_20260615: 5571 linhas
+  amostra: ["Alta Floresta D'Oeste", 'Ariquemes', 'Cabixi']` },
+  { file:"04-camada2-dbt-run.log", title:"Camada 2 — dbt run (source + model À MÃO — Costura B)",
+    text:`Running with dbt=1.7.19
+1 of 1 START sql incremental model bronze.ibge_municipios ......... [RUN]
+1 of 1 OK created sql incremental model bronze.ibge_municipios .... [INSERT 0 5571 in 0.36s]
+Completed successfully
+Done. PASS=1 WARN=0 ERROR=0 SKIP=0 TOTAL=1` },
+  { file:"05-camada3-decision-layer-llm.log", title:"Camada 3 — Decision Layer LLM (poc_e2e_ibge.json)",
+    text:`CHAVE IDENTIFICADA PELO LLM:
+   ['uf_id'] ↔ ['id'] | confiança: 0.78
+
+JUSTIFICATIVA (resumo):
+  Apesar do match_rate automático de 0%, a junção correta é uf_id = id (FK
+  município->estado). O 0% é falso negativo por tipo (uf_id float64 35.0 vs
+  id int64 35). municipio_id->id tem score maior mas é Derived Key redundante.
+
+CANDIDATOS AUTOMÁTICOS (o escolhido tinha match_rate 0%):
+   ['uf_id']        ↔ ['id'] | score 0.4000 | match 0.0% | foreign_key (recomendada)
+   ['municipio_id'] ↔ ['id'] | score 0.4489 | match 0.0% | derived_key (rejeitada)
+   ['municipio_nome']↔['nome']| score 0.3560 | match 0.1% | spurious
+
+# O LLM rejeitou o candidato de MAIOR score por raciocínio semântico.` },
+  { file:"07-bugs-corrigidos.log", title:"Bugs corrigidos (a arquitetura nunca rodou E2E)",
+    text:`BUG 1 — Ciclo de YAML anchor no docker-compose (Compose v5 recusa subir)
+        ERRO: cycle detected ... services.airflow-init.environment
+        FIX:  anchor próprio &airflow-env  ->  compose config parseia
+
+BUG 2 — DAGs sem start_date (nenhum ingest_api_* carregava)
+        ERRO: ValueError: DAG is missing the start_date parameter
+        FIX:  api_dag.py em import-errors: 0
+
+BUG 3 — Permissão do volume DuckDB (silver falhava)
+        ERRO: IOException: Cannot open silver.duckdb: Permission denied
+        FIX:  /opt/airflow/data agora airflow:root
+
+BUG 4 — _PIP_ADDITIONAL_REQUIREMENTS travava init ~27min (unstructured[pdf])
+        FIX:  override com deps enxutas (httpx pandas PyYAML duckdb ...)` },
+];
+(function(){
+  const el = document.getElementById('poc-logs');
+  if (!el) return;
+  POC_LOGS.forEach(l => {
+    el.innerHTML += `
+      <div style="margin-bottom:1rem; border:1px solid #1e293b; border-radius:8px; overflow:hidden;">
+        <div style="background:#1e293b; color:#94a3b8; font-size:.78rem; padding:.45rem .8rem; display:flex; justify-content:space-between; align-items:center;">
+          <span style="color:#e2e8f0; font-weight:600;">${l.title}</span>
+          <span style="font-family:monospace;">${l.file}</span>
+        </div>
+        <pre style="margin:0; background:#0f172a; color:#cbd5e1; padding:.9rem 1rem; font-size:.74rem; line-height:1.5; overflow-x:auto; font-family:'SF Mono',Menlo,Consolas,monospace;">${escHtml(l.text)}</pre>
+      </div>`;
+  });
+})();
+
 // Keyboard nav
 document.addEventListener('keydown', e => {
-  const active = [...document.querySelectorAll('.node')].findIndex(n => n.classList.contains('active'));
+  const nodes = [...document.querySelectorAll('.node')];
+  const active = nodes.findIndex(n => n.classList.contains('active'));
   if (e.key === 'ArrowDown' && active < COMPONENTS.length-1) show(active+1);
   if (e.key === 'ArrowUp'   && active > 0)                   show(active-1);
 });

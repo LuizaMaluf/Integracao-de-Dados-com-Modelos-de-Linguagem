@@ -16,3 +16,11 @@ columns:
   - dt_fim
 
 skip_rows: 1
+
+# dbt package this source feeds — used by transformation_dag_factory to group DAGs
+dbt_packages:
+  - name: ted
+    select: models/silver/
+
+# Airflow Dataset URI produced after silver write — triggers transform_ted DAG
+silver_dataset: "silver://ted_programas"

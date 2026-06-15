@@ -1,0 +1,20 @@
+# Artefato 1 — Camada 1: DAGs config-driven gerados a partir dos YAMLs
+# Capturado de: airflow dags list (Airflow real, scheduler vivo)
+# 2026-06-15T14:29:00Z
+
+dag_id                            | fileloc                                         | owners  | is_paused
+ingest_api_bcb_ptax_moedas        | /opt/airflow/dags/api_dag.py                    | airflow | True     
+ingest_api_convenios_transferegov | /opt/airflow/dags/api_dag.py                    | airflow | True     
+ingest_api_ibge_estados           | /opt/airflow/dags/api_dag.py                    | airflow | True     
+ingest_api_ibge_municipios        | /opt/airflow/dags/api_dag.py                    | airflow | False    
+
+# Configs que originaram os DAGs (1 YAML = 1 DAG, zero código de DAG):
+#   configs/bcb_ptax_moedas.yaml
+#   configs/example_api.yaml
+#   configs/example_csv.yaml
+#   configs/example_dump.yaml
+#   configs/example_pdf_semantic.yaml
+#   configs/example_pdf_structural.yaml
+#   configs/example_xlsx.yaml
+#   configs/ibge_estados.yaml
+#   configs/ibge_municipios.yaml

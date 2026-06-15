@@ -4,6 +4,7 @@ Discovers all configs of type api in /opt/airflow/configs/.
 Flow: fetch all pages → write bronze → stage to silver
 """
 import sys
+from datetime import datetime
 from pathlib import Path
 
 import yaml
@@ -28,6 +29,7 @@ for _cfg in _load_configs():
     @dag(
         dag_id=f"ingest_api_{_source}",
         schedule=_cfg.get("schedule", "@daily"),
+        start_date=datetime(2024, 1, 1),
         catchup=False,
         tags=["ingestion", "api"],
     )
