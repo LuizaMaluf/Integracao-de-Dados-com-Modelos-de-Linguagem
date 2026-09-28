@@ -20,7 +20,7 @@ from pathlib import Path
 import yaml
 
 # Template do model bronze — um SELECT * sobre o source gerado.
-# Espelha o que foi escrito à mão na PoC (transformation/models/bronze/ibge_municipios.sql).
+# Espelha o que foi escrito à mão na PoC (dbt/models/bronze/ibge_municipios.sql).
 BRONZE_MODEL_TEMPLATE = """\
 -- GERADO por dbt_source_generator a partir de {config_file}. NÃO editar à mão.
 {{{{ config(materialized='incremental', on_schema_change='sync_all_columns') }}}}
@@ -80,7 +80,7 @@ if __name__ == "__main__":
 
     p = argparse.ArgumentParser(description="Gera sources.yml + models bronze do Source Registry")
     p.add_argument("--configs", required=True, type=Path, help="Diretório dos YAMLs (airflow/configs)")
-    p.add_argument("--out", required=True, type=Path, help="Saída (transformation/models/bronze)")
+    p.add_argument("--out", required=True, type=Path, help="Saída (dbt/models/bronze)")
     p.add_argument("--source-group", default="silver")
     args = p.parse_args()
     generate(args.configs, args.out, args.source_group)

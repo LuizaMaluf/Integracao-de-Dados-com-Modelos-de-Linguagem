@@ -1,9 +1,9 @@
 """
 DAG: dbt transformation — roda os modelos bronze/silver/gold do gov_hub.
 
-O projeto dbt vive em gov-hub/transformation/ (montado em /opt/airflow/transformation
+O projeto dbt vive em dbt/ na raiz do repo (montado em /opt/airflow/dbt
 no container). É completamente independente do Airflow: pode ser rodado via CLI
-fora do container com `dbt run --project-dir transformation/`.
+fora do container com `dbt run --project-dir dbt/`.
 
 Dispara diariamente após a janela de ingestão (01:00).
 """
@@ -18,8 +18,8 @@ DBT_LOG_PATH = "/tmp/dbt_logs"
 os.makedirs(DBT_LOG_PATH, exist_ok=True)
 os.environ[DBT_LOG_PATH_ENVVAR] = DBT_LOG_PATH
 
-# transformation/ é montado como volume separado — independente de dags/
-TRANSFORMATION_DIR = Path("/opt/airflow/transformation")
+# dbt/ é montado como volume separado — independente de dags/
+TRANSFORMATION_DIR = Path("/opt/airflow/dbt")
 
 profile_config = ProfileConfig(
     profiles_yml_filepath=TRANSFORMATION_DIR / "profiles.yml",

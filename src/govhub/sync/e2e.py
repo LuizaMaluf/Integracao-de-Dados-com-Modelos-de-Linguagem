@@ -17,7 +17,7 @@ from govhub.sync.dbt_source_generator import generate
 from govhub.sync.silver_sync import sync_to_postgres
 
 CONFIGS_DIR = Path("airflow/configs")
-BRONZE_OUT = Path("transformation/models/bronze")
+BRONZE_OUT = Path("dbt/models/bronze")
 
 
 def run_e2e(duckdb_table: str, target_table: str, pair: tuple[str, str]) -> None:
