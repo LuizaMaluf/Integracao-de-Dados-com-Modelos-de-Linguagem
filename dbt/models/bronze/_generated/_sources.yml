@@ -1,0 +1,20 @@
+# GERADO por govhub.sync.dbt_source_generator. NÃO editar à mão.
+version: 2
+sources:
+- name: registry
+  description: Tabelas sincronizadas pelo Silver Sync (costura A), declaradas no Source
+    Registry (airflow/configs/).
+  schema: silver
+  tables:
+  - name: siafi_empenhos
+    description: Fonte declarada em example_api.yaml
+  - name: fgts_operacoes
+    description: Fonte declarada em example_csv.yaml
+  - name: gold_financiamentos_imobiliarios
+    description: Fonte declarada em example_dump.yaml
+  - name: orcamento_narrativo
+    description: Fonte declarada em example_pdf_semantic.yaml
+  - name: siafi_relatorio_mensal
+    description: Fonte declarada em example_pdf_structural.yaml
+  - name: ted_programas
+    description: Fonte declarada em example_xlsx.yaml

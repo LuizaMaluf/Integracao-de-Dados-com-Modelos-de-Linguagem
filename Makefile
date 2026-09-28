@@ -1,4 +1,4 @@
-.PHONY: install test lint up down init logs bucket airflow-ui minio-ui dbt-deps dbt-run dbt-test
+.PHONY: install test lint up down init logs bucket airflow-ui minio-ui dbt-generate dbt-deps dbt-run dbt-test
 
 # Carrega o .env da raiz (se existir) para os comandos dbt
 DBT = set -a; [ -f .env ] && . ./.env; set +a; dbt
@@ -38,6 +38,10 @@ minio-ui:
 	@echo "MinIO console: http://localhost:9001"
 
 # ── dbt (fora do container) ──────────────────────────────────────
+# Gera sources/models bronze a partir de airflow/configs (costura B)
+dbt-generate:
+	python -m govhub.sync.dbt_source_generator --configs airflow/configs --models-dir dbt/models
+
 dbt-deps:
 	$(DBT) deps $(DBT_ARGS)
 
