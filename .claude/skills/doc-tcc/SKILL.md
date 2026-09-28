@@ -1,6 +1,6 @@
 # doc-tcc
 
-Agente de documentação do TCC gov-hub (Luiza & Lucas, UnB).
+Agente de documentação do TCC gov-hub (Luiza Maluf, UnB).
 
 Ao ser invocado, analisa a conversa atual, extrai decisões e alimenta a documentação centralizada em `docs/`.
 
