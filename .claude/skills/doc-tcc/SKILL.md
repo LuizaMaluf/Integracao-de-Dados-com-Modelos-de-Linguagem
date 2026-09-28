@@ -20,7 +20,7 @@ Ao ser invocado, analisa a conversa atual, extrai decisões e alimenta a documen
 ### Etapa 1 — Ler estado atual da documentação
 
 Leia os arquivos abaixo para entender o que já está documentado antes de criar duplicatas:
-- `docs/architecture.md` — componentes e ADRs existentes
+- `docs/architecture/architecture.md` — componentes e ADRs existentes
 - `docs/adr/` — listar arquivos presentes (ls)
 - Memórias em `/home/luiza-maluf/.claude/projects/-home-luiza-maluf--rea-de-trabalho-tcc-gov-hub/memory/MEMORY.md`
 
@@ -87,7 +87,7 @@ Se um componente existente mudou de ferramenta ou responsabilidade:
 
 ### Etapa 5 — Atualizar architecture-interactive.html
 
-Se houve mudança em componente ou ADR, atualize o array `COMPONENTS` ou `ADRS` em `docs/architecture-interactive.html`:
+Se houve mudança em componente ou ADR, atualize o array `COMPONENTS` ou `ADRS` em `docs/architecture/architecture-interactive.html`:
 - `COMPONENTS[i].responsibility` — se a responsabilidade mudou
 - `COMPONENTS[i].tool` — se a ferramenta mudou
 - `COMPONENTS[i].adr` — se um ADR novo foi vinculado
