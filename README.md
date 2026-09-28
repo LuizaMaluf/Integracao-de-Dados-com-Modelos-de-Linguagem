@@ -10,24 +10,24 @@ Sistema de três camadas para ingestão, transformação e integração semânti
 Fontes externas (APIs, PDFs, CSVs, dumps SQL)
         ↓
 ┌─────────────────────────────────────────────────┐
-│  ingestion/   — Apache Airflow + MinIO + DuckDB  │  ← Camada 1: Ingestão
+│  ingestion    — Airflow + MinIO + DuckDB         │  ← Camada 1: Ingestão
 │  Extrai, valida e armazena dados brutos           │
 └────────────────────┬────────────────────────────┘
                      │ Silver Zone (DuckDB)
                      ↓
 ┌─────────────────────────────────────────────────┐
-│  transformation/  — dbt + PostgreSQL             │  ← Camada 2: Transformação
+│  dbt/         — dbt + PostgreSQL                 │  ← Camada 2: Transformação
 │  Bronze → Silver → Gold (modelos analíticos)     │
 └────────────────────┬────────────────────────────┘
                      │ tabelas limpas (CSV/DuckDB)
                      ↓
 ┌─────────────────────────────────────────────────┐
-│  integration/     — Python + Claude API          │  ← Camada 3: Integração
+│  integration  — Python + Claude API              │  ← Camada 3: Integração
 │  Identifica chaves semânticas entre tabelas      │
 └─────────────────────────────────────────────────┘
 ```
 
-Cada camada é independente e pode ser usada isoladamente.
+Cada camada é independente e pode ser usada isoladamente. O código Python das camadas 1 e 3 vive num único pacote, `govhub` (`src/govhub/`); DAGs e configs de fonte ficam em `airflow/`.
 
 ---
 
@@ -37,17 +37,46 @@ Cada camada é independente e pode ser usada isoladamente.
 |---|---|---|
 | Python | 3.11 | Camadas integration e ingestion |
 | Docker + Docker Compose | 24.x | Camada ingestion (Airflow, MinIO, Postgres) |
-| dbt-core + dbt-postgres | 1.x | Camada transformation |
-| PostgreSQL | 14+ | Transformation (pode usar o do docker da ingestion) |
+| dbt-core + dbt-postgres | 1.x | Camada 2 (`dbt/`) |
+| PostgreSQL | 14+ | Camada 2 — já incluído no `docker-compose.yml` |
 | Chave Anthropic API | — | Decision Layer e parser PDF semântico |
 
 Obtenha a chave em: https://console.anthropic.com/settings/keys
 
 ---
 
+## Setup rápido
+
+Tudo roda a partir da raiz do repositório, com um único `.env`.
+
+```bash
+cp .env.example .env          # preencha ANTHROPIC_API_KEY (e ajuste POSTGRES_* se quiser)
+pip install -e ".[ingestion,dev]"
+make test                     # roda a suíte de testes
+
+make init                     # inicializa o banco do Airflow e cria o usuário admin
+make up                       # sobe Airflow, MinIO e PostgreSQL
+make bucket                   # cria o bucket bronze no MinIO
+```
+
+Windows (PowerShell), sem `make`:
+
+```powershell
+Copy-Item .env.example .env
+pip install -e ".[ingestion,dev]"
+pytest
+
+docker compose up airflow-init
+docker compose up -d
+docker compose exec minio mc alias set local http://localhost:9000 minioadmin minioadmin
+docker compose exec minio mc mb --ignore-existing local/bronze
+```
+
+---
+
 ## Camada 1 — Ingestion
 
-**Localização:** `ingestion/`  
+**Localização:** `src/govhub/ingestion/` (código) · `airflow/` (DAGs e configs de fonte)  
 **Função:** extrai dados de fontes externas (API REST, CSV/XLSX, dump SQL, PDF) e os armazena em duas zonas:
 
 - **Bronze Zone (MinIO)** — artefato bruto imutável, nunca sobrescrito
@@ -57,43 +86,19 @@ Obtenha a chave em: https://console.anthropic.com/settings/keys
 
 | Diretório | Função |
 |---|---|
-| `extractors/` | Extratores para CSV/XLSX, REST API, dump SQL e download de PDF |
-| `parsers/` | Parser estrutural (pdfplumber + camelot) e semântico (Claude API) |
-| `storage/` | Abstrações Bronze (MinIO) e Silver (DuckDB) |
-| `dags/` | Um DAG Airflow por tipo de fonte + DAG de trigger de integração |
-| `configs/` | Um YAML por fonte — declara schedule, modo de extração, colunas e páginas |
-| `bridge/` | Lê tabelas do DuckDB e dispara o `IntegrationAgent` |
+| `src/govhub/ingestion/extractors/` | Extratores para CSV/XLSX, REST API, dump SQL e download de PDF |
+| `src/govhub/ingestion/parsers/` | Parser estrutural (pdfplumber + camelot) e semântico (Claude API) |
+| `src/govhub/ingestion/storage/` | Abstrações Bronze (MinIO) e Silver (DuckDB) |
+| `airflow/dags/` | Um DAG Airflow por tipo de fonte + DAG de trigger de integração |
+| `airflow/configs/` | Um YAML por fonte — declara schedule, modo de extração, colunas e páginas |
+| `src/govhub/ingestion/bridge/` | Lê tabelas do DuckDB e dispara o `IntegrationAgent` |
+| `src/govhub/ingestion/context/` | Profile e anotação de colunas no Context Store |
 
 ### Setup
 
-#### Linux / macOS
+Ver [Setup rápido](#setup-rápido). O `docker-compose.yml` monta `src/` no container com `PYTHONPATH=/opt/airflow/src`, então os DAGs importam `govhub.*` diretamente.
 
-```bash
-cd ingestion
-cp .env.example .env
-# Edite .env: preencha ANTHROPIC_API_KEY (obrigatório para parser PDF semântico)
-
-make init      # inicializa banco do Airflow e cria usuário admin
-make up        # sobe todos os serviços (Airflow, MinIO, PostgreSQL)
-make bucket    # cria bucket bronze no MinIO
-```
-
-#### Windows (PowerShell)
-
-```powershell
-cd ingestion
-Copy-Item .env.example .env
-# Edite .env com ANTHROPIC_API_KEY
-
-docker compose up airflow-init   # equivale ao make init
-docker compose up -d             # equivale ao make up
-
-# Criar bucket manualmente após subir:
-docker compose exec minio mc alias set local http://localhost:9000 minioadmin minioadmin
-docker compose exec minio mc mb --ignore-existing local/bronze
-```
-
-### Variáveis de ambiente (`ingestion/.env`)
+### Variáveis de ambiente (`.env` na raiz)
 
 | Variável | Padrão | Descrição |
 |---|---|---|
@@ -113,7 +118,7 @@ docker compose exec minio mc mb --ignore-existing local/bronze
 
 ### Adicionar uma nova fonte
 
-1. Crie `configs/<nome_da_fonte>.yaml` seguindo um dos exemplos existentes em `configs/`
+1. Crie `airflow/configs/<nome_da_fonte>.yaml` seguindo um dos exemplos existentes em `airflow/configs/`
 2. O DAG correspondente detecta o arquivo automaticamente no próximo tick do scheduler
 3. Nenhuma alteração de código necessária
 
@@ -128,7 +133,7 @@ make down     # derruba todos os serviços
 
 ## Camada 2 — Transformation
 
-**Localização:** `transformation/`  
+**Localização:** `dbt/`  
 **Função:** modelos dbt que movem os dados pela medalha Bronze → Silver → Gold, enriquecendo e normalizando progressivamente.
 
 | Camada | Materialização | Schema PostgreSQL | Descrição |
@@ -139,38 +144,18 @@ make down     # derruba todos os serviços
 
 ### Setup
 
-#### Linux / macOS
+O PostgreSQL analítico sobe junto com o `make up`. Para rodar o dbt fora do container, a partir da raiz:
 
 ```bash
-# Use o PostgreSQL já iniciado pelo docker-compose da ingestion, ou suba um próprio.
-cd transformation
-cp .env.example .env
-# Edite .env com as credenciais do PostgreSQL
-
 pip install dbt-core dbt-postgres
-
-dbt deps           # instala pacotes (astronomer-cosmos etc.)
-dbt debug          # verifica conexão
-dbt run            # executa todos os modelos
-dbt test           # roda os testes de qualidade
+make dbt-deps      # instala pacotes (dbt_utils)
+make dbt-run       # executa todos os modelos (target dev → localhost)
+make dbt-test      # roda os testes de qualidade
 ```
 
-#### Windows (PowerShell)
+Sem `make`, carregue o `.env` e passe `--project-dir dbt --profiles-dir dbt --target dev` para o `dbt`.
 
-```powershell
-cd transformation
-Copy-Item .env.example .env
-# Edite .env com credenciais do PostgreSQL
-
-pip install dbt-core dbt-postgres
-
-dbt deps
-dbt debug
-dbt run
-dbt test
-```
-
-### Variáveis de ambiente (`transformation/.env`)
+### Variáveis de ambiente (`.env` na raiz)
 
 | Variável | Descrição |
 |---|---|
@@ -183,6 +168,7 @@ dbt test
 ### Comandos úteis
 
 ```bash
+# a partir de dbt/ (ou com --project-dir dbt --profiles-dir dbt)
 dbt run --select bronze     # só modelos Bronze
 dbt run --select silver     # só modelos Silver
 dbt run --select gold       # só modelos Gold
@@ -194,7 +180,7 @@ dbt docs generate && dbt docs serve   # documentação interativa em http://loca
 
 ## Camada 3 — Integration
 
-**Localização:** `integration/`  
+**Localização:** `src/govhub/integration/`  
 **Função:** identifica automaticamente a melhor chave de junção entre dois arquivos CSV usando análise semântica, estatística e raciocínio LLM.
 
 ### Pipeline de 5 etapas
@@ -209,35 +195,16 @@ Etapa 4 — Relatório             gera HTML com gauge de confiança, código Py
 
 ### Setup
 
-#### Linux / macOS
-
 ```bash
-cd integration
-cp ../.env.example .env
-# Edite .env: preencha ANTHROPIC_API_KEY
-
-pip install -e .              # instala o pacote em modo editável
+pip install -e .              # só a camada de integração
 # ou, para desenvolvimento:
 pip install -e ".[dev]"
 
 # Verificar instalação:
-python -c "from src.config.context_loader import load_context; print('ok')"
+python -c "from govhub.integration.config.context_loader import load_context; print('ok')"
 ```
 
-#### Windows (PowerShell)
-
-```powershell
-cd integration
-Copy-Item ..\.env.example .env
-# Edite .env com ANTHROPIC_API_KEY
-
-pip install -e .
-
-# Verificar instalação:
-python -c "from src.config.context_loader import load_context; print('ok')"
-```
-
-### Variáveis de ambiente (`.env` na raiz ou em `integration/`)
+### Variáveis de ambiente (`.env` na raiz)
 
 | Variável | Obrigatório | Padrão | Descrição |
 |---|---|---|---|
@@ -252,14 +219,14 @@ python -c "from src.config.context_loader import load_context; print('ok')"
 
 ```bash
 # Com raciocínio LLM (padrão)
-python main.py --table-a data/raw/tabela_a.csv --table-b data/raw/tabela_b.csv
+govhub --table-a data/raw/tabela_a.csv --table-b data/raw/tabela_b.csv
 
 # Sem LLM (só análise estatística — mais rápido, sem custo de API)
-python main.py --table-a data/raw/tabela_a.csv --table-b data/raw/tabela_b.csv --no-llm
+govhub --table-a data/raw/tabela_a.csv --table-b data/raw/tabela_b.csv --no-llm
 
 # Salvando resultado em caminho específico
-python main.py --table-a data/raw/tabela_a.csv --table-b data/raw/tabela_b.csv \
-               --output output/meu_resultado.json
+govhub --table-a data/raw/tabela_a.csv --table-b data/raw/tabela_b.csv \
+       --output output/meu_resultado.json
 ```
 
 **Parâmetros disponíveis:**
@@ -275,7 +242,7 @@ python main.py --table-a data/raw/tabela_a.csv --table-b data/raw/tabela_b.csv \
 | `--no-llm` | Não | Pula a etapa de raciocínio com LLM |
 | `--output` | Não | Caminho para salvar o JSON de saída |
 
-> `main.py` executa a mesma lógica do `/integrar-bases`, mas sem gerar o relatório HTML — só o JSON com a Integration Key identificada.
+> O comando `govhub` (instalado pelo `pip install -e .`) executa a mesma lógica do `/integrar-bases`, mas sem gerar o relatório HTML — só o JSON com a Integration Key identificada.
 
 ### Executar via Claude Code (skills)
 
@@ -428,47 +395,44 @@ O Domain Context descreve o vocabulário semântico de um domínio: quais nomes 
 ## Estrutura do repositório
 
 ```
-gov-hub/
-├── ingestion/              # Camada 1 — Airflow, MinIO, DuckDB
-│   ├── configs/            # YAMLs de fontes de dados
-│   ├── dags/               # DAGs Airflow
-│   ├── extractors/         # Extratores (API, CSV, SQL dump, PDF)
-│   ├── parsers/            # Parsers estrutural e semântico de PDF
-│   ├── storage/            # Abstrações Bronze e Silver
-│   ├── bridge/             # Bridge DuckDB → IntegrationAgent
-│   ├── docker-compose.yml
-│   ├── Makefile
-│   └── requirements.txt
+.
+├── src/govhub/                 # pacote Python único
+│   ├── ingestion/              # Camada 1 — extractors, parsers, storage, context, bridge
+│   ├── integration/            # Camada 3 — agent, analyzers, config, loaders, store, transformers
+│   ├── sync/                   # Costuras A/B entre camadas (silver_sync, dbt_source_generator, e2e)
+│   └── cli.py                  # comando `govhub`
 │
-├── transformation/         # Camada 2 — dbt + PostgreSQL
-│   ├── models/
-│   │   ├── bronze/         # Modelos incrementais (raw)
-│   │   ├── silver/         # Tabelas limpas e enriquecidas
-│   │   └── gold/           # Modelos analíticos finais
+├── airflow/
+│   ├── dags/                   # DAGs finas — orquestram, importam govhub.*
+│   └── configs/                # Source Registry: um YAML por fonte
+│
+├── dbt/                        # Camada 2 — dbt + PostgreSQL
+│   ├── models/{bronze,silver,gold}/
 │   ├── macros/
-│   ├── tests/
-│   ├── seeds/
 │   ├── dbt_project.yml
 │   └── profiles.yml
 │
-├── integration/            # Camada 3 — Agente semântico Python
-│   ├── src/
-│   │   ├── agent/          # Orchestrator, candidate generator, LLM reasoner
-│   │   ├── analyzers/      # Structural, semantic, statistical, content analyzers
-│   │   ├── transformers/   # Pattern detector, normalizer
-│   │   ├── loaders/        # CSV loader
-│   │   └── config/         # Domain config, settings, context loader
-│   ├── data/               # Dados de entrada (CSVs)
-│   ├── output/             # JSONs e HTMLs gerados
-│   ├── tests/
-│   ├── main.py
-│   └── pyproject.toml
+├── tests/
+│   ├── ingestion/
+│   └── integration/
 │
-├── docs/                   # Documentação de arquitetura
-├── analises/               # Saídas de análises do TCC
-├── CONTEXT.md              # Glossário e vocabulário do domínio
-└── README.md               # Este arquivo
+├── docs/
+│   ├── adr/                    # decisões de arquitetura
+│   ├── specs/                  # PRDs e propostas (inclui costuras-e2e.md)
+│   ├── architecture/           # arquitetura em .md e .html
+│   ├── ingestion.md            # detalhes da camada de ingestão
+│   └── tcc/                    # página do TCC e artefatos
+│
+├── .claude/skills/             # skills do pipeline (Claude Code)
+├── docker-compose.yml          # Airflow + MinIO + PostgreSQL
+├── Makefile
+├── pyproject.toml
+├── .env.example                # configuração única
+├── CONTEXT.md                  # glossário do domínio
+└── README.md
 ```
+
+Gerados localmente e fora do git: `output/`, `data/raw/`, `data/processed/`, `dbt/target/`, `dbt/dbt_packages/`, `dbt/logs/`.
 
 ---
 
@@ -501,27 +465,19 @@ gov-hub/
 /comparar-colunas tabela_a.csv:campo_suspeito tabela_b.csv:outro_campo
 ```
 
-### Pipeline via terminal (Linux/macOS)
+### Pipeline via terminal
 
 ```bash
-cd integration
-python main.py --table-a data/raw/tabela_a.csv --table-b data/raw/tabela_b.csv
-```
-
-### Pipeline via terminal (Windows)
-
-```powershell
-cd integration
-python main.py --table-a data\raw\tabela_a.csv --table-b data\raw\tabela_b.csv
+govhub --table-a data/raw/tabela_a.csv --table-b data/raw/tabela_b.csv
 ```
 
 ---
 
 ## Solução de problemas frequentes
 
-### `ModuleNotFoundError: No module named 'src'`
+### `ModuleNotFoundError: No module named 'govhub'`
 
-O pacote não foi instalado. Execute na raiz do diretório `integration/`:
+O pacote não foi instalado. Execute na raiz do repositório:
 
 ```bash
 pip install -e .
@@ -529,7 +485,7 @@ pip install -e .
 
 ### Etapa LLM retorna erro de autenticação
 
-Verifique se `ANTHROPIC_API_KEY` está definida no `.env` e se o arquivo está na raiz do projeto ou em `integration/`:
+Verifique se `ANTHROPIC_API_KEY` está definida no `.env` e se o arquivo está na raiz do projeto:
 
 ```bash
 # Linux/macOS
@@ -559,10 +515,11 @@ Execute `make bucket` (Linux/macOS) ou o comando equivalente do Windows listado 
 
 ### dbt não conecta ao PostgreSQL
 
-Verifique as variáveis em `transformation/.env` e confirme que o PostgreSQL está acessível:
+Verifique as variáveis `POSTGRES_*` no `.env` da raiz e confirme que o PostgreSQL está acessível:
 
 ```bash
-dbt debug
+set -a; . ./.env; set +a
+dbt debug --project-dir dbt --profiles-dir dbt --target dev
 ```
 
 ### Coverage do contexto abaixo de 60%

@@ -344,7 +344,7 @@
       </div>
       <div class="meta-item">
         <span class="meta-label">Módulos</span>
-        <span class="meta-value">ingestion/ · transformation/ · integration/</span>
+        <span class="meta-value">src/govhub/ · airflow/ · dbt/</span>
       </div>
     </div>
   </header>
@@ -406,7 +406,7 @@
         <div class="ov-split">
 
           <div class="ov-split-col">
-            <div class="ov-arrow" style="font-size:.7rem; color:#9ca3af; padding:.25rem 0; text-align:center;">↓ &nbsp; transformation/ · dbt (independente)</div>
+            <div class="ov-arrow" style="font-size:.7rem; color:#9ca3af; padding:.25rem 0; text-align:center;">↓ &nbsp; dbt/ · dbt (independente)</div>
             <div class="pipe-node node-gold">Gold Layer — dbt<span class="sub">bronze → silver → gold · modelos analíticos</span></div>
             <div class="ov-split-arrow">↓</div>
             <div class="pipe-node node-gold">Apache Superset<span class="sub">dashboards · exploração de dados</span></div>
@@ -466,7 +466,7 @@
             <td><strong>Source Registry</strong></td>
             <td>Declaração de cada fonte: URL, auth, paginação, schedule, schema alvo, conflict fields</td>
             <td><code>YAML</code> + Pydantic</td>
-            <td><code>ingestion/configs/</code></td>
+            <td><code>airflow/configs/</code></td>
           </tr>
           <tr>
             <td><span class="badge badge-gray">2</span></td>
@@ -480,56 +480,56 @@
             <td><strong>Generic Extractor</strong></td>
             <td>HTTP com retry e backoff, paginação parametrizada (cursor/page/offset), auth por config, buffer IO.Bytes</td>
             <td><code>httpx</code></td>
-            <td><code>ingestion/extractors/base.py</code></td>
+            <td><code>src/govhub/ingestion/extractors/base.py</code></td>
           </tr>
           <tr>
             <td><span class="badge badge-gray">3b</span></td>
             <td><strong>Extractors especializados</strong></td>
             <td>PDF (layout analysis + Claude API), CSV/XLSX, SQL dump — lógica que não cabe no extractor genérico</td>
             <td><code>pdfplumber</code> · <code>unstructured</code> · <code>psycopg2</code></td>
-            <td><code>ingestion/extractors/</code></td>
+            <td><code>src/govhub/ingestion/extractors/</code></td>
           </tr>
           <tr>
             <td><span class="badge badge-amber">4</span></td>
             <td><strong>Bronze Store</strong></td>
             <td>Artefato bruto imutável por execução. Path: <code>raw/&lt;source&gt;/&lt;date&gt;/</code></td>
             <td><code>MinIO</code> (S3-compatible)</td>
-            <td><code>ingestion/storage/bronze.py</code></td>
+            <td><code>src/govhub/ingestion/storage/bronze.py</code></td>
           </tr>
           <tr>
             <td><span class="badge badge-gray">5</span></td>
             <td><strong>Parsers</strong></td>
             <td>Converte artefato bronze para DataFrame estruturado (semântico via LLM ou estrutural via regras)</td>
             <td><code>pandas</code> · <code>Claude API</code></td>
-            <td><code>ingestion/parsers/</code></td>
+            <td><code>src/govhub/ingestion/parsers/</code></td>
           </tr>
           <tr>
             <td><span class="badge badge-gray">6</span></td>
             <td><strong>Transform + Validate</strong></td>
             <td>Normaliza colunas, valida schema Pandera declarado no YAML da fonte, rejeita inválidos</td>
             <td><code>pandera</code></td>
-            <td><code>ingestion/storage/silver.py</code></td>
+            <td><code>src/govhub/ingestion/storage/silver.py</code></td>
           </tr>
           <tr>
             <td><span class="badge badge-gray">7</span></td>
             <td><strong>Silver Store</strong></td>
             <td>Tabelas estruturadas por schema de origem, acessíveis por múltiplos processos</td>
             <td><code>PostgreSQL</code></td>
-            <td><code>ingestion/storage/silver.py</code></td>
+            <td><code>src/govhub/ingestion/storage/silver.py</code></td>
           </tr>
           <tr>
             <td><span class="badge badge-gray">8</span></td>
             <td><strong>Table Catalog</strong></td>
             <td>Registra cada carga: fonte, tabela, schema, linhas, quality_ok, timestamp</td>
             <td><code>catalog.ingested_tables</code> (PostgreSQL)</td>
-            <td><code>ingestion/storage/catalog.py</code></td>
+            <td><code>src/govhub/ingestion/storage/catalog.py</code></td>
           </tr>
           <tr>
             <td><span class="badge badge-gray">9</span></td>
             <td><strong>Integration Bridge</strong></td>
             <td>Consulta o Catalog, carrega os DataFrames do silver e aciona o IntegrationAgent</td>
             <td><code>Python</code></td>
-            <td><code>ingestion/bridge/integration_bridge.py</code></td>
+            <td><code>src/govhub/ingestion/bridge/integration_bridge.py</code></td>
           </tr>
         </tbody>
       </table>
@@ -720,10 +720,10 @@ conflict_fields: [numEmpenho, anoEmpenho]</pre>
   </div>
 
 
-  <!-- ══ 3b. MÓDULO transformation/ ══ -->
+  <!-- ══ 3b. MÓDULO dbt/ ══ -->
   <div class="section-title">
     <span class="section-number">3</span>
-    Módulo <code style="font-size:.95rem;">transformation/</code>
+    Módulo <code style="font-size:.95rem;">dbt/</code>
   </div>
 
   <div class="card">
@@ -734,7 +734,7 @@ conflict_fields: [numEmpenho, anoEmpenho]</pre>
     <div class="card-body">
 
       <p style="color:#374151; margin-bottom:1.25rem;">
-        O módulo <code>transformation/</code> contém o projeto dbt do gov-hub. Ele é completamente independente do Airflow:
+        O módulo <code>dbt/</code> contém o projeto dbt do gov-hub. Ele é completamente independente do Airflow:
         pode ser executado via CLI (<code>dbt run</code>) sem nenhum container em pé. O Airflow apenas agenda e monitora a
         execução via DAG Cosmos — mas não possui os arquivos dbt dentro de si.
       </p>
@@ -743,7 +743,7 @@ conflict_fields: [numEmpenho, anoEmpenho]</pre>
         <strong>Separação de responsabilidades:</strong>
         <ul style="margin-top:.5rem; padding-left:1.25rem; line-height:1.9; font-size:.88rem;">
           <li><strong>ingestion/</strong> — extrai e carrega dados brutos no silver (PostgreSQL). Responsabilidade: <em>mover dados</em>.</li>
-          <li><strong>transformation/</strong> — transforma o silver em modelos analíticos. Responsabilidade: <em>modelar dados</em>.</li>
+          <li><strong>dbt/</strong> — transforma o silver em modelos analíticos. Responsabilidade: <em>modelar dados</em>.</li>
           <li>O Airflow aciona o dbt via <code>transformation_dag.py</code>, mas os arquivos dbt estão fora do diretório de DAGs.</li>
         </ul>
       </div>
@@ -752,7 +752,7 @@ conflict_fields: [numEmpenho, anoEmpenho]</pre>
 
         <div>
           <p style="font-size:.8rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:#6b7280; margin-bottom:.6rem;">Estrutura</p>
-          <div class="dir-tree">transformation/
+          <div class="dir-tree">dbt/
 ├── <span class="hl">dbt_project.yml</span>        <span class="dim">← projeto gov_hub</span>
 ├── profiles.yml           <span class="dim">← conexão PostgreSQL</span>
 ├── packages.yml           <span class="dim">← dbt-utils</span>
@@ -772,10 +772,10 @@ conflict_fields: [numEmpenho, anoEmpenho]</pre>
           <div style="font-size:.82rem; color:#374151; line-height:1.8;">
             <p style="margin-bottom:.5rem;"><strong>Fora do container (dev):</strong></p>
             <pre style="background:#f8faff; border:1px solid #e5e7eb; border-radius:6px; padding:.75rem; font-size:.78rem; margin-bottom:.75rem;">cd gov-hub/
-dbt run --project-dir transformation/ \
-        --profiles-dir transformation/
-dbt test --project-dir transformation/ \
-         --profiles-dir transformation/</pre>
+dbt run --project-dir dbt/ \
+        --profiles-dir dbt/
+dbt test --project-dir dbt/ \
+         --profiles-dir dbt/</pre>
             <p style="margin-bottom:.5rem;"><strong>Via Airflow (produção):</strong></p>
             <p style="color:#6b7280; font-size:.82rem;">A DAG <code>gov_hub_transformation</code> roda diariamente às 01:00 via Cosmos, apontando para <code>/opt/airflow/transformation</code> (volume montado separado de <code>/opt/airflow/dags</code>).</p>
           </div>
@@ -801,7 +801,7 @@ dbt test --project-dir transformation/ \
     <div class="card-body">
 
       <p style="color:#374151; margin-bottom:1.25rem;">
-        O Integration Gateway conecta os dois módulos do repositório. Ele vive em <code>ingestion/bridge/</code>
+        O Integration Gateway conecta os dois módulos do repositório. Ele vive em <code>src/govhub/ingestion/bridge/</code>
         e é acionado por uma DAG Airflow dedicada. Consulta o Table Catalog para descobrir tabelas disponíveis,
         carrega os DataFrames do silver e delega ao IntegrationAgent a identificação da chave.
       </p>
@@ -817,7 +817,7 @@ dbt test --project-dir transformation/ \
         </div>
 
         <div class="pipe-node node-bridge">
-          Integration Gateway — ingestion/bridge/integration_bridge.py
+          Integration Gateway — src/govhub/ingestion/bridge/integration_bridge.py
           <span class="sub">DAG: integration_bridge_dag · recebe table_a e table_b como parâmetros · constrói TableMetadata</span>
         </div>
         <div class="flow-arrow">
@@ -826,7 +826,7 @@ dbt test --project-dir transformation/ \
         </div>
 
         <div class="pipe-node node-agent">
-          IntegrationAgent — integration/src/agent/orchestrator.py
+          IntegrationAgent — src/govhub/integration/agent/orchestrator.py
           <span class="sub">E1 Perfilagem → E2 Candidatos → E3 Evidências → E4 Decision Layer LLM</span>
         </div>
         <div class="flow-arrow">
@@ -889,12 +889,12 @@ dbt test --project-dir transformation/ \
 │   └── catalog.py        <span class="dim">← Table Catalog</span>
 ├── bridge/
 │   └── integration_bridge.py
-└── docker-compose.yml    <span class="dim">← monta transformation/</span></div>
+└── docker-compose.yml    <span class="dim">← monta dbt/</span></div>
         </div>
 
         <div>
-          <p style="font-size:.8rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:#6b7280; margin-bottom:.75rem;">transformation/</p>
-          <div class="dir-tree" style="font-size:.73rem;">gov-hub/transformation/
+          <p style="font-size:.8rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:#6b7280; margin-bottom:.75rem;">dbt/</p>
+          <div class="dir-tree" style="font-size:.73rem;">gov-hub/dbt/
 ├── <span class="hl">dbt_project.yml</span>   <span class="dim">← projeto gov_hub</span>
 ├── profiles.yml      <span class="dim">← conexão PostgreSQL</span>
 ├── packages.yml
@@ -909,8 +909,8 @@ dbt test --project-dir transformation/ \
         └── painel_execucao_orcamentaria.sql
 
 <span class="dim"># Roda sem Airflow:</span>
-dbt run --project-dir transformation/ \
-        --profiles-dir transformation/</div>
+dbt run --project-dir dbt/ \
+        --profiles-dir dbt/</div>
         </div>
 
         <div>
@@ -981,7 +981,7 @@ dbt run --project-dir transformation/ \
           <span class="adr-num">ADR 0004</span>
           <div>
             <h4>Integration Gateway como ponte entre ingestion/ e integration/</h4>
-            <p>O gateway vive em <code>ingestion/bridge/</code>, consulta o Table Catalog e aciona o <code>IntegrationAgent</code> via DAG separada — desacoplando ingestão de identificação de chaves.</p>
+            <p>O gateway vive em <code>src/govhub/ingestion/bridge/</code>, consulta o Table Catalog e aciona o <code>IntegrationAgent</code> via DAG separada — desacoplando ingestão de identificação de chaves.</p>
           </div>
           <span class="badge badge-amber">Proposto</span>
         </div>

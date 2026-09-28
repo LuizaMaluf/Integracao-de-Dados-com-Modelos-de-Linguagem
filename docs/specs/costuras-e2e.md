@@ -49,7 +49,7 @@ airflow/configs/<fonte>.yaml     (único ponto de configuração)
 ```bash
 # 1. Silver Sync roda automaticamente como task do api_dag após stage_silver
 # 2. Gerar artefatos dbt a partir dos YAMLs:
-python -m govhub.sync.dbt_source_generator --configs airflow/configs --out transformation/models/bronze
+python -m govhub.sync.dbt_source_generator --configs airflow/configs --out dbt/models/bronze
 # 3. Integração lê do banco:
 govhub --table-a pg://silver.ibge_municipios --table-b pg://silver.ibge_estados
 # Fluxo completo A → B → C:

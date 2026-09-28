@@ -173,7 +173,7 @@ CREATE TABLE catalog.ingested_tables (
 
 **Responsabilidade:** consulta o Table Catalog para encontrar pares de tabelas carregadas, aciona o IntegrationAgent para identificação de chaves de integração, persiste o resultado.
 
-**Ferramenta:** `bridge/integration_bridge.py` (implementado em `tcc/gov-hub/integration/`).
+**Ferramenta:** `bridge/integration_bridge.py` (implementado em `src/govhub/ingestion/bridge/` neste repositório).
 
 **Por quê:** desacopla a camada de ingestão da lógica de mapeamento de chaves. O gateway é acionado via DAG separada (`integration_bridge_dag`) com `table_a` e `table_b` como parâmetros, ou via consulta ao Catalog para descoberta automática de pares.
 

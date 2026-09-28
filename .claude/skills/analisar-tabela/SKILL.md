@@ -17,19 +17,18 @@ output:
 ## Contexto do projeto
 
 ```
-PROJECT_ROOT = /home/luiza-maluf/Área de trabalho/tcc/fase01
+PROJECT_ROOT = raiz deste repositório (onde fica o pyproject.toml)
 ```
 
 Módulos disponíveis (use quando o projeto estiver instalado):
-- `src.analyzers.structural` — `profile_column`, `cardinality_label`
-- `src.analyzers.semantic` — `find_domain_group`, `semantic_score`
-- `src.transformers.pattern_detector` — `detect_pattern`
-- `src.config.context_loader` — `load_context` ← use este para obter grupos e padrões
+- `govhub.integration.analyzers.structural` — `profile_column`, `cardinality_label`
+- `govhub.integration.analyzers.semantic` — `find_domain_group`, `semantic_score`
+- `govhub.integration.transformers.pattern_detector` — `detect_pattern`
+- `govhub.integration.config.context_loader` — `load_context` ← use este para obter grupos e padrões
 
 Para usar os módulos:
 ```python
-import sys
-sys.path.insert(0, "/home/luiza-maluf/Área de trabalho/tcc/fase01")
+# pré-requisito: `pip install -e .` na raiz do repo (pacote govhub)
 ```
 
 Se a importação falhar, execute a lógica inline conforme as seções abaixo.
@@ -43,7 +42,7 @@ JSON de saída: `output/analisar_tabela_{stem}.json`
 Antes de detectar grupos de domínio, carregue o contexto ativo:
 
 ```python
-from src.config.context_loader import load_context
+from govhub.integration.config.context_loader import load_context
 
 # context_path: fornecido via --context, ou None para usar defaults
 context = load_context(context_path)
@@ -149,7 +148,7 @@ Reporte o padrão com > 80% de match na amostra. Se nenhum, reporte `null`.
 Detecte se a tabela tem uma coluna de exercício fiscal e compute a distribuição de anos:
 
 ```python
-from src.analyzers.exercicio_profiler import exercicio_distribution
+from govhub.integration.analyzers.exercicio_profiler import exercicio_distribution
 
 # domain_groups: DOMAIN_GROUPS carregado na etapa 3
 exercicio_dist = exercicio_distribution(df, domain_groups=DOMAIN_GROUPS)
@@ -232,7 +231,7 @@ SUGESTÃO DE CHAVE: <col>
 
 ### 9. Salvar JSON
 
-Salve em `/home/luiza-maluf/Área de trabalho/tcc/fase01/output/analisar_tabela_<nome_sem_extensao>.json`:
+Salve em `PROJECT_ROOT/output/analisar_tabela_<nome_sem_extensao>.json`:
 
 ```json
 {

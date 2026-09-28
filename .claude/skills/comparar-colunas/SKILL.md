@@ -34,20 +34,19 @@ output:
 ## Contexto do projeto
 
 ```
-PROJECT_ROOT = /home/luiza-maluf/Área de trabalho/tcc/fase01
+PROJECT_ROOT = raiz deste repositório (onde fica o pyproject.toml)
 ```
 
 Módulos disponíveis:
 ```python
-import sys
-sys.path.insert(0, "/home/luiza-maluf/Área de trabalho/tcc/fase01")
+# pré-requisito: `pip install -e .` na raiz do repo (pacote govhub)
 ```
 
-- `src.analyzers.statistical` — `match_rate`, `overlap_stats`
-- `src.analyzers.semantic` — `semantic_score`, `find_domain_group`
-- `src.transformers.normalizer` — `normalize_series`
-- `src.transformers.pattern_detector` — `detect_pattern`
-- `src.config.context_loader` — `load_context`
+- `govhub.integration.analyzers.statistical` — `match_rate`, `overlap_stats`
+- `govhub.integration.analyzers.semantic` — `semantic_score`, `find_domain_group`
+- `govhub.integration.transformers.normalizer` — `normalize_series`
+- `govhub.integration.transformers.pattern_detector` — `detect_pattern`
+- `govhub.integration.config.context_loader` — `load_context`
 
 JSON de saída:
 - Modo automático: `output/comparar_colunas_{stem_a}__{stem_b}.json`
@@ -69,7 +68,7 @@ JSON de saída:
 ```python
 import json
 from pathlib import Path
-from src.config.context_loader import load_context
+from govhub.integration.config.context_loader import load_context
 
 profile_a = json.loads(Path("output/analisar_tabela_{stem_a}.json").read_text())
 profile_b = json.loads(Path("output/analisar_tabela_{stem_b}.json").read_text())
@@ -89,7 +88,7 @@ pairs = [(a, b) for a in pk_a for b in pk_b]
 
 **Critério 2 — Mesmo grupo de domínio:**
 ```python
-from src.analyzers.semantic import find_domain_group
+from govhub.integration.analyzers.semantic import find_domain_group
 
 for col_a in profile_a["columns"]:
     for col_b in profile_b["columns"]:
@@ -101,7 +100,7 @@ for col_a in profile_a["columns"]:
 
 **Critério 3 — Score semântico ≥ 0.30:**
 ```python
-from src.analyzers.semantic import semantic_score
+from govhub.integration.analyzers.semantic import semantic_score
 
 for col_a in profile_a["columns"]:
     for col_b in profile_b["columns"]:

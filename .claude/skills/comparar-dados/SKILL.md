@@ -24,18 +24,17 @@ output:
 ## Contexto do projeto
 
 ```
-PROJECT_ROOT = /home/luiza-maluf/Área de trabalho/tcc/fase01
+PROJECT_ROOT = raiz deste repositório (onde fica o pyproject.toml)
 ```
 
 Módulos disponíveis:
 ```python
-import sys
-sys.path.insert(0, PROJECT_ROOT)
+# pré-requisito: `pip install -e .` na raiz do repo (pacote govhub)
 
-from src.analyzers.content_analyzer import analyze, PROMOTION_THRESHOLD
-from src.analyzers.exercicio_profiler import exercicio_distribution
-from src.analyzers.structural import dtype_compatible
-from src.config.context_loader import load_context
+from govhub.integration.analyzers.content_analyzer import analyze, PROMOTION_THRESHOLD
+from govhub.integration.analyzers.exercicio_profiler import exercicio_distribution
+from govhub.integration.analyzers.structural import dtype_compatible
+from govhub.integration.config.context_loader import load_context
 ```
 
 ---
@@ -84,7 +83,7 @@ if profile_a_path.exists() and profile_b_path.exists():
     if common:
         common_exercicios = sorted(common)
         # Detectar qual coluna é o exercício em cada DF
-        from src.analyzers.exercicio_profiler import detect_exercicio_column
+        from govhub.integration.analyzers.exercicio_profiler import detect_exercicio_column
         exercicio_col_a = detect_exercicio_column(df_a)
         exercicio_col_b = detect_exercicio_column(df_b)
 
@@ -103,7 +102,7 @@ Se os perfis não existirem, use os DataFrames completos sem filtro.
 ### Etapa 2 — Pré-filtro por dtype e geração de pares
 
 ```python
-from src.analyzers.structural import dtype_compatible
+from govhub.integration.analyzers.structural import dtype_compatible
 
 pairs_to_evaluate = []
 for col_a in df_a.columns:
@@ -120,7 +119,7 @@ print(f"  {len(pairs_to_evaluate)} pares passaram o pré-filtro de dtype")
 ### Etapa 3 — Análise de conteúdo por par
 
 ```python
-from src.analyzers.content_analyzer import analyze, PROMOTION_THRESHOLD
+from govhub.integration.analyzers.content_analyzer import analyze, PROMOTION_THRESHOLD
 
 results = []
 promoted = []

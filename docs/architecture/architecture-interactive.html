@@ -220,7 +220,7 @@ nav .brand span { color:#f59e0b; }
     <div class="connector"></div>
     <div class="node l-integ" onclick="show(9)">
       <div class="node-num">10</div>
-      <div><div class="node-name">ContextResolver</div><div class="node-tool">ingestion/context/resolver.py</div></div>
+      <div><div class="node-name">ContextResolver</div><div class="node-tool">src/govhub/ingestion/context/resolver.py</div></div>
     </div>
     <div class="connector"></div>
 
@@ -264,7 +264,7 @@ const COMPONENTS = [
     detail:"Cada fonte é um YAML de ~20 linhas — declara URL, estratégia de autenticação, paginação, schedule, schema alvo e campos de conflito. Adicionar uma fonte nova não requer nenhum arquivo Python novo.",
     tool:"YAML validado por Pydantic",
     why:"Elimina os 73 arquivos de DAG hard-coded existentes. Todo comportamento (auth, paginação, retry) fica no repositório, revisável via PR. Rollback de config = reverter um YAML.",
-    code:"ingestion/configs/",
+    code:"airflow/configs/",
     adr:null,
     example:`source_name: siafi_notas_empenho
 type: api
@@ -281,7 +281,7 @@ target_table: notas_empenho`
     detail:"Um único dag_factory.yaml substitui todos os scripts de DAG individuais. O Airflow carrega o arquivo via um loader mínimo de ~5 linhas. Alterações de schedule ou retry são mudanças de YAML, não de código.",
     tool:"astronomer/dag-factory (Apache 2.0)",
     why:"Zero arquivos Python de DAG por fonte. Alterar schedule ou adicionar retry é uma edição de YAML — sem deploy de código.",
-    code:"ingestion/dags/dag_factory_loader.py",
+    code:"airflow/dags/dag_factory_loader.py",
     adr:{num:"ADR 0002", file:"../adr/0002-dag-factory-config-driven.md"},
     example:`# dags/load_dags.py
 from dagfactory import load_yaml_dags
@@ -295,7 +295,7 @@ load_yaml_dags(globals_dict=globals(),
     detail:"Substitui os 15+ ClienteXXX com lógica duplicada. A ClienteBase existente é mantida como base — o Generic Extractor parametriza paginação (cursor, page_number, offset) e auth (bearer, api_key_header, none) via config, sem subclasse por fonte.",
     tool:"httpx + ClienteBase existente",
     why:"Uma única classe substitui 15+ implementações quase idênticas. Novos padrões de paginação se adicionam uma vez e ficam disponíveis para todas as fontes.",
-    code:"ingestion/extractors/base.py",
+    code:"src/govhub/ingestion/extractors/base.py",
     adr:null,
     example:null
   },
@@ -306,7 +306,7 @@ load_yaml_dags(globals_dict=globals(),
     detail:"Cada extração serializa o payload completo da API em MinIO antes de qualquer transformação. Path convencional: raw/<source>/<YYYY-MM-DD>/response.json. Reprocessamento lê o bronze sem nova requisição à API — dados governamentais podem ser removidos retroativamente.",
     tool:"MinIO — S3-compatible, self-hosted (já no docker-compose)",
     why:"O pipeline atual vai direto de API para PostgreSQL. Sem bronze, reprocessar dados históricos exige re-bater nas APIs — que têm limites de rate e janelas de disponibilidade.",
-    code:"ingestion/storage/bronze.py",
+    code:"src/govhub/ingestion/storage/bronze.py",
     adr:{num:"ADR 0003", file:"../adr/0003-bronze-store-minio.md"},
     example:`# path: raw/siafi_notas_empenho/2026-06-07/response.json
 # imutável — uma escrita por execução`
@@ -329,7 +329,7 @@ load_yaml_dags(globals_dict=globals(),
     detail:"Um schema PostgreSQL por sistema de origem (siafi, compras_gov, siape, siconv...). Sem mudança na estrutura atual — o Silver Store mantém a mesma organização. O dbt gerencia o schema como Schema Registry.",
     tool:"PostgreSQL (já existente)",
     why:"Sem mudança — o silver atual funciona bem. A inovação está nas camadas ao redor: bronze imutável antes e Context Store depois.",
-    code:"ingestion/storage/silver.py",
+    code:"src/govhub/ingestion/storage/silver.py",
     adr:null,
     example:null
   },
@@ -354,7 +354,7 @@ ORDER BY loaded_at DESC`
     detail:"Lê dois DataFrames do silver via Table Catalog, passa para o IntegrationAgent (pipeline de 5 etapas: perfilagem → candidatos → semântica → conteúdo → LLM), persiste o resultado no Context Store via bridge.py e salva o JSON de output.",
     tool:"bridge.py + IntegrationAgent (integration/)",
     why:"Desacopla a lógica de mapeamento da ingestão. O gateway é acionado via DAG separada com table_a e table_b como parâmetros — ou automaticamente via consulta ao Catalog.",
-    code:"ingestion/bridge/integration_bridge.py",
+    code:"src/govhub/ingestion/bridge/integration_bridge.py",
     adr:{num:"ADR 0004", file:"../adr/0004-integration-gateway.md"},
     example:`# resultado: output/identificar_chave_notas_empenho__planos_acao.json
 {
@@ -372,7 +372,7 @@ ORDER BY loaded_at DESC`
     detail:"Quatro tabelas no schema context: domain_contexts (vocabulários persistidos, substitui o dict Python hardcoded), column_annotations (escrita pela task annotate_context na ingestão), table_profiles (task profile_table, paralela), integration_discoveries (escrita pelo bridge.py com justificativa LLM e flag is_validated para override humano).",
     tool:"PostgreSQL — schema context (gerenciado pelo dbt)",
     why:"Sem o Context Store cada run recalcula do zero. Grupos de domínio ficam hardcoded em Python. Novos domínios exigem deploy. O dbt não sabe quais modelos executar sem um mediador.",
-    code:"integration/src/store/context_store.py",
+    code:"src/govhub/integration/store/context_store.py",
     adr:{num:"ADR 0005 + 0007", file:"../adr/0005-context-store-passivo.md"},
     example:`-- Escrita na ingestão (annotate_context task)
 INSERT INTO context.column_annotations
@@ -385,9 +385,9 @@ ON CONFLICT DO UPDATE SET domain_group = EXCLUDED.domain_group;`
     color:"#7c3aed", bg:"#faf5ff",
     responsibility:"Mediador entre o Context Store e o DbtTaskGroup — decide o --select dinâmico antes de cada execução dbt.",
     detail:"Consulta context.integration_discoveries com min_confidence=0.7 antes do DbtTaskGroup. Retorna 'models/' (pipeline completo) quando há integração confirmada, ou 'models/bronze/' (só bronze) quando não há. Com store=None retorna 'models/bronze/' como fallback seguro — funciona sem banco em dev.",
-    tool:"ingestion/context/resolver.py",
+    tool:"src/govhub/ingestion/context/resolver.py",
     why:"O dbt não consegue consultar integration_discoveries diretamente para decidir quais modelos executar. Sem mediador, modelos gold rodariam sem joins definidos ou a ingestão precisaria conhecer detalhes do cosmos.",
-    code:"ingestion/context/resolver.py",
+    code:"src/govhub/ingestion/context/resolver.py",
     adr:{num:"ADR 0006", file:"../adr/0006-profile-dois-momentos-context-resolver.md"},
     example:`class ContextResolver:
     def get_select(self, package_name, min_confidence=0.7):
@@ -399,12 +399,12 @@ ON CONFLICT DO UPDATE SET domain_group = EXCLUDED.domain_group;`
     num:11, id:"gold-layer", name:"Gold Layer", layer:"Gold",
     color:"#b45309", bg:"#fefce8",
     responsibility:"Modelos analíticos sobre o silver, prontos para consumo pelo Superset. Um pacote dbt por órgão.",
-    detail:"Organizado como pacotes dbt locais em transformation/dbt_packages/<orgao>/. O transformation_dag_factory.py gera um DAG por pacote via DbtTaskGroup do cosmos. Cada DAG é agendado via Dataset (data-aware scheduling) — dispara após atualização real do silver layer, sem cron fixo.",
+    detail:"Organizado como pacotes dbt locais em dbt/dbt_packages/<orgao>/. O transformation_dag_factory.py gera um DAG por pacote via DbtTaskGroup do cosmos. Cada DAG é agendado via Dataset (data-aware scheduling) — dispara após atualização real do silver layer, sem cron fixo.",
     tool:"dbt local packages + astronomer-cosmos (DbtTaskGroup) + Apache Superset",
     why:"Um pacote dbt por órgão isolado por configuração (Source Registry) — não por repositório (submodules). Mesmo resultado com menos overhead de versionamento distribuído.",
-    code:"ingestion/dags/transformation_dag_factory.py",
+    code:"airflow/dags/transformation_dag_factory.py",
     adr:null,
-    example:`# transformation/packages.yml
+    example:`# dbt/packages.yml
 packages:
   - local: dbt_packages/mir
   - local: dbt_packages/ipea
