@@ -1,7 +1,7 @@
 """
 Componente 2 — dbt Source Generator (Costura B: dbt config-driven).
 
-Responsabilidade: ler os YAMLs do Source Registry (ingestion/configs/) e gerar
+Responsabilidade: ler os YAMLs do Source Registry (airflow/configs/) e gerar
 `sources.yml` + um model bronze `.sql` por fonte, sem SQL escrito à mão. Fecha a
 Costura B — o achado central da PoC.
 
@@ -9,8 +9,7 @@ Decisão (ADR 0010): gera a partir do Source Registry (config-as-source-of-truth
 NÃO por introspecção do banco como o dbt-codegen oficial. É a contribuição original
 do TCC e o que sustenta a tese de portabilidade por configuração.
 
-Destino real: ingestion/dags/dbt_source_generator.py (ou transformation/).
-Segue o mesmo padrão de transformation_dag_factory.py, que já lê os YAMLs.
+Segue o mesmo padrão de airflow/dags/transformation_dag_factory.py, que já lê os YAMLs.
 
 NOTA: stub — assinaturas e responsabilidades definidas; lógica não preenchida.
 """
@@ -80,7 +79,7 @@ if __name__ == "__main__":
     import argparse
 
     p = argparse.ArgumentParser(description="Gera sources.yml + models bronze do Source Registry")
-    p.add_argument("--configs", required=True, type=Path, help="Diretório dos YAMLs (ingestion/configs)")
+    p.add_argument("--configs", required=True, type=Path, help="Diretório dos YAMLs (airflow/configs)")
     p.add_argument("--out", required=True, type=Path, help="Saída (transformation/models/bronze)")
     p.add_argument("--source-group", default="silver")
     args = p.parse_args()

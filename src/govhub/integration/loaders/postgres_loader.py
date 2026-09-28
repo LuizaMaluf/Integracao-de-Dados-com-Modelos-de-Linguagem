@@ -4,7 +4,6 @@ Componente 3 — Postgres Loader (Costura C: integração lê do banco).
 Responsabilidade: carregar uma tabela do PostgreSQL como (DataFrame, TableMetadata)
 para a camada de integração, substituindo o CSV exportado à mão. Fecha a Costura C.
 
-Destino real: integration/src/loaders/postgres_loader.py
 Implementa a interface BaseLoader existente — simétrico ao CsvLoader, não-invasivo.
 
 NOTA: stub — assinaturas e responsabilidades definidas; lógica não preenchida.
@@ -16,8 +15,7 @@ import os
 import pandas as pd
 from sqlalchemy import create_engine
 
-# No destino real, importar de integration/src/loaders/base.py:
-#   from .base import BaseLoader, TableMetadata
+from .base import BaseLoader, TableMetadata  # noqa: F401 (TableMetadata usado quando implementado)
 
 
 def _pg_engine():
@@ -30,7 +28,7 @@ def _pg_engine():
     return create_engine(f"postgresql+psycopg2://{user}:{pwd}@{host}:{port}/{db}")
 
 
-class PostgresLoader:  # no destino real: class PostgresLoader(BaseLoader):
+class PostgresLoader(BaseLoader):
     """Carrega uma tabela do PostgreSQL como (DataFrame, TableMetadata).
 
     Aceita um identificador no formato `schema.tabela` (ex.: silver.ibge_municipios)
@@ -51,6 +49,6 @@ class PostgresLoader:  # no destino real: class PostgresLoader(BaseLoader):
     def _build_metadata(self, df: pd.DataFrame, name: str):
         """Constrói TableMetadata compatível com o IntegrationAgent.
 
-        Espelha ingestion/storage/silver.py::build_metadata.
+        Espelha govhub.ingestion.storage.silver.build_metadata.
         TODO: retornar TableMetadata(name=name, columns=..., dtypes=..., row_count=..., sample=df.head(5))."""
         raise NotImplementedError

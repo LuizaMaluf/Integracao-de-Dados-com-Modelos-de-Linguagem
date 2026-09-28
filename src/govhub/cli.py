@@ -2,15 +2,14 @@
 Entry point: run the integration agent from the command line.
 
 Usage:
-    python main.py --table-a data/raw/empenhos.csv --table-b data/raw/convenios.csv
-    python main.py --table-a data/raw/tabela_a.csv --table-b data/raw/tabela_b.csv --no-llm
+    govhub --table-a data/raw/empenhos.csv --table-b data/raw/convenios.csv
+    govhub --table-a data/raw/tabela_a.csv --table-b data/raw/tabela_b.csv --no-llm
 """
 import argparse
 import json
 
 from govhub.integration.loaders.csv_loader import CsvLoader
 from govhub.integration.agent.orchestrator import IntegrationAgent
-from govhub.integration.output.formatter import print_result
 
 
 def parse_args() -> argparse.Namespace:
@@ -49,7 +48,7 @@ def main() -> None:
     agent = IntegrationAgent(use_llm=not args.no_llm)
     result = agent.run(df_a, meta_a, df_b, meta_b)
 
-    print_result(result)
+    print(json.dumps(result, indent=2, ensure_ascii=False, default=str))
     saved = agent.save(result, args.output)
     print(f"\nResult saved to: {saved}")
 

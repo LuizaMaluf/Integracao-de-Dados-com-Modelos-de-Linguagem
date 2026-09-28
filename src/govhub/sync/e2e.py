@@ -12,11 +12,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from dbt_source_generator import generate
-from postgres_loader import PostgresLoader
-from silver_sync import sync_to_postgres
+from govhub.integration.loaders.postgres_loader import PostgresLoader
+from govhub.sync.dbt_source_generator import generate
+from govhub.sync.silver_sync import sync_to_postgres
 
-CONFIGS_DIR = Path("ingestion/configs")
+CONFIGS_DIR = Path("airflow/configs")
 BRONZE_OUT = Path("transformation/models/bronze")
 
 

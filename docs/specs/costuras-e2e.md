@@ -3,8 +3,7 @@
 Esqueletos dos três componentes que fecham as costuras de arquitetura identificadas na
 PoC de viabilidade (ver `docs/pocs/01-viabilidade-e2e/`). São **stubs** — a estrutura,
 as assinaturas e as responsabilidades estão definidas, mas a lógica de negócio ainda
-não está preenchida. Revise e mova cada arquivo para o diretório real da sua camada
-quando for implementar.
+não está preenchida. Os arquivos já estão nos diretórios definitivos do pacote `govhub`.
 
 ## Objetivo
 
@@ -14,16 +13,17 @@ ingestão, transformação e integração.
 
 ## Componentes
 
-| # | Componente | Costura | Destino real sugerido |
+| # | Componente | Costura | Local |
 |---|---|---|---|
-| 1 | `silver_sync.py` | A — DuckDB → PostgreSQL | `ingestion/storage/` |
-| 2 | `dbt_source_generator.py` | B — dbt config-driven | `ingestion/dags/` ou `transformation/` |
-| 3 | `postgres_loader.py` | C — integração lê do banco | `integration/src/loaders/` |
+| 1 | `silver_sync.py` | A — DuckDB → PostgreSQL | `src/govhub/sync/` |
+| 2 | `dbt_source_generator.py` | B — dbt config-driven | `src/govhub/sync/` |
+| 3 | `postgres_loader.py` | C — integração lê do banco | `src/govhub/integration/loaders/` |
+| — | `e2e.py` | encadeia A → B → C | `src/govhub/sync/` |
 
 ## Fluxo (um YAML, três camadas)
 
 ```
-ingestion/configs/<fonte>.yaml   (único ponto de configuração)
+airflow/configs/<fonte>.yaml     (único ponto de configuração)
         │
         ├─► [já existe] extract → write_bronze → stage_silver (DuckDB)
         │
@@ -44,16 +44,18 @@ ingestion/configs/<fonte>.yaml   (único ponto de configuração)
 - **Costura C — `PostgresLoader(BaseLoader)`**: simétrico ao `CsvLoader` existente,
   não-invasivo na camada de integração.
 
-## Como rodar (após implementar e mover para os diretórios reais)
+## Como rodar (após implementar os stubs)
 
 ```bash
 # 1. Silver Sync roda automaticamente como task do api_dag após stage_silver
 # 2. Gerar artefatos dbt a partir dos YAMLs:
-python -m ingestion.dags.dbt_source_generator --configs ingestion/configs --out transformation/models/bronze
+python -m govhub.sync.dbt_source_generator --configs airflow/configs --out transformation/models/bronze
 # 3. Integração lê do banco:
-python integration/main.py --table-a pg://silver.ibge_municipios --table-b pg://silver.ibge_estados
+govhub --table-a pg://silver.ibge_municipios --table-b pg://silver.ibge_estados
+# Fluxo completo A → B → C:
+python -m govhub.sync.e2e
 ```
 
 ## Dependências
 
-Ver `requirements.txt` nesta pasta — todas já presentes no projeto, exceto onde anotado.
+Declaradas no extra `ingestion` do `pyproject.toml` (`pip install -e ".[ingestion]"`).
