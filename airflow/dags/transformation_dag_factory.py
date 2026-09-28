@@ -86,7 +86,7 @@ def get_dbt_select(package_name: str, resolver=None) -> str:
 # ──────────────────────────────────────────────────────────────────────────────
 
 CONFIGS_DIR = Path("/opt/airflow/configs")
-TRANSFORMATION_DIR = Path("/opt/airflow/transformation")
+TRANSFORMATION_DIR = Path("/opt/airflow/dbt")
 
 
 def _load_configs() -> list[dict]:

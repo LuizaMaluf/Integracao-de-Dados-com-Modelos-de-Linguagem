@@ -26,6 +26,12 @@ x-airflow-common: &airflow-common
     # Anthropic (semantic PDF parser)
     ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
     ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-sonnet-4-6}
+    # PostgreSQL analítico (dbt + costuras)
+    POSTGRES_HOST: postgres
+    POSTGRES_PORT: "5432"
+    POSTGRES_USER: ${POSTGRES_USER:-govhub}
+    POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-govhub}
+    POSTGRES_DB: ${POSTGRES_DB:-govhub}
   volumes:
     - ./airflow/dags:/opt/airflow/dags
     - ./airflow/configs:/opt/airflow/configs
@@ -34,15 +40,32 @@ x-airflow-common: &airflow-common
     - airflow-logs:/opt/airflow/logs
     - duckdb-data:/opt/airflow/data
     - ./output:/opt/airflow/output
-    # transformation/ montado separado — dbt é independente do Airflow
-    - ./transformation:/opt/airflow/transformation
+    # projeto dbt montado separado — dbt é independente do Airflow
+    - ./dbt:/opt/airflow/dbt
   depends_on:
     airflow-db:
       condition: service_healthy
     minio:
       condition: service_healthy
+    postgres:
+      condition: service_healthy
 
 services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-govhub}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-govhub}
+      POSTGRES_DB: ${POSTGRES_DB:-govhub}
+    ports:
+      - "5432:5432"
+    volumes:
+      - govhub-pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER:-govhub}"]
+      interval: 10s
+      retries: 5
+
   airflow-db:
     image: postgres:15
     environment:
@@ -98,6 +121,7 @@ services:
 
 volumes:
   postgres-data:
+  govhub-pg-data:
   minio-data:
   duckdb-data:
   airflow-logs:
