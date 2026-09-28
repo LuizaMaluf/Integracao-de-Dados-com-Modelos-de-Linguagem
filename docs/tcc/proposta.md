@@ -1,6 +1,8 @@
 # Proposta de TCC — Integração de dados governamentais com modelos de linguagem
 
-Autora: Luiza Maluf (UnB/FCTE) · versão de 2026-09-28 · documento vivo, atualizar junto com as decisões.
+Autora: Luiza Maluf (UnB/FCTE) · Orientação: Carla Rocha e Isaque Alves · versão de 2026-09-28 · documento vivo, atualizar junto com as decisões.
+
+**Calendário:** defesa do TCC 1 no início de março de 2027; defesa do TCC 2 em agosto de 2027.
 
 Artigo-base: ver [`artigo-base.md`](artigo-base.md). Decisões de arquitetura: [`docs/adr/`](../adr/).
 
@@ -180,12 +182,12 @@ Para seguir o artigo-base (ADR 0011):
 ```mermaid
 flowchart TB
     F1["<b>Fase 1 · Escopo e referencial</b><br/>título, QPs e foco · capítulos 2 e 3 · texto do TCC 1"]
-    G1{{"Proposta aprovada (TCC 1)"}}
+    G1{{"Defesa do TCC 1 · início de março de 2027"}}
     F2["<b>Fase 2 · Ground truth e baselines</b><br/>20–40 pares em 3 níveis, com snapshots · harness (top-1, MRR) · baseline só por nome"]
-    G2{{"Ground truth congelado, antes de ajustar o agente"}}
+    G2{{"Ground truth congelado, antes de ajustar o agente · sugerido: fim de abril de 2027"}}
     F3["<b>Fase 3 · Experimentos</b><br/>QP1 e QP2 (3–5 execuções por modelo) · QP3 tempo e tokens · QP4 bases reais"]
-    G3{{"Resultados congelados"}}
-    F4["<b>Fase 4 · Escrita e defesa</b><br/>capítulos 4–9, apêndices, reprodução · revisão, ensaio e defesa (TCC 2)"]
+    G3{{"Resultados congelados · sugerido: fim de junho de 2027"}}
+    F4["<b>Fase 4 · Escrita e defesa</b><br/>capítulos 4–9, apêndices, reprodução · revisão com a orientação e defesa do TCC 2 (agosto de 2027)"]
     F1 --> G1 --> F2 --> G2 --> F3 --> G3 --> F4
 ```
 
@@ -207,8 +209,8 @@ O portão que decide o cronograma é o ground truth: congelar os pares antes de 
 **Decisões em aberto:**
 
 - [ ] Título (três opções na visão geral)
-- [ ] Orientação e eventual coorientação ligada ao GovHub/Lab Livre
+- [x] Orientação: Carla Rocha e Isaque Alves
 - [ ] Tamanho do ground truth e quais bases entram
 - [ ] Quais LLMs e versões fixar (um proprietário, um de pesos abertos) e orçamento de tokens
 - [ ] Peso relativo entre arquitetura (costuras) e Decision Layer (QP1–QP2)
-- [ ] Datas de TCC 1 e TCC 2 no calendário da FCTE
+- [x] Datas: TCC 1 no início de março de 2027; TCC 2 em agosto de 2027
