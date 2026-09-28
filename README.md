@@ -224,6 +224,9 @@ govhub --table-a data/raw/tabela_a.csv --table-b data/raw/tabela_b.csv
 # Sem LLM (só análise estatística — mais rápido, sem custo de API)
 govhub --table-a data/raw/tabela_a.csv --table-b data/raw/tabela_b.csv --no-llm
 
+# Lendo direto do PostgreSQL (costura C)
+govhub --table-a pg://silver.ibge_municipios --table-b pg://silver.ibge_estados
+
 # Salvando resultado em caminho específico
 govhub --table-a data/raw/tabela_a.csv --table-b data/raw/tabela_b.csv \
        --output output/meu_resultado.json
@@ -233,8 +236,8 @@ govhub --table-a data/raw/tabela_a.csv --table-b data/raw/tabela_b.csv \
 
 | Parâmetro | Obrigatório | Descrição |
 |---|---|---|
-| `--table-a` | Sim | Caminho para o CSV da tabela A |
-| `--table-b` | Sim | Caminho para o CSV da tabela B |
+| `--table-a` | Sim | CSV da tabela A, ou `pg://schema.tabela` |
+| `--table-b` | Sim | CSV da tabela B, ou `pg://schema.tabela` |
 | `--name-a` | Não | Nome de exibição da tabela A |
 | `--name-b` | Não | Nome de exibição da tabela B |
 | `--sep` | Não | Separador CSV (padrão: `;`) |
@@ -392,6 +395,18 @@ O Domain Context descreve o vocabulário semântico de um domínio: quais nomes 
 
 ---
 
+## Fluxo ponta a ponta (costuras A/B/C)
+
+Um YAML em `airflow/configs/` leva a fonte da ingestão até a integração, sem código novo:
+
+1. **A — Silver Sync:** toda DAG de ingestão copia o lote do DuckDB para `silver.<tabela>` no PostgreSQL e publica o Dataset da fonte.
+2. **B — dbt gerado:** `make dbt-generate` cria sources e models bronze em `dbt/models/bronze/_generated/` a partir dos YAMLs.
+3. **C — integração no banco:** `govhub --table-a pg://...` ou o fluxo completo `python -m govhub.sync.e2e <fonte_a> <fonte_b>`.
+
+Detalhes, contrato do YAML e testes em [`docs/specs/costuras-e2e.md`](docs/specs/costuras-e2e.md); decisões nas ADRs 0008–0010.
+
+---
+
 ## Estrutura do repositório
 
 ```
@@ -399,7 +414,8 @@ O Domain Context descreve o vocabulário semântico de um domínio: quais nomes 
 ├── src/govhub/                 # pacote Python único
 │   ├── ingestion/              # Camada 1 — extractors, parsers, storage, context, bridge
 │   ├── integration/            # Camada 3 — agent, analyzers, config, loaders, store, transformers
-│   ├── sync/                   # Costuras A/B entre camadas (silver_sync, dbt_source_generator, e2e)
+│   ├── sync/                   # Costuras A/B + fluxo e2e (silver_sync, dbt_source_generator, e2e)
+│   ├── postgres.py             # conexão com o PostgreSQL analítico (POSTGRES_*)
 │   └── cli.py                  # comando `govhub`
 │
 ├── airflow/
@@ -407,14 +423,15 @@ O Domain Context descreve o vocabulário semântico de um domínio: quais nomes 
 │   └── configs/                # Source Registry: um YAML por fonte
 │
 ├── dbt/                        # Camada 2 — dbt + PostgreSQL
-│   ├── models/{bronze,silver,gold}/
+│   ├── models/{bronze,silver,gold}/   # bronze/_generated/ vem do make dbt-generate
 │   ├── macros/
 │   ├── dbt_project.yml
 │   └── profiles.yml
 │
 ├── tests/
 │   ├── ingestion/
-│   └── integration/
+│   ├── integration/
+│   └── sync/                   # costuras e fluxo e2e (marcadores pg / e2e)
 │
 ├── docs/
 │   ├── adr/                    # decisões de arquitetura

@@ -18,3 +18,7 @@ sources:
     description: Fonte declarada em example_pdf_structural.yaml
   - name: ted_programas
     description: Fonte declarada em example_xlsx.yaml
+  - name: ibge_estados
+    description: Fonte declarada em ibge_estados.yaml
+  - name: ibge_municipios
+    description: Fonte declarada em ibge_municipios.yaml

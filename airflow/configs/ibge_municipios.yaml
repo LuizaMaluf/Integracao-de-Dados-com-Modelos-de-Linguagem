@@ -1,0 +1,13 @@
+# Municípios (IBGE) — par da PoC de viabilidade E2E.
+# O código do município (7 dígitos) começa com o código da UF: Derived Key esperada
+# com ibge_estados.id, além do código aninhado em microrregiao.mesorregiao.UF.id.
+source_name: ibge_municipios
+type: api
+schedule: "@monthly"
+
+url: "https://servicodados.ibge.gov.br/api/v1/localidades/municipios"
+auth_strategy: none
+pagination_strategy: none
+
+target_table: ibge_municipios
+silver_dataset: silver://ibge_municipios
