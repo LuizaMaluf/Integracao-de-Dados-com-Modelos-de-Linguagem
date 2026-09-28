@@ -13,3 +13,16 @@ data/processed/
 *.csv
 *.xlsx
 *.parquet
+
+# dbt (gerados)
+**/target/
+**/dbt_packages/
+**/logs/
+.user.yml
+
+# workspaces de eval das skills
+.claude/*-workspace/
+
+# ferramentas
+.DS_Store
+.venv*/
