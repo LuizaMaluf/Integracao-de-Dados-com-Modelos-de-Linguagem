@@ -6,19 +6,15 @@ Flow: download PDF → write raw binary to bronze →
 """
 from pathlib import Path
 
-import yaml
 from airflow.decorators import dag, task
+
+from govhub.ingestion import registry
 
 CONFIGS_DIR = Path("/opt/airflow/configs")
 
 
 def _load_configs():
-    return [
-        cfg
-        for f in CONFIGS_DIR.glob("*.yaml")
-        for cfg in [yaml.safe_load(f.read_text())]
-        if cfg.get("type") == "pdf" and cfg.get("extraction_mode") == "structural"
-    ]
+    return registry.load_configs(CONFIGS_DIR, types=("pdf",), extraction_mode="structural")
 
 
 for _cfg in _load_configs():

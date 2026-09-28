@@ -13,3 +13,13 @@ page_selector:
 
 # How many tables to extract per matched page: all | first | last | N
 tables_per_page: all
+
+# ── Contrato com as camadas seguintes (costuras A/B — ver ADR 0008) ──
+# Nome estável da tabela no Postgres (schema silver). Padrão: source_name
+# target_table: siafi_relatorio_mensal
+# Dataset Airflow publicado após a sincronização. Padrão: silver://<target_table>
+# silver_dataset: silver://siafi_relatorio_mensal
+# Pacotes dbt disparados quando o dataset é atualizado
+# dbt_packages:
+#   - name: <pacote>
+#     select: models/

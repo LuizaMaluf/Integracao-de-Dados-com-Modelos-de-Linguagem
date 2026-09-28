@@ -6,18 +6,15 @@ Flow: extract → write bronze → stage to silver
 """
 from pathlib import Path
 
-import yaml
 from airflow.decorators import dag, task
+
+from govhub.ingestion import registry
 
 CONFIGS_DIR = Path("/opt/airflow/configs")
 
 
 def _load_configs():
-    return [
-        yaml.safe_load(f.read_text())
-        for f in CONFIGS_DIR.glob("*.yaml")
-        if yaml.safe_load(f.read_text()).get("type") in ("csv", "xlsx")
-    ]
+    return registry.load_configs(CONFIGS_DIR, types=("csv", "xlsx"))
 
 
 for _cfg in _load_configs():

@@ -13,3 +13,12 @@ tables:
 
 encoding: utf-8
 separator: ","
+
+# ── Contrato com as camadas seguintes (costuras A/B — ver ADR 0008) ──
+# Dump: cada tabela extraída vai para silver.<nome_da_tabela>; target_table não se aplica.
+# Dataset Airflow publicado após a sincronização. Padrão: silver://<source_name>
+# silver_dataset: silver://gold_financiamentos
+# Pacotes dbt disparados quando o dataset é atualizado
+# dbt_packages:
+#   - name: <pacote>
+#     select: models/

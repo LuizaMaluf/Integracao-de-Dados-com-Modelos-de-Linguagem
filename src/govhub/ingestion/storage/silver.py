@@ -3,11 +3,11 @@ Silver Zone: cleaned, queryable staging tables in DuckDB.
 Normalizes column names and builds TableMetadata for the Integration Agent.
 """
 import os
-import re
 from datetime import date
 
 import duckdb
 import pandas as pd
+from govhub.ingestion.registry import normalize_name
 from govhub.integration.loaders.base import TableMetadata
 
 
@@ -16,16 +16,12 @@ def _conn() -> duckdb.DuckDBPyConnection:
     return duckdb.connect(path)
 
 
-def _normalize_name(name: str) -> str:
-    return re.sub(r"[^a-z0-9_]", "_", name.lower().strip())
-
-
 def write(df: pd.DataFrame, source_name: str) -> str:
     """Write a normalized DataFrame to DuckDB silver zone. Returns the table name."""
     df = df.copy()
-    df.columns = [_normalize_name(c) for c in df.columns]
+    df.columns = [normalize_name(c) for c in df.columns]
 
-    table_name = f"{_normalize_name(source_name)}_{date.today().strftime('%Y%m%d')}"
+    table_name = f"{normalize_name(source_name)}_{date.today().strftime('%Y%m%d')}"
     with _conn() as conn:
         conn.execute(f"CREATE OR REPLACE TABLE {table_name} AS SELECT * FROM df")
     return table_name

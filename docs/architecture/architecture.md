@@ -245,6 +245,9 @@ extract → write_bronze → stage_silver → annotate_context  (leve)
 | Context Store passivo — quatro tabelas no schema `context` | [ADR 0005](../adr/0005-context-store-passivo.md) |
 | Profile em dois momentos + `ContextResolver` como mediador dbt | [ADR 0006](../adr/0006-profile-dois-momentos-context-resolver.md) |
 | Invalidação diferenciada + `find_domain_group` conectado ao banco | [ADR 0007](../adr/0007-invalidacao-diferenciada-find-domain-group.md) |
+| Source Registry como contrato entre as camadas | [ADR 0008](../adr/0008-contrato-source-registry.md) |
+| Silver Sync DuckDB → PostgreSQL (Costura A) | [ADR 0009](../adr/0009-silver-sync-duckdb-postgres.md) |
+| Sources e models bronze do dbt gerados do registry (Costura B) | [ADR 0010](../adr/0010-dbt-sources-gerados-do-registry.md) |
 
 ---
 

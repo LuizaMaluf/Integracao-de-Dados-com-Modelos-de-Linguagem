@@ -26,3 +26,13 @@ records_path: data
 
 # Stop pagination when this field in the response is false/null
 has_more_field: hasNext
+
+# ── Contrato com as camadas seguintes (costuras A/B — ver ADR 0008) ──
+# Nome estável da tabela no Postgres (schema silver). Padrão: source_name
+# target_table: siafi_empenhos
+# Dataset Airflow publicado após a sincronização. Padrão: silver://<target_table>
+# silver_dataset: silver://siafi_empenhos
+# Pacotes dbt disparados quando o dataset é atualizado
+# dbt_packages:
+#   - name: <pacote>
+#     select: models/

@@ -5,18 +5,15 @@ Flow: parse dump → write bronze (one Parquet per table) → stage each to silv
 """
 from pathlib import Path
 
-import yaml
 from airflow.decorators import dag, task
+
+from govhub.ingestion import registry
 
 CONFIGS_DIR = Path("/opt/airflow/configs")
 
 
 def _load_configs():
-    return [
-        yaml.safe_load(f.read_text())
-        for f in CONFIGS_DIR.glob("*.yaml")
-        if yaml.safe_load(f.read_text()).get("type") == "dump"
-    ]
+    return registry.load_configs(CONFIGS_DIR, types=("dump",))
 
 
 for _cfg in _load_configs():

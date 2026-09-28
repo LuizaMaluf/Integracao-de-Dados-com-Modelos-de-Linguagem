@@ -22,6 +22,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from govhub.ingestion import registry
+
 # ──────────────────────────────────────────────────────────────────────────────
 # Funções puras — sem dependências de Airflow/cosmos (testáveis em isolamento)
 # ──────────────────────────────────────────────────────────────────────────────
@@ -51,9 +53,7 @@ def collect_dbt_packages(configs: list[dict]) -> dict:
                     "datasets": [],
                     "select": pkg.get("select", "models/"),
                 }
-            dataset_uri = cfg.get("silver_dataset")
-            if dataset_uri:
-                packages[name]["datasets"].append(dataset_uri)
+            packages[name]["datasets"].append(registry.silver_dataset(cfg))
     return packages
 
 
@@ -91,16 +91,7 @@ TRANSFORMATION_DIR = Path("/opt/airflow/dbt")
 
 def _load_configs() -> list[dict]:
     """Carrega todos os YAMLs de CONFIGS_DIR; ignora arquivos malformados."""
-    import yaml
-    configs = []
-    for f in CONFIGS_DIR.glob("*.yaml"):
-        try:
-            data = yaml.safe_load(f.read_text())
-            if isinstance(data, dict):
-                configs.append(data)
-        except Exception:
-            pass
-    return configs
+    return registry.load_configs(CONFIGS_DIR)
 
 
 # ──────────────────────────────────────────────────────────────────────────────

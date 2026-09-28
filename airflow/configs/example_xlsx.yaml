@@ -16,3 +16,13 @@ columns:
   - dt_fim
 
 skip_rows: 1
+
+# ── Contrato com as camadas seguintes (costuras A/B — ver ADR 0008) ──
+# Nome estável da tabela no Postgres (schema silver). Padrão: source_name
+# target_table: ted_programas
+# Dataset Airflow publicado após a sincronização. Padrão: silver://<target_table>
+# silver_dataset: silver://ted_programas
+# Pacotes dbt disparados quando o dataset é atualizado
+# dbt_packages:
+#   - name: <pacote>
+#     select: models/
