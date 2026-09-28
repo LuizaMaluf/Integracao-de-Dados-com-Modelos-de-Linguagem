@@ -4,6 +4,7 @@ TCC de Luiza Maluf (UnB) — ingestão, transformação e integração semântic
 Glossário do domínio em `CONTEXT.md`; decisões em `docs/adr/`.
 
 ## Contexto do TCC
+- Orientação: Carla Rocha e Isaque Alves · TCC 1 no início de março de 2027, TCC 2 em agosto de 2027
 - Proposta (QPs, metodologia, plano): `docs/tcc/proposta.md`
 - Artigo-base (SPAPI-Tester, Wang et al.): `docs/tcc/artigo-base.md` — o TCC replica o método dele em dados públicos
 - Princípio de arquitetura (ADR 0011): **LLM embutido** — o LLM só decide o de-para entre bases e devolve um Dicionário de Mapeamento tipado; todo SQL, DAG ou teste executado sai de um estágio determinístico. Nunca pôr o LLM para gerar SQL ou contornar o pipeline.
