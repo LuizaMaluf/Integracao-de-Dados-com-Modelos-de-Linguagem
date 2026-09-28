@@ -11,9 +11,11 @@ x-airflow-common: &airflow-common
     AIRFLOW__API__AUTH_BACKENDS: airflow.api.auth.backend.basic_auth
     AIRFLOW__WEBSERVER__EXPOSE_CONFIG: "true"
     PYTHONPATH: /opt/airflow/src
+    # pandas/numpy fixados nas constraints do Airflow 2.9.2: a imagem traz SQLAlchemy 1.4,
+    # e pandas >= 2.2 não fala com SQLAlchemy 1.4 (to_sql/read_sql quebram).
     _PIP_ADDITIONAL_REQUIREMENTS: >-
       httpx pdfplumber camelot-py[cv] unstructured[pdf]
-      anthropic pandas pydantic-settings openpyxl sqlalchemy
+      anthropic pandas==2.1.4 numpy<2 pydantic-settings openpyxl
       fsspec s3fs boto3 duckdb PyYAML
       astronomer-cosmos dbt-postgres
     # MinIO connection

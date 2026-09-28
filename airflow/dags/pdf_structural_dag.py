@@ -4,6 +4,7 @@ Discovers all configs of type pdf + extraction_mode: structural.
 Flow: download PDF → write raw binary to bronze →
       parse tables by title pattern → write Parquet to bronze → stage to silver → sync Postgres
 """
+from datetime import datetime
 from pathlib import Path
 
 from airflow.decorators import dag, task
@@ -21,10 +22,13 @@ def _load_configs():
 
 for _cfg in _load_configs():
     _source = _cfg["source_name"]
+    # Montada com o dict da fonte: dentro de _make_dag, cfg vira DagParam.
+    _sync_postgres = sync_postgres(_cfg)
 
     @dag(
         dag_id=f"ingest_pdf_structural_{_source}",
         schedule=_cfg.get("schedule", "@monthly"),
+        start_date=datetime(2025, 1, 1),
         catchup=False,
         tags=["ingestion", "pdf", "structural"],
     )
@@ -54,6 +58,6 @@ for _cfg in _load_configs():
 
         pdf_key = download_pdf(cfg)
         parquet_key = parse_pdf(pdf_key, cfg)
-        sync_postgres(cfg)(stage_silver(parquet_key, cfg))
+        _sync_postgres(stage_silver(parquet_key, cfg))
 
     globals()[f"ingest_pdf_structural_{_source}"] = _make_dag()

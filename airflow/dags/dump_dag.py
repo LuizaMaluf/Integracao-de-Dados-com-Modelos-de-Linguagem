@@ -3,6 +3,7 @@ DAG: Database dump ingestion.
 Discovers all configs of type dump in /opt/airflow/configs/.
 Flow: parse dump → write bronze (one Parquet per table) → stage each to silver → sync Postgres
 """
+from datetime import datetime
 from pathlib import Path
 
 from airflow.decorators import dag, task
@@ -20,10 +21,13 @@ def _load_configs():
 
 for _cfg in _load_configs():
     _source = _cfg["source_name"]
+    # Montada com o dict da fonte: dentro de _make_dag, cfg vira DagParam.
+    _sync_postgres = sync_postgres_many(_cfg)
 
     @dag(
         dag_id=f"ingest_dump_{_source}",
         schedule=_cfg.get("schedule", "@weekly"),
+        start_date=datetime(2025, 1, 1),
         catchup=False,
         tags=["ingestion", "dump"],
     )
@@ -57,6 +61,6 @@ for _cfg in _load_configs():
             return lotes
 
         keys = write_bronze(extract(cfg), cfg)
-        sync_postgres_many(cfg)(stage_silver(keys, cfg))
+        _sync_postgres(stage_silver(keys, cfg))
 
     globals()[f"ingest_dump_{_source}"] = _make_dag()
