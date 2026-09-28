@@ -239,12 +239,12 @@ extract → write_bronze → stage_silver → annotate_context  (leve)
 
 | Decisão | ADR |
 |---|---|
-| Substituir DAGs individuais por DAG Factory config-driven | [ADR 0002](adr/0002-dag-factory-config-driven.md) |
-| Adicionar Bronze Store (MinIO) antes do Silver | [ADR 0003](adr/0003-bronze-store-minio.md) |
-| Integration Gateway como ponte entre ingestion e IntegrationAgent | [ADR 0004](adr/0004-integration-gateway.md) |
-| Context Store passivo — quatro tabelas no schema `context` | [ADR 0005](adr/0005-context-store-passivo.md) |
-| Profile em dois momentos + `ContextResolver` como mediador dbt | [ADR 0006](adr/0006-profile-dois-momentos-context-resolver.md) |
-| Invalidação diferenciada + `find_domain_group` conectado ao banco | [ADR 0007](adr/0007-invalidacao-diferenciada-find-domain-group.md) |
+| Substituir DAGs individuais por DAG Factory config-driven | [ADR 0002](../adr/0002-dag-factory-config-driven.md) |
+| Adicionar Bronze Store (MinIO) antes do Silver | [ADR 0003](../adr/0003-bronze-store-minio.md) |
+| Integration Gateway como ponte entre ingestion e IntegrationAgent | [ADR 0004](../adr/0004-integration-gateway.md) |
+| Context Store passivo — quatro tabelas no schema `context` | [ADR 0005](../adr/0005-context-store-passivo.md) |
+| Profile em dois momentos + `ContextResolver` como mediador dbt | [ADR 0006](../adr/0006-profile-dois-momentos-context-resolver.md) |
+| Invalidação diferenciada + `find_domain_group` conectado ao banco | [ADR 0007](../adr/0007-invalidacao-diferenciada-find-domain-group.md) |
 
 ---
 
