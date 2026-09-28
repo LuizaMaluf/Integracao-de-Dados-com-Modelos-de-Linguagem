@@ -57,11 +57,15 @@ from {{{{ source('{source_group}', '{table}') }}}}
 def source_tables(cfg: dict) -> list[str]:
     """Tabelas que a fonte grava em ``silver.*`` no Postgres.
 
-    Dumps gravam uma tabela por entrada de ``tables``; as demais fontes, uma
-    tabela ``target_table``.
+    Espelha o ``DumpExtractor``: dump ``sql`` grava uma tabela por entrada de
+    ``tables`` (lista vazia = desconhecidas até a extração, nada é gerado); dump
+    ``csv_gz`` grava uma tabela com o nome da fonte. As demais fontes gravam
+    ``target_table``.
     """
     if cfg.get("type") == "dump":
-        return [registry.normalize_name(t) for t in cfg.get("tables") or []]
+        if cfg.get("format", "csv_gz") == "sql":
+            return [registry.normalize_name(t) for t in cfg.get("tables") or []]
+        return [registry.normalize_name(cfg["source_name"])]
     return [registry.target_table(cfg)]
 
 

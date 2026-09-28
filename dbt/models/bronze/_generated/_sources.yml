@@ -10,7 +10,7 @@ sources:
     description: Fonte declarada em example_api.yaml
   - name: fgts_operacoes
     description: Fonte declarada em example_csv.yaml
-  - name: gold_financiamentos_imobiliarios
+  - name: gold_financiamentos
     description: Fonte declarada em example_dump.yaml
   - name: orcamento_narrativo
     description: Fonte declarada em example_pdf_semantic.yaml

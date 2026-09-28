@@ -28,6 +28,7 @@ ingestion = [
     "s3fs",
     "boto3",
     "duckdb",
+    "pyarrow",
     "PyYAML",
 ]
 dev = [

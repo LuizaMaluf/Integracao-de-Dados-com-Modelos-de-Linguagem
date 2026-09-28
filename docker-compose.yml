@@ -16,7 +16,7 @@ x-airflow-common: &airflow-common
     _PIP_ADDITIONAL_REQUIREMENTS: >-
       httpx pdfplumber camelot-py[cv] unstructured[pdf]
       anthropic pandas==2.1.4 numpy<2 pydantic-settings openpyxl
-      fsspec s3fs boto3 duckdb PyYAML
+      fsspec s3fs boto3 duckdb pyarrow PyYAML
       astronomer-cosmos dbt-postgres
     # MinIO connection
     MINIO_ENDPOINT: minio:9000

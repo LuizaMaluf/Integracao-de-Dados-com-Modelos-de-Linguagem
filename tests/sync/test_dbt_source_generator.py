@@ -16,9 +16,12 @@ def _registry(tmp_path, **files):
 def test_source_tables_por_tipo():
     assert gen.source_tables({"source_name": "IBGE UFs", "type": "api"}) == ["ibge_ufs"]
     assert gen.source_tables({"source_name": "x", "target_table": "y", "type": "csv"}) == ["y"]
-    dump = {"source_name": "d", "type": "dump", "tables": ["Tab_A", "tab_b"]}
-    assert gen.source_tables(dump) == ["tab_a", "tab_b"]
-    assert gen.source_tables({"source_name": "d", "type": "dump"}) == []
+    dump_sql = {"source_name": "d", "type": "dump", "format": "sql", "tables": ["Tab_A", "tab_b"]}
+    assert gen.source_tables(dump_sql) == ["tab_a", "tab_b"]
+    assert gen.source_tables({"source_name": "d", "type": "dump", "format": "sql"}) == []
+    # csv_gz: uma tabela com o nome da fonte; `tables` é ignorado (igual ao DumpExtractor)
+    dump_gz = {"source_name": "Gold Fin", "type": "dump", "format": "csv_gz", "tables": ["x"]}
+    assert gen.source_tables(dump_gz) == ["gold_fin"]
 
 
 def test_build_bronze_model_incremental_por_lote():

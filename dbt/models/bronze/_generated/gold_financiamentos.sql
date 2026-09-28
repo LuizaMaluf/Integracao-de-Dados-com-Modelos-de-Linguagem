@@ -9,7 +9,7 @@
 }}
 
 select *
-from {{ source('registry', 'gold_financiamentos_imobiliarios') }}
+from {{ source('registry', 'gold_financiamentos') }}
 
 {% if is_incremental() %}
   where dt_ingest > (select coalesce(max(dt_ingest), '1900-01-01'::timestamptz) from {{ this }})
