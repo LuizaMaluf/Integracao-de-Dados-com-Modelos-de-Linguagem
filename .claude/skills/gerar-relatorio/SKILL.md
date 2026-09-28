@@ -17,7 +17,7 @@ output:
 ## Contexto do projeto
 
 ```
-PROJECT_ROOT = /home/luiza-maluf/Área de trabalho/tcc/fase01
+PROJECT_ROOT = raiz deste repositório (onde fica o pyproject.toml)
 OUTPUT_REPORTS = PROJECT_ROOT/output/reports/
 ```
 

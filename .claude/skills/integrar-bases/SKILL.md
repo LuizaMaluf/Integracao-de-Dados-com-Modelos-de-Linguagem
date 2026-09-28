@@ -28,7 +28,7 @@ output:
 ## Contexto do projeto
 
 ```
-PROJECT_ROOT = /home/luiza-maluf/Área de trabalho/tcc/fase01
+PROJECT_ROOT = raiz deste repositório (onde fica o pyproject.toml)
 ```
 
 Esta skill é a orquestradora do pipeline. Ela **não executa análises** — delega cada etapa para a skill especializada correspondente e gerencia os paths entre etapas.
@@ -62,11 +62,10 @@ Execute as etapas na ordem abaixo. A cada etapa:
 ### Etapa 0 — Validar Domain Context
 
 ```python
-import sys
-sys.path.insert(0, PROJECT_ROOT)
+# pré-requisito: `pip install -e .` na raiz do repo (pacote govhub)
 
-from src.config.context_loader import load_context
-from src.agent.context_validator import validate_context
+from govhub.integration.config.context_loader import load_context
+from govhub.integration.agent.context_validator import validate_context
 import pandas as pd
 
 # Carregar metadados mínimos das tabelas para validação

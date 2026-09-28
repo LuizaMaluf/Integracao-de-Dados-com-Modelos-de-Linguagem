@@ -21,15 +21,14 @@ output:
 ## Contexto do projeto
 
 ```
-PROJECT_ROOT = /home/luiza-maluf/Área de trabalho/tcc/fase01
+PROJECT_ROOT = raiz deste repositório (onde fica o pyproject.toml)
 ```
 
 Módulos disponíveis:
 ```python
-import sys
-sys.path.insert(0, "/home/luiza-maluf/Área de trabalho/tcc/fase01")
-from src.analyzers.semantic import semantic_score, find_domain_group
-from src.config.context_loader import load_context
+# pré-requisito: `pip install -e .` na raiz do repo (pacote govhub)
+from govhub.integration.analyzers.semantic import semantic_score, find_domain_group
+from govhub.integration.config.context_loader import load_context
 ```
 
 ---
@@ -82,7 +81,7 @@ Para cada par `(a, b)`, calcule o **score de afinidade do par**: média dos scor
 
 ```python
 from itertools import combinations
-from src.analyzers.semantic import semantic_score
+from govhub.integration.analyzers.semantic import semantic_score
 
 CANDIDATE_THRESHOLD = 0.45  # pares abaixo disso são descartados
 
@@ -97,7 +96,7 @@ for (name_a, cols_a), (name_b, cols_b) in combinations(table_columns.items(), 2)
     top3_avg = sum(col_scores[:3]) / 3 if col_scores else 0.0
 
     # boost: verifica se algum par de colunas compartilha grupo de domínio
-    from src.analyzers.semantic import find_domain_group
+    from govhub.integration.analyzers.semantic import find_domain_group
     shared_groups = sum(
         1 for ca in cols_a for cb in cols_b
         if find_domain_group(ca) and find_domain_group(ca) == find_domain_group(cb)
@@ -166,8 +165,8 @@ for p in approved:
 Após a Etapa 4, execute a lógica do `comparar-dados` para cada par em `skipped`:
 
 ```python
-from src.analyzers.content_analyzer import analyze, PROMOTION_THRESHOLD
-from src.analyzers.structural import dtype_compatible
+from govhub.integration.analyzers.content_analyzer import analyze, PROMOTION_THRESHOLD
+from govhub.integration.analyzers.structural import dtype_compatible
 
 content_recovered = []
 
@@ -186,7 +185,7 @@ for p in skipped:
         prof_a_path = Path(f"output/analisar_tabela_{name_a}.json")
         prof_b_path = Path(f"output/analisar_tabela_{name_b}.json")
         if prof_a_path.exists() and prof_b_path.exists():
-            from src.analyzers.exercicio_profiler import detect_exercicio_column
+            from govhub.integration.analyzers.exercicio_profiler import detect_exercicio_column
             prof_a = json.loads(prof_a_path.read_text())
             prof_b = json.loads(prof_b_path.read_text())
             dist_a = prof_a.get("exercicio_distribution") or {}

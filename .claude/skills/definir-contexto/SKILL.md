@@ -15,7 +15,7 @@ output:
 ## Contexto do projeto
 
 ```
-PROJECT_ROOT = /home/luiza-maluf/Área de trabalho/tcc/fase01
+PROJECT_ROOT = raiz deste repositório (onde fica o pyproject.toml)
 ```
 
 O Domain Context gerado aqui é consumido por todas as skills do pipeline: `analisar-tabela`, `comparar-colunas`, `identificar-chave` e `gerar-relatorio`, via `src/config/context_loader.py`.

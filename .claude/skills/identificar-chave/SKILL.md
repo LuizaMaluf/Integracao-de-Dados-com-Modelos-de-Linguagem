@@ -22,17 +22,16 @@ output:
 ## Contexto do projeto
 
 ```
-PROJECT_ROOT = /home/luiza-maluf/Área de trabalho/tcc/fase01
+PROJECT_ROOT = raiz deste repositório (onde fica o pyproject.toml)
 ```
 
 Módulos disponíveis:
 ```python
-import sys
-sys.path.insert(0, "/home/luiza-maluf/Área de trabalho/tcc/fase01")
+# pré-requisito: `pip install -e .` na raiz do repo (pacote govhub)
 
-from src.loaders.csv_loader import CsvLoader
-from src.agent.orchestrator import IntegrationAgent
-from src.output.formatter import print_result
+from govhub.integration.loaders.csv_loader import CsvLoader
+from govhub.integration.agent.orchestrator import IntegrationAgent
+import json
 ```
 
 JSON de saída: `output/identificar_chave_{stem_a}__{stem_b}.json`
@@ -64,15 +63,15 @@ candidates = evidence["pairs"]  # lista de pares já avaliados com match_rate, e
 Passe os candidatos diretamente para `reason_with_llm` — sem reprocessar CSVs.
 
 ```python
-from src.agent.llm_reasoner import reason_with_llm
-from src.loaders.base import TableMetadata
+from govhub.integration.agent.llm_reasoner import reason_with_llm
+from govhub.integration.loaders.base import TableMetadata
 
 # Reconstruir TableMetadata a partir das evidências (sem reler os CSVs)
 meta_a = TableMetadata(name=evidence["table_a"], columns=[p["col_a"] for p in candidates], dtypes={})
 meta_b = TableMetadata(name=evidence["table_b"], columns=[p["col_b"] for p in candidates], dtypes={})
 
 # Converter pares para CandidateKey
-from src.agent.candidate_generator import CandidateKey
+from govhub.integration.agent.candidate_generator import CandidateKey
 ck_list = [
     CandidateKey(
         columns_a=[p["col_a"]],
@@ -114,12 +113,11 @@ Parâmetros opcionais que o usuário pode mencionar:
 ### Opção 1 — Via módulos do projeto (preferencial)
 
 ```python
-import sys, json
-sys.path.insert(0, "/home/luiza-maluf/Área de trabalho/tcc/fase01")
+import json
 
-from src.loaders.csv_loader import CsvLoader
-from src.agent.orchestrator import IntegrationAgent
-from src.output.formatter import print_result
+# pré-requisito: `pip install -e .` na raiz do repo (pacote govhub)
+from govhub.integration.loaders.csv_loader import CsvLoader
+from govhub.integration.agent.orchestrator import IntegrationAgent
 
 loader = CsvLoader()
 df_a, meta_a = loader.load("<arquivo_a>", encoding="utf-8", sep=";")
@@ -128,7 +126,7 @@ df_b, meta_b = loader.load("<arquivo_b>", encoding="utf-8", sep=";")
 agent = IntegrationAgent(use_llm=False)  # True para acionar Claude
 result = agent.run(df_a, meta_a, df_b, meta_b)
 
-print_result(result)
+print(json.dumps(result, indent=2, ensure_ascii=False, default=str))
 saved = agent.save(result)
 print(f"Resultado salvo em: {saved}")
 ```
