@@ -4,18 +4,22 @@ Entry point: run the integration agent from the command line.
 Usage:
     govhub --table-a data/raw/empenhos.csv --table-b data/raw/convenios.csv
     govhub --table-a data/raw/tabela_a.csv --table-b data/raw/tabela_b.csv --no-llm
+    govhub --table-a pg://silver.ibge_municipios --table-b pg://silver.ibge_estados
 """
 import argparse
 import json
 
-from govhub.integration.loaders.csv_loader import CsvLoader
 from govhub.integration.agent.orchestrator import IntegrationAgent
+from govhub.integration.loaders.csv_loader import CsvLoader
+from govhub.integration.loaders.postgres_loader import PostgresLoader, is_pg_source
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Semantic Integration Agent")
-    parser.add_argument("--table-a", required=True, help="Path to table A (CSV)")
-    parser.add_argument("--table-b", required=True, help="Path to table B (CSV)")
+    parser.add_argument("--table-a", required=True,
+                        help="Tabela A: caminho de CSV ou pg://schema.tabela")
+    parser.add_argument("--table-b", required=True,
+                        help="Tabela B: caminho de CSV ou pg://schema.tabela")
     parser.add_argument("--name-a", default=None, help="Display name for table A")
     parser.add_argument("--name-b", default=None, help="Display name for table B")
     parser.add_argument("--sep", default=";", help="CSV separator (default: ;)")
@@ -25,25 +29,21 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def load_table(source: str, name: str | None, args: argparse.Namespace):
+    """Carrega de CSV ou, com prefixo pg://, do PostgreSQL (costura C)."""
+    if is_pg_source(source):
+        return PostgresLoader().load(source, table_name=name)
+    return CsvLoader().load(source, table_name=name, encoding=args.encoding, sep=args.sep)
+
+
 def main() -> None:
     args = parse_args()
-    loader = CsvLoader()
 
     print(f"Loading table A: {args.table_a}")
-    df_a, meta_a = loader.load(
-        args.table_a,
-        table_name=args.name_a,
-        encoding=args.encoding,
-        sep=args.sep,
-    )
+    df_a, meta_a = load_table(args.table_a, args.name_a, args)
 
     print(f"Loading table B: {args.table_b}")
-    df_b, meta_b = loader.load(
-        args.table_b,
-        table_name=args.name_b,
-        encoding=args.encoding,
-        sep=args.sep,
-    )
+    df_b, meta_b = load_table(args.table_b, args.name_b, args)
 
     agent = IntegrationAgent(use_llm=not args.no_llm)
     result = agent.run(df_a, meta_a, df_b, meta_b)

@@ -21,12 +21,7 @@ class CsvLoader(BaseLoader):
         df_full = pd.read_csv(path, encoding=encoding, sep=sep, **kwargs)
         sample = df_full.sample(min(n, len(df_full)), random_state=42)
 
-        metadata = TableMetadata(
-            name=table_name or path.stem,
-            columns=df_full.columns.tolist(),
-            dtypes={col: str(dtype) for col, dtype in df_full.dtypes.items()},
-            row_count=len(df_full),
-            descriptions=descriptions or {},
-            sample=sample,
+        metadata = TableMetadata.from_dataframe(
+            df_full, table_name or path.stem, sample=sample, descriptions=descriptions
         )
         return df_full, metadata

@@ -98,7 +98,8 @@ def test_models_gerados_no_repo_estao_atualizados(tmp_path):
     shutil.rmtree(models / "bronze" / gen.GENERATED_DIRNAME)
     gen.generate(root / "airflow" / "configs", models)
 
-    esperado = {p.name: p.read_text() for p in (models / "bronze" / gen.GENERATED_DIRNAME).iterdir()}
+    gerado = models / "bronze" / gen.GENERATED_DIRNAME
+    esperado = {p.name: p.read_text() for p in gerado.iterdir()}
     atual = {p.name: p.read_text()
              for p in (root / "dbt" / "models" / "bronze" / gen.GENERATED_DIRNAME).iterdir()}
     assert atual == esperado, "rode `make dbt-generate` e commite o resultado"

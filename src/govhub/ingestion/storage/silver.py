@@ -42,10 +42,4 @@ def list_tables() -> list[str]:
 
 def build_metadata(df: pd.DataFrame, table_name: str) -> TableMetadata:
     """Build a TableMetadata object compatible with IntegrationAgent."""
-    return TableMetadata(
-        name=table_name,
-        columns=list(df.columns),
-        dtypes={col: str(dtype) for col, dtype in df.dtypes.items()},
-        row_count=len(df),
-        sample=df.head(5),
-    )
+    return TableMetadata.from_dataframe(df, table_name)

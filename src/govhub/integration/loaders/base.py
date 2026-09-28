@@ -12,6 +12,24 @@ class TableMetadata:
     descriptions: dict[str, str] = field(default_factory=dict)
     sample: pd.DataFrame = field(default_factory=pd.DataFrame)
 
+    @classmethod
+    def from_dataframe(
+        cls,
+        df: pd.DataFrame,
+        name: str,
+        sample: pd.DataFrame | None = None,
+        descriptions: dict[str, str] | None = None,
+    ) -> "TableMetadata":
+        """Metadata de um DataFrame; ``sample`` padrão são as 5 primeiras linhas."""
+        return cls(
+            name=name,
+            columns=list(df.columns),
+            dtypes={col: str(dtype) for col, dtype in df.dtypes.items()},
+            row_count=len(df),
+            descriptions=descriptions or {},
+            sample=df.head(5) if sample is None else sample,
+        )
+
     def column_info(self) -> list[dict]:
         return [
             {

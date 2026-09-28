@@ -1,54 +1,72 @@
 """
-Componente 3 — Postgres Loader (Costura C: integração lê do banco).
+Costura C — Postgres Loader: a integração lê direto do banco.
 
-Responsabilidade: carregar uma tabela do PostgreSQL como (DataFrame, TableMetadata)
-para a camada de integração, substituindo o CSV exportado à mão. Fecha a Costura C.
+Carrega uma tabela do PostgreSQL como ``(DataFrame, TableMetadata)``, no lugar do
+CSV exportado à mão. Simétrico ao ``CsvLoader``.
 
-Implementa a interface BaseLoader existente — simétrico ao CsvLoader, não-invasivo.
-
-NOTA: stub — assinaturas e responsabilidades definidas; lógica não preenchida.
+Aceita ``schema.tabela``, ``pg://schema.tabela`` ou só ``tabela`` (schema ``silver``).
+As colunas de linhagem do Silver Sync (``dt_ingest``, ``_silver_table``) são
+removidas por padrão: são iguais entre tabelas e virariam falsas candidatas a chave.
 """
 from __future__ import annotations
 
-import os
-
 import pandas as pd
-from sqlalchemy import create_engine
+from sqlalchemy import text
+from sqlalchemy.engine import Engine
 
-from .base import BaseLoader, TableMetadata  # noqa: F401 (TableMetadata usado quando implementado)
+from govhub.integration.config.settings import settings
+from govhub.postgres import pg_engine, quote_ident
+
+from .base import BaseLoader, TableMetadata
+
+PG_PREFIX = "pg://"
+DEFAULT_SCHEMA = "silver"
+LINEAGE_COLUMNS = ("dt_ingest", "_silver_table")
 
 
-def _pg_engine():
-    """Engine SQLAlchemy para o PostgreSQL (mesmas envs do dbt/silver_sync)."""
-    user = os.environ["POSTGRES_USER"]
-    pwd = os.environ["POSTGRES_PASSWORD"]
-    host = os.environ.get("POSTGRES_HOST", "localhost")
-    port = os.environ.get("POSTGRES_PORT", "5432")
-    db = os.environ["POSTGRES_DB"]
-    return create_engine(f"postgresql+psycopg2://{user}:{pwd}@{host}:{port}/{db}")
+def parse_source(source: str) -> tuple[str, str]:
+    """``'pg://silver.ibge'`` → ``('silver', 'ibge')``. Schema padrão: ``silver``."""
+    ref = source.removeprefix(PG_PREFIX)
+    schema, _, table = ref.rpartition(".")
+    schema = schema or DEFAULT_SCHEMA
+    quote_ident(schema), quote_ident(table)  # valida os dois nomes
+    return schema, table
+
+
+def is_pg_source(source: str) -> bool:
+    return source.startswith(PG_PREFIX)
 
 
 class PostgresLoader(BaseLoader):
-    """Carrega uma tabela do PostgreSQL como (DataFrame, TableMetadata).
+    def __init__(self, engine: Engine | None = None) -> None:
+        self._engine = engine
 
-    Aceita um identificador no formato `schema.tabela` (ex.: silver.ibge_municipios)
-    ou uma URI `pg://schema.tabela`. Espelha a assinatura de CsvLoader.load.
-    """
+    @property
+    def engine(self) -> Engine:
+        if self._engine is None:
+            self._engine = pg_engine()
+        return self._engine
 
-    def load(self, source: str, **kwargs) -> tuple:
-        """Lê a tabela e devolve (df, TableMetadata).
+    def load(
+        self,
+        source: str,
+        table_name: str | None = None,
+        sample_size: int | None = None,
+        drop_lineage: bool = True,
+        descriptions: dict[str, str] | None = None,
+        **kwargs,
+    ) -> tuple[pd.DataFrame, TableMetadata]:
+        schema, table = parse_source(source)
+        query = text(f"SELECT * FROM {quote_ident(schema)}.{quote_ident(table)}")
+        with self.engine.connect() as conn:
+            df = pd.read_sql(query, conn)
 
-        TODO: implementar:
-          1. schema, table = parse(source)  # aceita 'schema.table' e 'pg://schema.table'
-          2. df = pd.read_sql(f'SELECT * FROM "{schema}"."{table}"', _pg_engine())
-          3. meta = self._build_metadata(df, f'{schema}.{table}')
-          4. return df, meta
-        """
-        raise NotImplementedError
+        if drop_lineage:
+            df = df.drop(columns=[c for c in LINEAGE_COLUMNS if c in df.columns])
 
-    def _build_metadata(self, df: pd.DataFrame, name: str):
-        """Constrói TableMetadata compatível com o IntegrationAgent.
-
-        Espelha govhub.ingestion.storage.silver.build_metadata.
-        TODO: retornar TableMetadata(name=name, columns=..., dtypes=..., row_count=..., sample=df.head(5))."""
-        raise NotImplementedError
+        n = sample_size or settings.sample_size
+        sample = df.sample(min(n, len(df)), random_state=42) if len(df) else df
+        metadata = TableMetadata.from_dataframe(
+            df, table_name or f"{schema}.{table}", sample=sample, descriptions=descriptions
+        )
+        return df, metadata

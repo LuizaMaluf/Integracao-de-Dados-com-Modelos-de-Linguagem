@@ -42,8 +42,11 @@ def flatten_structs(df: pd.DataFrame) -> pd.DataFrame:
     apareceram no aninhamento de municípios → microrregião → UF.
     """
     df = df.copy()
-    for col in df.columns[df.dtypes == object]:
-        if df[col].map(lambda v: isinstance(v, (dict, list, tuple, np.ndarray))).any():
+    nested = (dict, list, tuple, np.ndarray)
+    for col in df.columns:
+        if pd.api.types.is_object_dtype(df[col]) and df[col].map(
+            lambda v: isinstance(v, nested)
+        ).any():
             df[col] = df[col].map(_to_json)
     return df
 

@@ -1,7 +1,8 @@
 """
 DAG: Integration Bridge — triggered manually or on a sensor.
 Reads two silver table names from dag_run.conf and runs IntegrationAgent.
-Expected conf: {"table_a": "silver_name_a", "table_b": "silver_name_b"}
+Expected conf: {"table_a": "silver_name_a", "table_b": "silver_name_b",
+                "source": "duckdb" | "postgres"}   # source opcional, padrão duckdb
 """
 
 from airflow.decorators import dag, task
@@ -29,7 +30,7 @@ def integration_bridge_dag():
             )
 
         from govhub.ingestion.bridge.integration_bridge import run_integration as _run
-        out_path = _run(table_a, table_b)
+        out_path = _run(table_a, table_b, source=conf.get("source", "duckdb"))
         return str(out_path)
 
     run_integration()
