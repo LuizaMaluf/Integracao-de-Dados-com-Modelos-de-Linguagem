@@ -2,13 +2,15 @@
 DAG: PDF structural ingestion.
 Discovers all configs of type pdf + extraction_mode: structural.
 Flow: download PDF → write raw binary to bronze →
-      parse tables by title pattern → write Parquet to bronze → stage to silver
+      parse tables by title pattern → write Parquet to bronze → stage to silver → sync Postgres
 """
 from pathlib import Path
 
 from airflow.decorators import dag, task
 
 from govhub.ingestion import registry
+
+from _sync import sync_postgres
 
 CONFIGS_DIR = Path("/opt/airflow/configs")
 
@@ -52,6 +54,6 @@ for _cfg in _load_configs():
 
         pdf_key = download_pdf(cfg)
         parquet_key = parse_pdf(pdf_key, cfg)
-        stage_silver(parquet_key, cfg)
+        sync_postgres(cfg)(stage_silver(parquet_key, cfg))
 
     globals()[f"ingest_pdf_structural_{_source}"] = _make_dag()

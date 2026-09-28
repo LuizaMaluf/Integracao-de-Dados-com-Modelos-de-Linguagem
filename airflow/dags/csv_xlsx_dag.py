@@ -2,13 +2,15 @@
 DAG: CSV / XLSX ingestion.
 Discovers all configs of type csv or xlsx in /opt/airflow/configs/
 and creates one DAG per source dynamically.
-Flow: extract → write bronze → stage to silver
+Flow: extract → write bronze → stage to silver → sync Postgres
 """
 from pathlib import Path
 
 from airflow.decorators import dag, task
 
 from govhub.ingestion import registry
+
+from _sync import sync_postgres
 
 CONFIGS_DIR = Path("/opt/airflow/configs")
 
@@ -63,7 +65,7 @@ for _cfg in _load_configs():
 
         df_result = extract(cfg)
         key = write_bronze(df_result, cfg)
-        stage_silver(key, cfg)
+        sync_postgres(cfg)(stage_silver(key, cfg))
         run_annotate_context(df_result, cfg)
         run_profile_table(df_result, cfg)
 

@@ -1,13 +1,15 @@
 """
 DAG: Database dump ingestion.
 Discovers all configs of type dump in /opt/airflow/configs/.
-Flow: parse dump → write bronze (one Parquet per table) → stage each to silver
+Flow: parse dump → write bronze (one Parquet per table) → stage each to silver → sync Postgres
 """
 from pathlib import Path
 
 from airflow.decorators import dag, task
 
 from govhub.ingestion import registry
+
+from _sync import sync_postgres_many
 
 CONFIGS_DIR = Path("/opt/airflow/configs")
 
@@ -45,14 +47,16 @@ for _cfg in _load_configs():
             return keys
 
         @task()
-        def stage_silver(bronze_keys: list, cfg):
+        def stage_silver(bronze_keys: list, cfg) -> list[list[str]]:
             from govhub.ingestion.storage import bronze, silver
+            lotes = []
             for key in bronze_keys:
                 table_name = key.split("/")[-1].replace(".parquet", "")
                 df = bronze.read_parquet(key)
-                silver.write(df, table_name)
+                lotes.append([silver.write(df, table_name), table_name])
+            return lotes
 
         keys = write_bronze(extract(cfg), cfg)
-        stage_silver(keys, cfg)
+        sync_postgres_many(cfg)(stage_silver(keys, cfg))
 
     globals()[f"ingest_dump_{_source}"] = _make_dag()

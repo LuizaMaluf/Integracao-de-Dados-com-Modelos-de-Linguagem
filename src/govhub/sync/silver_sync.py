@@ -1,72 +1,109 @@
 """
-Componente 1 — Silver Sync (Costura A: DuckDB → PostgreSQL).
+Costura A — Silver Sync: DuckDB → PostgreSQL.
 
-Responsabilidade: replicar cada tabela silver gravada em DuckDB para o schema
-`silver` do PostgreSQL, automaticamente, ao fim de cada ingestão. Fecha a Costura A
-com a ponte automática (decisão do usuário: preserva o DuckDB na ingestão).
+Replica cada lote silver gravado no DuckDB (``<fonte>_YYYYMMDD``) para
+``silver.<target_table>`` no PostgreSQL, ao fim de cada ingestão. Roda como task
+do Airflow logo após ``stage_silver`` (ver ADR 0009).
 
-Roda como task do Airflow logo após `stage_silver` em airflow/dags/api_dag.py.
+Cada linha ganha duas colunas de linhagem:
 
-NOTA: stub — assinaturas e responsabilidades definidas; lógica não preenchida.
-Na PoC, a ponte foi feita por um script ad-hoc; este componente a torna permanente.
+- ``dt_ingest``     timestamp UTC da carga (usado pelo bronze incremental do dbt);
+- ``_silver_table`` lote DuckDB de origem (chave de idempotência).
+
+Re-sincronizar o mesmo lote substitui as linhas dele em vez de duplicá-las.
 """
 from __future__ import annotations
 
-import os
+import json
 
-import duckdb
+import numpy as np
 import pandas as pd
-from sqlalchemy import create_engine
+from sqlalchemy import inspect, text
+from sqlalchemy.engine import Engine
+
+from govhub.ingestion import registry
+from govhub.postgres import pg_engine, quote_ident
+
+LINEAGE_COLUMNS = ("dt_ingest", "_silver_table")
 
 
-def _duckdb_conn() -> duckdb.DuckDBPyConnection:
-    """Reusa a conexão DuckDB do silver (ver govhub.ingestion.storage.silver._conn)."""
-    path = os.environ.get("DUCKDB_PATH", "/opt/airflow/data/silver.duckdb")
-    return duckdb.connect(path)
+def _to_json(value):
+    if isinstance(value, np.ndarray):
+        value = value.tolist()
+    if isinstance(value, (dict, list, tuple)):
+        return json.dumps(value, ensure_ascii=False, default=str)
+    return value
 
 
-def _pg_engine():
-    """Engine SQLAlchemy para o PostgreSQL analítico (mesmas envs do dbt)."""
-    user = os.environ["POSTGRES_USER"]
-    pwd = os.environ["POSTGRES_PASSWORD"]
-    host = os.environ.get("POSTGRES_HOST", "localhost")
-    port = os.environ.get("POSTGRES_PORT", "5432")
-    db = os.environ["POSTGRES_DB"]
-    return create_engine(f"postgresql+psycopg2://{user}:{pwd}@{host}:{port}/{db}")
+def flatten_structs(df: pd.DataFrame) -> pd.DataFrame:
+    """Serializa colunas struct/list (dict, list, array) como texto JSON.
 
-
-def _flatten_structs(df: pd.DataFrame) -> pd.DataFrame:
-    """Achata colunas struct/list (ex.: aninhamento do IBGE) para tipos que o
-    PostgreSQL aceita. Na PoC isto foi necessário para a tabela de municípios.
-
-    TODO: implementar — serializar dict/list para str (ou JSONB)."""
-    raise NotImplementedError
-
-
-def sync_to_postgres(duckdb_table: str, target_table: str, schema: str = "silver") -> int:
-    """Lê uma tabela do DuckDB e a escreve em `<schema>.<target_table>` no PostgreSQL.
-
-    Parâmetros
-    ----------
-    duckdb_table : nome da tabela no silver DuckDB (ex.: ibge_municipios_20260615)
-    target_table : nome estável no Postgres, sem data (ex.: ibge_municipios)
-    schema       : schema de destino (default: silver)
-
-    Retorna o número de linhas sincronizadas.
-
-    TODO: implementar:
-      1. df = _duckdb_conn().execute(f'SELECT * FROM "{duckdb_table}"').df()
-      2. df = _flatten_structs(df)
-      3. CREATE SCHEMA IF NOT EXISTS <schema>
-      4. df.to_sql(target_table, _pg_engine(), schema=schema, if_exists='replace')
-      5. retornar len(df)
+    O PostgreSQL não aceita esses tipos via ``to_sql``; na PoC do IBGE eles
+    apareceram no aninhamento de municípios → microrregião → UF.
     """
-    raise NotImplementedError
+    df = df.copy()
+    for col in df.columns[df.dtypes == object]:
+        if df[col].map(lambda v: isinstance(v, (dict, list, tuple, np.ndarray))).any():
+            df[col] = df[col].map(_to_json)
+    return df
 
 
-def airflow_task(cfg: dict) -> int:
-    """Adaptador para virar @task no api_dag.py, após stage_silver.
+def sync_dataframe(
+    df: pd.DataFrame,
+    target_table: str,
+    silver_table: str,
+    schema: str = "silver",
+    engine: Engine | None = None,
+    now: pd.Timestamp | None = None,
+) -> int:
+    """Grava um lote em ``<schema>.<target_table>``. Retorna o número de linhas.
 
-    Deriva os nomes a partir do config da fonte e chama sync_to_postgres.
-    TODO: implementar a derivação de duckdb_table/target_table a partir de cfg."""
-    raise NotImplementedError
+    Tudo numa transação: cria o schema se preciso, adiciona colunas novas como
+    TEXT, apaga as linhas do mesmo lote e insere o lote.
+    """
+    engine = engine or pg_engine()
+    now = now if now is not None else pd.Timestamp.now(tz="UTC")
+    df = flatten_structs(df).assign(dt_ingest=now, _silver_table=silver_table)
+
+    qschema, qtable = quote_ident(schema), quote_ident(target_table)
+    with engine.begin() as conn:
+        conn.execute(text(f"CREATE SCHEMA IF NOT EXISTS {qschema}"))
+        insp = inspect(conn)
+        if insp.has_table(target_table, schema=schema):
+            existing = {c["name"] for c in insp.get_columns(target_table, schema=schema)}
+            for col in df.columns:
+                if col not in existing:
+                    conn.execute(
+                        text(f"ALTER TABLE {qschema}.{qtable} ADD COLUMN {quote_ident(col)} TEXT")
+                    )
+            conn.execute(
+                text(f"DELETE FROM {qschema}.{qtable} WHERE _silver_table = :lote"),
+                {"lote": silver_table},
+            )
+        df.to_sql(
+            target_table, conn, schema=schema, if_exists="append", index=False,
+            method="multi", chunksize=1000,
+        )
+    return len(df)
+
+
+def sync_to_postgres(
+    duckdb_table: str,
+    target_table: str,
+    schema: str = "silver",
+    engine: Engine | None = None,
+) -> int:
+    """Lê um lote do silver DuckDB e o sincroniza em ``<schema>.<target_table>``."""
+    from govhub.ingestion.storage import silver
+
+    df = silver.read(duckdb_table)
+    return sync_dataframe(df, target_table, duckdb_table, schema=schema, engine=engine)
+
+
+def airflow_task(cfg: dict, duckdb_table: str) -> int:
+    """Adaptador para a task ``sync_postgres`` das DAGs de ingestão.
+
+    ``duckdb_table`` é o valor retornado por ``stage_silver`` (o nome datado do
+    lote); o destino vem do Source Registry.
+    """
+    return sync_to_postgres(duckdb_table, registry.target_table(cfg))

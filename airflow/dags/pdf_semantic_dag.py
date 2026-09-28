@@ -3,7 +3,7 @@ DAG: PDF semantic ingestion.
 Discovers all configs of type pdf + extraction_mode: semantic.
 Flow: download PDF → write raw binary to bronze →
       unstructured layout analysis → Claude API extraction →
-      write Parquet to bronze → stage to silver
+      write Parquet to bronze → stage to silver → sync Postgres
 On LLM failure the task is marked failed; the raw PDF remains in bronze.
 """
 from pathlib import Path
@@ -11,6 +11,8 @@ from pathlib import Path
 from airflow.decorators import dag, task
 
 from govhub.ingestion import registry
+
+from _sync import sync_postgres
 
 CONFIGS_DIR = Path("/opt/airflow/configs")
 
@@ -55,6 +57,6 @@ for _cfg in _load_configs():
 
         pdf_key = download_pdf(cfg)
         parquet_key = parse_pdf(pdf_key, cfg)
-        stage_silver(parquet_key, cfg)
+        sync_postgres(cfg)(stage_silver(parquet_key, cfg))
 
     globals()[f"ingest_pdf_semantic_{_source}"] = _make_dag()

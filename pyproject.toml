@@ -49,6 +49,10 @@ where = ["src"]
 testpaths = ["tests"]
 pythonpath = ["src", "airflow"]
 addopts = "-v --tb=short --import-mode=importlib"
+markers = [
+    "pg: precisa de PostgreSQL real (POSTGRES_*); pulado se indisponível",
+    "e2e: fluxo completo registry → Postgres → dbt → integração",
+]
 
 [tool.ruff]
 line-length = 100
