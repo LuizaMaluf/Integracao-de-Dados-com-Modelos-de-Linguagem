@@ -5,8 +5,7 @@ Responsabilidade: replicar cada tabela silver gravada em DuckDB para o schema
 `silver` do PostgreSQL, automaticamente, ao fim de cada ingestão. Fecha a Costura A
 com a ponte automática (decisão do usuário: preserva o DuckDB na ingestão).
 
-Destino real: ingestion/storage/silver_sync.py
-Roda como task do Airflow logo após `stage_silver` em api_dag.py.
+Roda como task do Airflow logo após `stage_silver` em airflow/dags/api_dag.py.
 
 NOTA: stub — assinaturas e responsabilidades definidas; lógica não preenchida.
 Na PoC, a ponte foi feita por um script ad-hoc; este componente a torna permanente.
@@ -21,7 +20,7 @@ from sqlalchemy import create_engine
 
 
 def _duckdb_conn() -> duckdb.DuckDBPyConnection:
-    """Reusa a conexão DuckDB do silver (ver ingestion/storage/silver.py::_conn)."""
+    """Reusa a conexão DuckDB do silver (ver govhub.ingestion.storage.silver._conn)."""
     path = os.environ.get("DUCKDB_PATH", "/opt/airflow/data/silver.duckdb")
     return duckdb.connect(path)
 
