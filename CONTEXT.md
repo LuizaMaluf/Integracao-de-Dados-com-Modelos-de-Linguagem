@@ -27,8 +27,20 @@ Papel da skill `comparar-dados` no pipeline: produz sinais de compatibilidade ba
 _Avoid_: análise de conteúdo, comparação de dados, validação de valores
 
 **Decision Layer**:
-Papel da skill `identificar-chave` no pipeline: recebe as evidências da Evidence Layer ou da Content Evidence Layer e decide a melhor chave de integração, usando raciocínio LLM quando disponível.
+Papel da skill `identificar-chave` no pipeline: recebe as evidências da Evidence Layer ou da Content Evidence Layer e decide a melhor chave de integração, usando raciocínio LLM quando disponível. É o único ponto do pipeline onde o LLM atua (ver LLM embutido); sua saída é um Dicionário de Mapeamento, nunca SQL.
 _Avoid_: seleção, escolha
+
+**LLM embutido**:
+Princípio herdado do artigo-base (SPAPI-Tester, `docs/tcc/artigo-base.md`): o LLM não substitui o pipeline nem o fluxo do analista; entra só na etapa que exige julgamento — o de-para entre bases — entre estágios determinísticos. Ver ADR 0011.
+_Avoid_: agente autônomo, IA que integra as bases, LLM gerando o join
+
+**Dicionário de Mapeamento**:
+Saída tipada da Decision Layer: Integration Key, transformações necessárias, Categoria de Atrito resolvida, confiança e justificativa (raciocínio registrado). Consumida por um estágio determinístico (templates Jinja → model dbt de join + testes).
+_Avoid_: resposta do LLM, JSON de saída, mapping
+
+**Estágio determinístico**:
+Qualquer etapa do pipeline que não usa LLM e produz o mesmo resultado para a mesma entrada: coleta de evidências, geração de models dbt, execução e testes. Todo artefato executado (SQL, DAG, teste) sai de um estágio determinístico.
+_Avoid_: etapa clássica, parte sem IA
 
 **content_score**:
 Score (0.0–1.0) produzido pela Content Evidence Layer para um par de colunas. Distinto do score composto existente (que pondera nome, match rate, estrutura e padrão) — o `content_score` não usa semelhança de nome como sinal. Um par com `content_score >= 0.50` é promovido ao Decision Layer mesmo que o score semântico seja próximo de zero. Limiar de promoção inicial: 0.50 (heurística a ser revisada empiricamente).
@@ -47,6 +59,24 @@ _Avoid_: chave de join, chave primária, coluna de ligação
 **Derived Key**:
 Integration Key que não existe diretamente em nenhuma tabela, mas pode ser reconstruída por transformação — ex: concatenação de campos, extração de substring, reformatação de identificador SIAFI.
 _Avoid_: chave calculada, chave transformada
+
+### Atritos de integração
+
+**Categoria de Atrito**:
+Tipo de diferença entre duas bases que impede um join direto e que a Decision Layer precisa resolver. Taxonomia adaptada do artigo-base para o domínio público; cada par do ground truth é rotulado com uma ou mais categorias.
+
+| Categoria | Exemplo no domínio |
+| --- | --- |
+| Grafia/nomenclatura | `nr_empenho` × `num_empenho` × `nota_empenho` |
+| Abreviação/prefixo | `cd_ug` × `codigo_unidade_gestora`; `vl_` × `valor_` |
+| Formato de identificador | NE curta `2023NE000123` × SIAFI Identifier completo; CNPJ com e sem máscara |
+| Equivalência lógica/código | situação `ATIVO` × `1`; `S`/`N` × booleano |
+| Equivalência semântica | UG × unidade executora; exercício × ano |
+| Unidade/escala | R$ × R$ mil; data `dd/mm/aaaa` × ISO |
+| Derived Key | código do município → UF; UG + gestão + NE → SIAFI Identifier |
+| Estrutura aninhada | chave dentro de JSON (`microrregiao.mesorregiao.UF.id`) |
+
+_Avoid_: erro, inconsistência, problema de dados
 
 ### Domínio orçamentário federal (Brasil)
 

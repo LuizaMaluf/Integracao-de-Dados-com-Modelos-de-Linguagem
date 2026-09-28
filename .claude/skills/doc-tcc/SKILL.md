@@ -22,6 +22,8 @@ Ao ser invocado, analisa a conversa atual, extrai decisões e alimenta a documen
 Leia os arquivos abaixo para entender o que já está documentado antes de criar duplicatas:
 - `docs/architecture/architecture.md` — componentes e ADRs existentes
 - `docs/adr/` — listar arquivos presentes (ls)
+- `docs/tcc/proposta.md` — QPs, metodologia e plano; atualizar se uma decisão mudar escopo, QPs ou lacunas
+- `docs/tcc/artigo-base.md` — método de referência (SPAPI-Tester); decisões novas devem ser coerentes com o princípio do LLM embutido (ADR 0011)
 - Memórias em `/home/luiza-maluf/.claude/projects/-home-luiza-maluf--rea-de-trabalho-tcc-gov-hub/memory/MEMORY.md`
 
 ### Etapa 2 — Extrair decisões da conversa atual

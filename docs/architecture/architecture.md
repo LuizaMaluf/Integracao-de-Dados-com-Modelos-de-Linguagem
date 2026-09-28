@@ -248,6 +248,7 @@ extract → write_bronze → stage_silver → annotate_context  (leve)
 | Source Registry como contrato entre as camadas | [ADR 0008](../adr/0008-contrato-source-registry.md) |
 | Silver Sync DuckDB → PostgreSQL (Costura A) | [ADR 0009](../adr/0009-silver-sync-duckdb-postgres.md) |
 | Sources e models bronze do dbt gerados do registry (Costura B) | [ADR 0010](../adr/0010-dbt-sources-gerados-do-registry.md) |
+| LLM embutido com saída estruturada e estágio determinístico (proposto) | [ADR 0011](../adr/0011-llm-embutido-saida-estruturada.md) |
 
 ---
 

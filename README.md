@@ -407,6 +407,12 @@ Detalhes, contrato do YAML e testes em [`docs/specs/costuras-e2e.md`](docs/specs
 
 ---
 
+## TCC
+
+Este repositório é o artefato do TCC de Luiza Maluf (UnB/FCTE). A proposta — questões de pesquisa, metodologia, referencial e plano — está em [`docs/tcc/proposta.md`](docs/tcc/proposta.md). O método segue o artigo-base SPAPI-Tester ([`docs/tcc/artigo-base.md`](docs/tcc/artigo-base.md)): o LLM fica embutido no pipeline, só no de-para entre bases, e todo artefato executado sai de um estágio determinístico (ADR 0011).
+
+---
+
 ## Estrutura do repositório
 
 ```
@@ -438,7 +444,7 @@ Detalhes, contrato do YAML e testes em [`docs/specs/costuras-e2e.md`](docs/specs
 │   ├── specs/                  # PRDs e propostas (inclui costuras-e2e.md)
 │   ├── architecture/           # arquitetura em .md e .html
 │   ├── ingestion.md            # detalhes da camada de ingestão
-│   └── tcc/                    # página do TCC e artefatos
+│   └── tcc/                    # proposta, artigo-base, página do TCC e artefatos
 │
 ├── .claude/skills/             # skills do pipeline (Claude Code)
 ├── docker-compose.yml          # Airflow + MinIO + PostgreSQL
