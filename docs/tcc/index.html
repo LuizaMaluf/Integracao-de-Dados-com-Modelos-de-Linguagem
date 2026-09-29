@@ -206,9 +206,9 @@
   .chap { background: #fff; border-radius: var(--radius-sm); padding: 28px; }
   .chap-top { display: flex; justify-content: space-between; align-items: center; }
   .chap-n { font-size: 40px; font-weight: 700; line-height: 1; letter-spacing: -0.02em; background: linear-gradient(90deg, #2997ff, #a259ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .tag { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; }
-  .tag.t1 { background: rgba(0,113,227,0.1); color: var(--blue); }
-  .tag.t2 { background: rgba(162,89,255,0.12); color: #7a3fd1; }
+  .chap .tag { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; }
+  .chap .tag.t1 { background: rgba(0,113,227,0.1); color: var(--blue); }
+  .chap .tag.t2 { background: rgba(162,89,255,0.12); color: #7a3fd1; }
   .chap h3 { font-size: 21px; margin: 16px 0 12px; }
   .chap ul { list-style: none; }
   .chap li { display: flex; gap: 10px; padding: 6px 0; font-size: 14.5px; color: var(--ink-2); border-top: 1px solid var(--line); }
@@ -432,13 +432,14 @@
   <div class="wrap">
     <div class="center">
       <p class="eyebrow reveal">Questões de pesquisa</p>
-      <h2 class="headline reveal d1">Quatro perguntas.<br>As mesmas do artigo-base.</h2>
+      <h2 class="headline reveal d1">Cinco perguntas.<br>Uma delas sobre o processo.</h2>
     </div>
     <div class="grid g2 bg">
       <div class="card reveal"><div class="tag">QP1 · Acurácia</div><h3>O LLM embutido acerta o de-para?</h3><p>Acurácia top-1 e MRR em pares com chave conhecida, geral e por categoria de atrito.</p></div>
       <div class="card reveal d1"><div class="tag">QP2 · Modelos</div><h3>Um modelo aberto, local, basta?</h3><p>Pesos abertos contra proprietário. No governo, isso pesa por soberania de dados e LGPD.</p></div>
       <div class="card reveal"><div class="tag">QP3 · Tempo e custo</div><h3>Quanto o analista economiza?</h3><p>Tempo por par, analista contra pipeline, mais tokens e latência de cada etapa.</p></div>
       <div class="card reveal d1"><div class="tag">QP4 · Mundo real</div><h3>Encontra problemas reais?</h3><p>Pares ainda não integrados no GovHub e inconsistências confirmadas com quem conhece as bases.</p></div>
+      <div class="card reveal" style="grid-column:1/-1"><div class="tag">QP5 · Spec-Driven Development</div><h3>Uma spec basta para o agente construir o pipeline?</h3><p>Cada incremento começa por uma spec com critérios de aceite. Mede-se quantos critérios o agente de IA atende na primeira implementação, quantas iterações e intervenções manuais foram precisas e se o código diverge da spec.</p></div>
     </div>
   </div>
 </section>
@@ -448,8 +449,17 @@
   <div class="wrap">
     <div class="center">
       <p class="eyebrow reveal">Método</p>
-      <h2 class="headline reveal d1">Design Science Research,<br>com estudo de caso real.</h2>
-      <p class="lead reveal d2" style="max-width:780px;margin:24px auto 0">De 20 a 40 pares de tabelas públicas com a chave anotada à mão, em três níveis de dificuldade e rotulados por categoria de atrito. Congelados antes de ajustar o agente.</p>
+      <h2 class="headline reveal d1">Construído por spec.<br>Avaliado com dados reais.</h2>
+      <p class="lead reveal d2" style="max-width:780px;margin:24px auto 0">O foco do processo é o Spec-Driven Development: nenhum incremento começa pelo código. A Design Science Research organiza a pesquisa, e o estudo de caso com bases do GovHub valida o resultado.</p>
+    </div>
+    <div class="friction">
+      <div class="fr reveal"><b>1 · Spec</b><span style="font-size:14px;color:var(--ink-2)">problema, contrato e critérios de aceite em docs/specs/</span></div>
+      <div class="fr reveal d1"><b>2 · Plano</b><span style="font-size:14px;color:var(--ink-2)">passos na ordem, antes de qualquer código</span></div>
+      <div class="fr reveal d2"><b>3 · Implementação</b><span style="font-size:14px;color:var(--ink-2)">agente de IA implementa a partir da spec</span></div>
+      <div class="fr reveal d3"><b>4 · Validação</b><span style="font-size:14px;color:var(--ink-2)">critérios e testes; ADR se houve decisão</span></div>
+    </div>
+    <div class="center" style="margin-top:72px">
+      <p class="lead reveal" style="max-width:780px;margin:0 auto">De 20 a 40 pares de tabelas públicas com a chave anotada à mão, em três níveis de dificuldade e rotulados por categoria de atrito. Congelados antes de ajustar o agente.</p>
     </div>
     <div class="friction">
       <div class="fr reveal"><b>Grafia</b><code>nr_empenho × num_empenho</code></div>
@@ -483,13 +493,13 @@
       <div class="step reveal d1">
         <div class="when">Março a abril</div>
         <h3>Ground truth e baselines</h3>
-        <p>Pares anotados com snapshots dos dados, harness de avaliação e baseline só por nome.</p>
+        <p>Pares anotados com snapshots dos dados, specs das próximas etapas, harness de avaliação e baseline só por nome.</p>
         <div class="gate">Ground truth congelado · <i>sugerido: fim de abril</i></div>
       </div>
       <div class="step reveal d2">
         <div class="when">Maio a junho</div>
         <h3>Experimentos</h3>
-        <p>QP1 e QP2 por modelo, QP3 tempo e tokens, QP4 em bases reais do GovHub.</p>
+        <p>QP1 e QP2 por modelo, QP3 tempo e tokens, QP4 em bases reais do GovHub, QP5 no registro de cada spec.</p>
         <div class="gate">Resultados congelados · <i>sugerido: fim de junho</i></div>
       </div>
       <div class="step key reveal d3">
@@ -514,12 +524,12 @@
       <article class="chap reveal">
         <div class="chap-top"><span class="chap-n">1</span><span class="tag t1">TCC 1</span></div>
         <h3>Introdução</h3>
-        <ul><li><span>1.1</span>Contexto: dados públicos em silos; o GovHub-br e a parceria UnB–ministérios</li><li><span>1.2</span>Problema: o de-para entre bases é manual e depende de conhecimento implícito</li><li><span>1.3</span>Justificativa: o padrão do SPAPI-Tester ainda não aplicado a dados abertos</li><li><span>1.4</span>Questões de pesquisa: QP1 a QP4</li><li><span>1.5</span>Objetivos geral e específicos</li><li><span>1.6</span>Contribuições esperadas</li><li><span>1.7</span>Organização do trabalho</li></ul>
+        <ul><li><span>1.1</span>Contexto: dados públicos em silos; o GovHub-br e a parceria UnB–ministérios</li><li><span>1.2</span>Problema: o de-para entre bases é manual e depende de conhecimento implícito</li><li><span>1.3</span>Justificativa: o padrão do SPAPI-Tester ainda não aplicado a dados abertos</li><li><span>1.4</span>Questões de pesquisa: QP1 a QP5</li><li><span>1.5</span>Objetivos geral e específicos</li><li><span>1.6</span>Contribuições esperadas</li><li><span>1.7</span>Organização do trabalho</li></ul>
       </article>
       <article class="chap reveal d1">
         <div class="chap-top"><span class="chap-n">2</span><span class="tag t1">TCC 1</span></div>
         <h3>Fundamentação teórica</h3>
-        <ul><li><span>2.1</span>Integração de dados e schema matching</li><li><span>2.2</span>Perfilamento de dados e evidências de compatibilidade</li><li><span>2.3</span>Modelos de linguagem: saída estruturada, DSPy e cadeia de raciocínio</li><li><span>2.4</span>Arquitetura de dados: bronze, silver e gold; orquestração orientada a dados</li><li><span>2.5</span>Dados abertos governamentais no Brasil</li><li><span>2.6</span>Artigo-base: SPAPI-Tester e as categorias de atrito</li></ul>
+        <ul><li><span>2.1</span>Integração de dados e schema matching</li><li><span>2.2</span>Perfilamento de dados e evidências de compatibilidade</li><li><span>2.3</span>Modelos de linguagem: saída estruturada, DSPy e cadeia de raciocínio</li><li><span>2.4</span>Arquitetura de dados: bronze, silver e gold; orquestração orientada a dados</li><li><span>2.5</span>Spec-Driven Development e agentes de IA de código</li><li><span>2.6</span>Dados abertos governamentais no Brasil</li><li><span>2.7</span>Artigo-base: SPAPI-Tester e as categorias de atrito</li></ul>
       </article>
       <article class="chap reveal d2">
         <div class="chap-top"><span class="chap-n">3</span><span class="tag t1">TCC 1</span></div>
@@ -529,7 +539,7 @@
       <article class="chap reveal">
         <div class="chap-top"><span class="chap-n">4</span><span class="tag t1">TCC 1</span></div>
         <h3>Metodologia</h3>
-        <ul><li><span>4.1</span>Design Science Research com estudo de caso</li><li><span>4.2</span>Ciclos de iteração: PoC IBGE, costuras, avaliação</li><li><span>4.3</span>Ground truth: seleção dos pares, anotação e congelamento</li><li><span>4.4</span>Protocolo de avaliação: métricas, modelos e baseline sem LLM</li><li><span>4.5</span>Ameaças à validade</li></ul>
+        <ul><li><span>4.1</span>Design Science Research com estudo de caso</li><li><span>4.2</span>Spec-Driven Development: spec, plano, implementação por agente, validação</li><li><span>4.3</span>Ciclos de iteração: PoC IBGE, costuras, avaliação</li><li><span>4.4</span>Ground truth: seleção dos pares, anotação e congelamento</li><li><span>4.5</span>Protocolo de avaliação: métricas, modelos, baseline sem LLM e registro das specs</li><li><span>4.6</span>Ameaças à validade</li></ul>
       </article>
       <article class="chap reveal d1">
         <div class="chap-top"><span class="chap-n">5</span><span class="tag t1">TCC 1</span></div>
@@ -544,7 +554,7 @@
       <article class="chap reveal">
         <div class="chap-top"><span class="chap-n">7</span><span class="tag t2">TCC 2</span></div>
         <h3>Avaliação e resultados</h3>
-        <ul><li><span>7.1</span>QP1: acurácia por categoria de atrito</li><li><span>7.2</span>QP2: modelo de pesos abertos × proprietário</li><li><span>7.3</span>QP3: tempo e custo × analista</li><li><span>7.4</span>QP4: bases reais</li></ul>
+        <ul><li><span>7.1</span>QP1: acurácia por categoria de atrito</li><li><span>7.2</span>QP2: modelo de pesos abertos × proprietário</li><li><span>7.3</span>QP3: tempo e custo × analista</li><li><span>7.4</span>QP4: bases reais</li><li><span>7.5</span>QP5: SDD na construção do pipeline</li></ul>
       </article>
       <article class="chap reveal d1">
         <div class="chap-top"><span class="chap-n">8</span><span class="tag t2">TCC 2</span></div>
