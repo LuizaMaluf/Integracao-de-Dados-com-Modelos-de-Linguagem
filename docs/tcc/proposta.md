@@ -55,6 +55,7 @@ O LLM decide o de-para e devolve dados estruturados; quem gera e executa o SQL �
 | QP2 | Um modelo de pesos abertos hospedado localmente alcança um modelo proprietário? | Os mesmos pares com 2 ou 3 modelos, ao menos um aberto | LLaMA3 70B no nível do GPT-4o; para governo, pesa por soberania de dados e LGPD |
 | QP3 | Quanto tempo o pipeline economiza frente ao analista, e a que custo? | Tempo por par (analista × pipeline), `timings_s`, tokens; esforço para adicionar fonte antes e depois das costuras | Tempo por API: engenheiro sênior × ferramenta |
 | QP4 | O pipeline encontra problemas reais nas bases? | Rodar em pares reais do GovHub e contar inconsistências confirmadas | APIs inéditas testadas e bugs genuínos encontrados |
+| QP5 | O Spec-Driven Development (SDD) permite que um agente de IA construa e estenda o pipeline com qualidade verificável? | Cada incremento começa por uma spec com critérios de aceite; registrar critérios atendidos, iterações e intervenções manuais | — (o artigo preserva o processo e embute o LLM nele; o SDD faz o mesmo no desenvolvimento: a spec é a estrutura, o agente implementa) |
 
 **Objetivo geral.** Propor, implementar e avaliar uma arquitetura config-driven de três camadas que integre bases governamentais heterogêneas, usando modelos de linguagem embutidos no processo para descobrir chaves de integração.
 
@@ -65,6 +66,7 @@ O LLM decide o de-para e devolve dados estruturados; quem gera e executa o SQL �
 3. Implementar a Decision Layer com evidências semânticas, estatísticas e de conteúdo e um LLM embutido via DSPy (assinatura tipada, ChainOfThought, autocorreção), incluindo Derived Keys (ADR 0011).
 4. Construir um conjunto de pares de bases com chave conhecida (ground truth), rotulados por categoria de atrito.
 5. Avaliar acurácia, comparação entre modelos, tempo/custo e aplicação em bases reais, contra baselines.
+6. Construir o artefato por Spec-Driven Development com agente de IA e avaliar esse processo (QP5).
 
 **Contribuições esperadas:**
 
@@ -72,18 +74,19 @@ O LLM decide o de-para e devolve dados estruturados; quem gera e executa o SQL �
 - Gerador de sources e models dbt a partir do Source Registry, e não por introspecção do banco.
 - Benchmark pequeno de chaves de integração em bases públicas brasileiras, rotulado por categoria de atrito.
 - Replicação do método do SPAPI-Tester em outro domínio (dados públicos), com evidência de quando o LLM ajuda e quando não.
+- Relato avaliado de SDD com agente de IA na construção de um pipeline de dados, com specs, critérios de aceite e métricas por incremento.
 
 ## Estrutura da monografia
 
 | Cap. | Título | Conteúdo | Material no repo |
 | --- | --- | --- | --- |
 | 1 | Introdução | Contexto, problema, justificativa, QPs, objetivos, contribuições | `README.md`, `docs/tcc/index.html` |
-| 2 | Fundamentação teórica | Integração de dados, schema matching, perfilamento, LLMs, arquitetura de dados, dados abertos | Seção de referencial abaixo |
+| 2 | Fundamentação teórica | Integração de dados, schema matching, perfilamento, LLMs, arquitetura de dados, dados abertos, Spec-Driven Development | Seção de referencial abaixo |
 | 3 | Trabalhos relacionados | Matching, LLMs para dados, artigo-base; tabela comparativa | `docs/tcc/artigo-base.md` |
-| 4 | Metodologia | DSR com estudo de caso, ciclos, PoC IBGE, protocolo de avaliação | `docs/specs/`, histórico de commits |
+| 4 | Metodologia | DSR com estudo de caso; SDD como processo de construção; ciclos, PoC IBGE, protocolo de avaliação | `docs/specs/`, histórico de commits |
 | 5 | Arquitetura proposta | Três camadas, Source Registry, costuras A/B/C, Context Store, Decision Layer com LLM embutido | `docs/architecture/`, ADRs 0001–0011, `CONTEXT.md` |
 | 6 | Implementação | Stack (Airflow, MinIO, DuckDB, dbt, PostgreSQL, LLM), módulos, testes, reprodutibilidade | `src/govhub/`, `tests/`, `docker-compose.yml` |
-| 7 | Avaliação e resultados | QP1 acurácia por categoria de atrito, QP2 modelos abertos × proprietários, QP3 tempo e custo, QP4 bases reais | `govhub.sync.e2e` (tempos), resultados JSON |
+| 7 | Avaliação e resultados | QP1 acurácia por categoria de atrito, QP2 modelos abertos × proprietários, QP3 tempo e custo, QP4 bases reais, QP5 SDD | `govhub.sync.e2e` (tempos), resultados JSON |
 | 8 | Discussão | Achados, limitações, ameaças à validade, implicações para o GovHub | — |
 | 9 | Conclusão | Respostas às QPs, contribuições, trabalhos futuros | — |
 
@@ -118,6 +121,10 @@ Referências clássicas por eixo, listadas de memória: **confirmar autor, ano e
 | Arquitetura de dados | Armbrust et al. (2021), *Lakehouse*, CIDR | Camadas bronze/silver/gold |
 | Arquitetura de dados | Reis e Housley (2022), *Fundamentals of Data Engineering* | Ciclo de vida, orquestração, ELT |
 | Arquitetura de dados | Kleppmann (2017), *Designing Data-Intensive Applications* | Idempotência (costura A) |
+| Spec-Driven Development | Böckeler (2025), *Understanding Spec-Driven-Development: Kiro, spec-kit, and Tessl*, martinfowler.com | Panorama e críticas do SDD com agentes de IA |
+| Spec-Driven Development | GitHub (2025), *Spec Kit*, github.com/github/spec-kit | Fluxo de referência spec → plano → tarefas → implementação |
+| Especificação | Meyer (1992), *Applying "Design by Contract"*, IEEE Computer | Contrato como especificação verificável |
+| Especificação | Adzic (2011), *Specification by Example*, Manning | Critérios de aceite como exemplos verificáveis |
 | Eng. de software | Evans (2003), *Domain-Driven Design* | Linguagem ubíqua (`CONTEXT.md`) |
 | Eng. de software | Nygard (2011), *Documenting Architecture Decisions* | Formato de ADR |
 | Metodologia | Hevner et al. (2004), MIS Quarterly; Peffers et al. (2007), JMIS; Wieringa (2014) | Design Science Research |
@@ -128,7 +135,7 @@ Referências clássicas por eixo, listadas de memória: **confirmar autor, ano e
 
 Citados pelo artigo-base (área de testes; usar só se o TCC discutir o paralelo): Kim et al., *Leveraging Large Language Models to Improve REST API Testing*; Golmohammadi, Zhang e Arcuri, *Testing RESTful APIs: A Survey*; Zhang, Marculescu e Arcuri, *Resource-based Test Case Generation for RESTful Web Services*.
 
-Onde buscar o que falta: VLDB, SIGMOD, ICDE (LLMs para matching); SBBD e BDBComp (trabalhos brasileiros); Portal de Periódicos CAPES.
+Onde buscar o que falta: VLDB, SIGMOD, ICDE (LLMs para matching); ICSE, FSE e arXiv (SDD e agentes de IA de código — literatura acadêmica ainda escassa); SBBD e BDBComp (trabalhos brasileiros); Portal de Periódicos CAPES.
 
 ## Trabalhos relacionados e posicionamento
 
@@ -150,12 +157,15 @@ Posicionar pela combinação e pelo domínio, não por "não existe nada igual".
 
 **Design Science Research com estudo de caso**, como no artigo-base: a DSR organiza construção e avaliação do artefato; o estudo de caso real (bases do GovHub) dá a validação fora do ambiente controlado. O histórico do repo registra os ciclos (PoC IBGE → costuras → validação no ambiente do container) e as ADRs registram as decisões. Princípio adotado do artigo: o LLM entra sem mudar o fluxo de trabalho do analista, só automatiza as etapas de tradução.
 
+**Spec-Driven Development (SDD) como foco do processo.** A DSR é o método de pesquisa; o SDD é como o artefato é construído e também objeto de avaliação (QP5). Cada ciclo segue: (1) spec em `docs/specs/` com problema, escopo, contrato e critérios de aceite verificáveis (modelo em `docs/specs/_template.md`); (2) plano; (3) implementação por agente de IA a partir da spec; (4) validação contra os critérios e os testes; (5) ADR quando há decisão de arquitetura. A spec cumpre no desenvolvimento o papel que o processo estruturado cumpre no artigo-base: é a estrutura fixa, e o agente só preenche a implementação.
+
 | QP | Experimento | Métricas | Baseline |
 | --- | --- | --- | --- |
 | QP1 | Decision Layer em pares com chave conhecida, rotulados por categoria de atrito | Acurácia top-1 e MRR, geral e por categoria; acerto de Derived Keys | (a) só similaridade de nome; (b) pipeline sem LLM; (c) com LLM |
 | QP2 | QP1 com 2 ou 3 modelos, ao menos um de pesos abertos rodando localmente | Taxa de sucesso por modelo, tokens, latência | Modelo proprietário |
 | QP3 | Analista resolvendo uma amostra de pares à mão, cronometrado, e o pipeline nos mesmos pares | Tempo por par, acurácia analista × pipeline | Analista; fluxo antigo (CSV + dbt manual) |
 | QP4 | Pipeline aplicado a pares reais ainda não integrados no GovHub | Pares integrados, inconsistências confirmadas com quem conhece a base | — |
+| QP5 | Cada incremento restante (DSPy, estágio Jinja → dbt, harness, novas fontes) construído por SDD, com o registro da spec preenchido | Critérios de aceite atendidos na primeira implementação, iterações spec ↔ código, intervenções manuais, mudanças na spec após aprovada, testes passando, divergências spec × código | Incrementos anteriores sem spec formal, no histórico do repo, quando comparáveis |
 
 **Ground truth.** 20 a 40 pares de tabelas públicas com a chave anotada à mão e justificativa escrita, em três níveis (fácil: mesmo nome e formato; médio: nome diferente, mesmo conteúdo; difícil: Derived Key) e rotulados por categoria de atrito. Incluir pares negativos (sem chave). Se possível, segunda pessoa revisa uma amostra e reporta-se a concordância. **Congelar antes de ajustar o agente.**
 
@@ -179,11 +189,16 @@ Para seguir o artigo-base (ADR 0011):
 - **Troca de modelo por configuração**: um proprietário e um de pesos abertos local, sem mudar código.
 - **Estudo de tempo com analista.**
 
+Para a QP5 (SDD):
+
+- **Spec antes do código** em cada incremento acima, a partir de `docs/specs/_template.md`, com a seção de registro preenchida ao final.
+- **Specs existentes** (`costuras-e2e.md`, PRDs) revisadas para o mesmo formato, para servir de linha de base.
+
 ```mermaid
 flowchart TB
     F1["<b>Fase 1 · Escopo e referencial</b><br/>título, QPs e foco · capítulos 2 e 3 · texto do TCC 1"]
     G1{{"Defesa do TCC 1 · início de março de 2027"}}
-    F2["<b>Fase 2 · Ground truth e baselines</b><br/>20–40 pares em 3 níveis, com snapshots · harness (top-1, MRR) · baseline só por nome"]
+    F2["<b>Fase 2 · Ground truth e baselines</b><br/>20–40 pares em 3 níveis, com snapshots · harness (top-1, MRR) · baseline só por nome · specs das próximas etapas"]
     G2{{"Ground truth congelado, antes de ajustar o agente · sugerido: fim de abril de 2027"}}
     F3["<b>Fase 3 · Experimentos</b><br/>QP1 e QP2 (3–5 execuções por modelo) · QP3 tempo e tokens · QP4 bases reais"]
     G3{{"Resultados congelados · sugerido: fim de junho de 2027"}}
@@ -197,6 +212,7 @@ O portão que decide o cronograma é o ground truth: congelar os pares antes de 
 
 | Risco | Efeito | Mitigação |
 | --- | --- | --- |
+| A autora escreve a spec, orienta o agente e avalia o resultado (QP5) | Viés a favor do SDD | Critérios de aceite escritos antes e verificados por testes automatizados; registro por incremento, inclusive dos que falharam |
 | Ground truth pequeno ou enviesado para o que o agente já acerta | Acurácia inflada | Montar os pares antes de ajustar o agente; incluir casos difíceis e negativos |
 | LLM não determinístico e modelo que muda de versão | Resultados não reproduzíveis | Fixar versão e temperatura, repetir execuções, versionar prompts e respostas |
 | Contaminação: o modelo pode conhecer SIAFI/IBGE do pré-treino | Superestima a generalização | Incluir pares com colunas renomeadas ou anonimizadas |
@@ -213,4 +229,5 @@ O portão que decide o cronograma é o ground truth: congelar os pares antes de 
 - [ ] Tamanho do ground truth e quais bases entram
 - [ ] Quais LLMs e versões fixar (um proprietário, um de pesos abertos) e orçamento de tokens
 - [ ] Peso relativo entre arquitetura (costuras) e Decision Layer (QP1–QP2)
+- [ ] Ferramenta de SDD (fluxo próprio com Claude Code ou Spec Kit) e se a QP5 terá comparação sem spec
 - [x] Datas: TCC 1 no início de março de 2027; TCC 2 em agosto de 2027
