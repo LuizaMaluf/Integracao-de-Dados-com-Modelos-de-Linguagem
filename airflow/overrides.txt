@@ -1,0 +1,4 @@
+# Overrides do `make airflow-lock` (uv pip compile --override).
+# camelot 0.11 declara pdftopng, que só tem wheel x86_64/macOS. Ele só é usado pelo
+# backend poppler; o camelot usa o backend ghostscript por padrão.
+pdftopng ; platform_machine == 'x86_64' or sys_platform == 'darwin'

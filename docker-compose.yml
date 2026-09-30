@@ -1,8 +1,8 @@
-version: "3.8"
-
 x-airflow-common: &airflow-common
-  image: apache/airflow:2.9.2
-  environment:
+  # Imagem própria (airflow/Dockerfile) com as dependências do lock já instaladas.
+  build: ./airflow
+  image: govhub-airflow:2.9.2
+  environment: &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-db/airflow
     AIRFLOW__CORE__FERNET_KEY: ""
@@ -11,13 +11,6 @@ x-airflow-common: &airflow-common
     AIRFLOW__API__AUTH_BACKENDS: airflow.api.auth.backend.basic_auth
     AIRFLOW__WEBSERVER__EXPOSE_CONFIG: "true"
     PYTHONPATH: /opt/airflow/src
-    # pandas/numpy fixados nas constraints do Airflow 2.9.2: a imagem traz SQLAlchemy 1.4,
-    # e pandas >= 2.2 não fala com SQLAlchemy 1.4 (to_sql/read_sql quebram).
-    _PIP_ADDITIONAL_REQUIREMENTS: >-
-      httpx pdfplumber camelot-py[cv] unstructured[pdf]
-      anthropic pandas==2.1.4 numpy<2 pydantic-settings openpyxl
-      fsspec s3fs boto3 duckdb pyarrow PyYAML
-      astronomer-cosmos dbt-postgres
     # MinIO connection
     MINIO_ENDPOINT: minio:9000
     MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-minioadmin}
@@ -37,6 +30,8 @@ x-airflow-common: &airflow-common
   volumes:
     - ./airflow/dags:/opt/airflow/dags
     - ./airflow/configs:/opt/airflow/configs
+    # arquivos das fontes de exemplo (POC local, fora do git: poc/raw_files/)
+    - ./poc/raw_files:/opt/airflow/raw_files
     # pacote govhub (ingestion + integration), importável via PYTHONPATH
     - ./src:/opt/airflow/src
     - airflow-logs:/opt/airflow/logs
@@ -85,7 +80,7 @@ services:
     <<: *airflow-common
     command: version
     environment:
-      <<: *airflow-common
+      <<: *airflow-common-env
       _AIRFLOW_DB_UPGRADE: "true"
       _AIRFLOW_WWW_USER_CREATE: "true"
       _AIRFLOW_WWW_USER_USERNAME: admin
@@ -105,15 +100,17 @@ services:
     <<: *airflow-common
     command: scheduler
 
+  # S3 local da Bronze Zone. A MinIO parou de publicar imagens públicas;
+  # o RustFS é compatível com a API S3 e com o healthcheck do MinIO.
   minio:
-    image: minio/minio:latest
-    command: server /data --console-address ":9001"
+    image: rustfs/rustfs:latest
     ports:
       - "9000:9000"
       - "9001:9001"
     environment:
-      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minioadmin}
-      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minioadmin}
+      RUSTFS_ACCESS_KEY: ${MINIO_ACCESS_KEY:-minioadmin}
+      RUSTFS_SECRET_KEY: ${MINIO_SECRET_KEY:-minioadmin}
+      RUSTFS_CONSOLE_ENABLE: "true"
     volumes:
       - minio-data:/data
     healthcheck:

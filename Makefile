@@ -1,4 +1,4 @@
-.PHONY: install test lint up down init logs bucket airflow-ui minio-ui dbt-generate dbt-deps dbt-run dbt-test
+.PHONY: install test lint up down init build airflow-lock logs bucket airflow-ui minio-ui dbt-generate dbt-deps dbt-run dbt-test
 
 # Carrega o .env da raiz (se existir) para os comandos dbt
 DBT = set -a; [ -f .env ] && . ./.env; set +a; dbt
@@ -21,21 +21,34 @@ up:
 down:
 	docker compose down
 
-init:
+init: build
 	docker compose up airflow-init
+
+build:
+	docker compose build
+
+# Regenera airflow/requirements.txt a partir de airflow/requirements.in,
+# restrito aos pacotes que a imagem base do Airflow já traz (commitar o resultado).
+airflow-lock:
+	docker run --rm -v "$$PWD/airflow:/work" --entrypoint bash apache/airflow:2.9.2 -c '\
+		pip freeze | grep -viE "^(-e|httpx==|httpcore==)" > /tmp/base.txt && \
+		PIP_CONSTRAINT= pip install -q "uv>=0.9" && \
+		python -m uv pip compile /work/requirements.in -c /tmp/base.txt \
+			--override /work/overrides.txt --universal \
+			--python-version 3.12 --no-header --no-annotate -q -o /tmp/r.txt && \
+		{ echo "# Gerado por \`make airflow-lock\` a partir de requirements.in — não editar à mão."; cat /tmp/r.txt; } > /work/requirements.txt'
 
 logs:
 	docker compose logs -f airflow-scheduler airflow-webserver
 
 bucket:
-	docker compose exec minio mc alias set local http://localhost:9000 $${MINIO_ACCESS_KEY:-minioadmin} $${MINIO_SECRET_KEY:-minioadmin} && \
-	docker compose exec minio mc mb --ignore-existing local/$${MINIO_BUCKET_BRONZE:-bronze}
+	docker compose exec airflow-scheduler python -c "from govhub.ingestion.storage.bronze import _client, _bucket; c = _client(); b = _bucket(); b in [x['Name'] for x in c.list_buckets()['Buckets']] or c.create_bucket(Bucket=b); print('bucket ok:', b)"
 
 airflow-ui:
 	@echo "Airflow: http://localhost:8080  (admin / admin)"
 
 minio-ui:
-	@echo "MinIO console: http://localhost:9001"
+	@echo "Console S3 (RustFS): http://localhost:9001"
 
 # ── dbt (fora do container) ──────────────────────────────────────
 # Gera sources/models bronze a partir de airflow/configs (costura B)
