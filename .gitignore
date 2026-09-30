@@ -8,6 +8,8 @@ build/
 .pytest_cache/
 .ruff_cache/
 output/
+# POC local (dados sintéticos, resultados e scripts de teste)
+poc/
 data/raw/
 data/processed/
 *.csv
