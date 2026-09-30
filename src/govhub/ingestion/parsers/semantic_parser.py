@@ -61,18 +61,12 @@ class SemanticPdfParser:
         return None
 
     def _call_llm(self, text_blocks: list[str]) -> list[dict] | None:
-        import anthropic
+        from govhub import llm
 
-        client = anthropic.Anthropic()
         combined_text = "\n\n".join(text_blocks)
         full_prompt = f"{self.prompt}\n\n---\n\n{combined_text}"
 
-        message = client.messages.create(
-            model=self.model,
-            max_tokens=4096,
-            messages=[{"role": "user", "content": full_prompt}],
-        )
-        raw = message.content[0].text.strip()
+        raw = llm.complete(full_prompt, model=self.model).strip()
 
         try:
             # Strip markdown code fences if present

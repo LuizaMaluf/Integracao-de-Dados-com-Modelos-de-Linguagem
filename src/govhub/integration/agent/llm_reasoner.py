@@ -2,7 +2,7 @@
 LLM-based reasoning layer: sends candidates to Claude for final judgment.
 """
 import json
-import anthropic
+from govhub import llm
 from govhub.integration.agent.candidate_generator import CandidateKey
 from govhub.integration.loaders.base import TableMetadata
 from govhub.integration.config.settings import settings
@@ -65,18 +65,12 @@ def reason_with_llm(
     meta_b: TableMetadata,
     candidates: list[CandidateKey],
 ) -> dict:
-    client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
-
-    response = client.messages.create(
+    raw = llm.complete(
+        build_user_prompt(meta_a, meta_b, candidates),
         model=settings.model_name,
-        max_tokens=4096,
         system=SYSTEM_PROMPT,
-        messages=[
-            {"role": "user", "content": build_user_prompt(meta_a, meta_b, candidates)}
-        ],
+        api_key=settings.anthropic_api_key,
     )
-
-    raw = response.content[0].text
     try:
         start = raw.index("{")
         end = raw.rindex("}") + 1
