@@ -26,6 +26,8 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
+        # O .env da raiz é compartilhado com ingestão, dbt e docker-compose.
+        extra = "ignore"
 
 
 settings = Settings()
