@@ -11,7 +11,7 @@ A sequência ordenada de cinco etapas que transforma dois arquivos CSV em uma ch
 _Avoid_: fluxo, workflow, processo
 
 **Domain Context**:
-Arquivo JSON reutilizável que descreve o vocabulário semântico de um domínio específico — grupos de colunas equivalentes, padrões regex de identificadores e pesos de confiança. Gerado uma vez por domínio pela skill `definir-contexto` e consumido por todas as demais skills.
+Arquivo JSON reutilizável que descreve o vocabulário semântico de um domínio específico — grupos de colunas equivalentes, padrões regex de identificadores e pesos de confiança. Gerado uma vez por domínio pela skill `definir-contexto` e consumido por todas as demais skills. Na avaliação, é congelado junto com o Conjunto de Teste e entra como fator de ablação (com e sem Domain Context).
 _Avoid_: configuração, metadados, schema
 
 **Context Coverage**:
@@ -27,7 +27,7 @@ Papel da skill `comparar-dados` no pipeline: produz sinais de compatibilidade ba
 _Avoid_: análise de conteúdo, comparação de dados, validação de valores
 
 **Decision Layer**:
-Papel da skill `identificar-chave` no pipeline: recebe as evidências da Evidence Layer ou da Content Evidence Layer e decide a melhor chave de integração, usando raciocínio LLM quando disponível. É o único ponto do pipeline onde o LLM atua (ver LLM embutido); sua saída é um Dicionário de Mapeamento, nunca SQL.
+Papel da skill `identificar-chave` no pipeline: recebe as evidências da Evidence Layer ou da Content Evidence Layer e o esquema completo das duas tabelas, e decide a melhor chave de integração — um Candidate Key ou outra chave que ela mesma propõe — ou se abstém (Abstenção), usando raciocínio LLM quando disponível. As evidências ordenam as opções, mas não limitam a resposta. É o único ponto do pipeline onde o LLM atua (ver LLM embutido); sua saída é um Dicionário de Mapeamento, nunca SQL.
 _Avoid_: seleção, escolha
 
 **LLM embutido**:
@@ -35,8 +35,12 @@ Princípio herdado do artigo-base (SPAPI-Tester, `docs/tcc/artigo-base.md`): o L
 _Avoid_: agente autônomo, IA que integra as bases, LLM gerando o join
 
 **Dicionário de Mapeamento**:
-Saída tipada da Decision Layer: Integration Key, transformações necessárias, Categoria de Atrito resolvida, confiança e justificativa (raciocínio registrado). Consumida por um estágio determinístico (templates Jinja → model dbt de join + testes).
+Saída tipada da Decision Layer: Integration Key (ou Abstenção), transformação de cada lado expressa no Catálogo de Transformações, Categoria de Atrito resolvida, confiança e justificativa (raciocínio registrado). Consumida por um estágio determinístico (templates Jinja → model dbt de join + testes).
 _Avoid_: resposta do LLM, JSON de saída, mapping
+
+**Catálogo de Transformações**:
+Conjunto fechado e versionado de operações tipadas (ex.: extrair trecho, concatenar colunas, remover máscara, mapear valores) com que a Decision Layer expressa como alinhar as colunas de uma Integration Key. Cada operação tem uma tradução fixa para SQL no estágio determinístico; uma chave que não cabe no catálogo leva à Abstenção. Congelado junto com o Conjunto de Teste.
+_Avoid_: transformações livres, regras de transformação, DSL
 
 **Estágio determinístico**:
 Qualquer etapa do pipeline que não usa LLM e produz o mesmo resultado para a mesma entrada: coleta de evidências, geração de models dbt, execução e testes. Todo artefato executado (SQL, DAG, teste) sai de um estágio determinístico.
@@ -53,7 +57,7 @@ Par de colunas (uma de cada tabela) com score semântico acima do limiar mínimo
 _Avoid_: candidato, coluna candidata
 
 **Integration Key**:
-O Candidate Key escolhido pela Decision Layer como melhor opção para fazer o join entre duas tabelas. É o resultado final do pipeline.
+A chave escolhida pela Decision Layer como melhor opção para fazer o join entre duas tabelas: um Candidate Key ou uma chave proposta fora da lista (composta ou derivada). É o resultado final do pipeline, exceto quando a Decision Layer se abstém.
 _Avoid_: chave de join, chave primária, coluna de ligação
 
 **Derived Key**:
@@ -63,20 +67,83 @@ _Avoid_: chave calculada, chave transformada
 ### Atritos de integração
 
 **Categoria de Atrito**:
-Tipo de diferença entre duas bases que impede um join direto e que a Decision Layer precisa resolver. Taxonomia adaptada do artigo-base para o domínio público; cada par do ground truth é rotulado com uma ou mais categorias.
+Tipo de diferença entre duas bases que impede um join direto pela Integration Key e que a Decision Layer precisa resolver. Taxonomia adaptada do artigo-base para a descoberta de chaves: a categoria de unidades do artigo (W × kW) não tem correspondente aqui, porque valores medidos não viram chave. Cada Par de Avaliação é rotulado com uma ou mais categorias.
 
 | Categoria | Exemplo no domínio |
 | --- | --- |
 | Grafia/nomenclatura | `nr_empenho` × `num_empenho` × `nota_empenho` |
-| Abreviação/prefixo | `cd_ug` × `codigo_unidade_gestora`; `vl_` × `valor_` |
-| Formato de identificador | NE curta `2023NE000123` × SIAFI Identifier completo; CNPJ com e sem máscara |
+| Abreviação/prefixo | `cd_ug` × `codigo_unidade_gestora` |
+| Formato de identificador | NE curta `2023NE000123` × SIAFI Identifier completo; CNPJ com e sem máscara; data `dd/mm/aaaa` × ISO |
 | Equivalência lógica/código | situação `ATIVO` × `1`; `S`/`N` × booleano |
 | Equivalência semântica | UG × unidade executora; exercício × ano |
-| Unidade/escala | R$ × R$ mil; data `dd/mm/aaaa` × ISO |
 | Derived Key | código do município → UF; UG + gestão + NE → SIAFI Identifier |
 | Estrutura aninhada | chave dentro de JSON (`microrregiao.mesorregiao.UF.id`) |
 
 _Avoid_: erro, inconsistência, problema de dados
+
+### Avaliação
+
+**Par de Avaliação**:
+Par de tabelas (A, B) com Gabarito, rotulado com uma ou mais Categorias de Atrito. É a unidade de avaliação da Decision Layer; o **ground truth** é o conjunto dos Pares de Avaliação, cada um Par Real ou Par Perturbado.
+_Avoid_: caso de teste, exemplo, par do benchmark
+
+**Par Real**:
+Par de Avaliação formado por duas tabelas públicas que existem de fato, com Gabarito anotado à mão e justificativa escrita. Pode ter várias Categorias de Atrito.
+_Avoid_: par natural, caso real
+
+**Par Perturbado**:
+Par de Avaliação em que a tabela B é gerada a partir de uma tabela real aplicando exatamente uma Categoria de Atrito à chave; o Gabarito é conhecido por construção. Cada um tem uma variante com nomes de coluna anonimizados.
+_Avoid_: par sintético, par artificial
+
+**Conjunto de Teste**:
+Parte do ground truth (cerca de 80% de cada tipo de par e de cada categoria) congelada antes de ajustar o agente e usada só nos experimentos finais. O restante é o **Conjunto de Desenvolvimento**, livre para ajustar a Decision Layer e o Domain Context; todo Par Real já visto durante o desenvolvimento (ex.: o par IBGE da PoC) fica nele.
+_Avoid_: holdout, validação
+
+**Gabarito**:
+Conjunto de Chaves Aceitáveis de um Par de Avaliação: anotado à mão num Par Real, conhecido por construção num Par Perturbado. Vazio num Par Negativo.
+_Avoid_: resposta certa, label
+
+**Chave Aceitável**:
+Integration Key considerada correta para um Par de Avaliação: colunas de A, colunas de B e a transformação que as alinha, expressa no Catálogo de Transformações. Um par pode ter várias (ex.: no par IBGE, o prefixo do código do município ou o `UF.id` aninhado).
+_Avoid_: chave certa, chave esperada
+
+**Par Negativo**:
+Par de Avaliação cujo Gabarito é vazio: não existe Integration Key entre as tabelas, e a resposta correta é a Abstenção.
+_Avoid_: par sem chave, caso negativo
+
+**Abstenção**:
+Saída da Decision Layer que declara não haver Integration Key entre as duas tabelas. É uma resposta, não uma falha.
+_Avoid_: erro, sem resultado, falha
+
+**Join de Referência**:
+Junção obtida ao aplicar uma Chave Aceitável do Gabarito, com sua transformação. Base de comparação do Acerto de Execução.
+_Avoid_: join esperado, join correto
+
+**Cobertura de Candidatos**:
+Fração dos Pares de Avaliação em que alguma Chave Aceitável está entre os Candidate Keys entregues à Decision Layer. É o teto do pipeline sem LLM e separa erro do estágio de evidências de erro de decisão.
+_Avoid_: recall, cobertura (sem qualificador)
+
+**Acerto de Chave**:
+A Integration Key escolhida coincide, em colunas, com alguma Chave Aceitável do Gabarito; num Par Negativo, a Decision Layer se absteve.
+_Avoid_: acurácia, acerto (sem qualificador)
+
+**Acerto de Execução**:
+O join produzido com a Integration Key e a transformação propostas reproduz o Join de Referência acima de um limiar fixado junto com o Conjunto de Teste. Separa colunas certas com transformação errada de uma decisão que de fato integra as bases.
+_Avoid_: acerto de join, validação
+
+### Processo de construção (QP5)
+
+**Spec**:
+Documento em `docs/specs/` com problema, escopo, contrato e critérios de aceite verificáveis, aprovado antes da implementação de um incremento.
+_Avoid_: PRD, plano, especificação informal
+
+**Teste-Oráculo**:
+Teste escrito pela autora a partir dos critérios de aceite de uma Spec, antes da implementação e fora do alcance do agente. É o juiz independente dos dois braços de uma Comparação Pareada; os testes que o agente escreve não contam como oráculo.
+_Avoid_: teste de aceite, teste do agente
+
+**Comparação Pareada**:
+O mesmo incremento implementado duas vezes pelo mesmo agente, a partir do mesmo commit: o **braço com spec** recebe a Spec completa; o **braço sem spec**, só o problema. Só o braço com spec entra no repositório.
+_Avoid_: A/B, experimento controlado
 
 ### Domínio orçamentário federal (Brasil)
 

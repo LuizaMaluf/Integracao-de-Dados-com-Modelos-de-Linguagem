@@ -6,15 +6,15 @@
 
 \section{Contexto}
 \label{sec:introducao-contexto}
-% Dados públicos federais em silos; o GovHub-br e a parceria UnB--ministérios.
+% Dados públicos federais em silos, com baixa interoperabilidade semântica; o GovHub-br e a parceria UnB--ministérios.
 
 \section{Problema}
 \label{sec:introducao-problema}
-% O de-para entre bases (códigos, nomes e formatos diferentes) é manual e depende de conhecimento implícito do analista.
+% Sem chave comum declarada, cruzar duas bases exige descobrir a chave à mão (códigos, nomes e formatos diferentes), com conhecimento implícito do analista.
 
 \section{Justificativa}
 \label{sec:introducao-justificativa}
-% Custo de integrar cada nova fonte; o padrão do SPAPI-Tester (LLM embutido no processo) ainda não aplicado a dados abertos.
+% Custo de descobrir a chave a cada novo par de bases; o padrão do SPAPI-Tester (LLM embutido no processo) ainda não aplicado a dados abertos; SDD com agentes de IA ainda pouco avaliado empiricamente.
 
 \section{Questões de pesquisa}
 \label{sec:introducao-questoes-de-pesquisa}
@@ -25,15 +25,15 @@
 
 \subsection{Objetivo geral}
 \label{subsec:introducao-objetivo-geral}
-% Propor, implementar e avaliar uma arquitetura config-driven de três camadas que integre bases governamentais heterogêneas, com LLM embutido para descobrir chaves de integração.
+% Propor, implementar por Spec-Driven Development e avaliar um pipeline que use modelos de linguagem embutidos entre estágios determinísticos para descobrir chaves de integração entre bases governamentais heterogêneas.
 
 \subsection{Objetivos específicos}
 \label{subsec:introducao-objetivos-especificos}
-% Lista numerada: Source Registry, costuras, Decision Layer com DSPy, ground truth, avaliação, construção por SDD (QP5).
+% Lista numerada: Decision Layer com DSPy (Abstenção, Catálogo de Transformações), estágio Jinja → dbt, benchmark (Pares Reais e Perturbados), avaliação contra baselines (QP1–QP4), construção por SDD com comparação pareada (QP5).
 
 \section{Contribuições esperadas}
 \label{sec:introducao-contribuicoes-esperadas}
-% Arquitetura aberta, gerador dbt config-driven, benchmark de chaves por categoria de atrito, replicação do artigo-base, relato avaliado de SDD.
+% Pipeline aberto de descoberta de chaves com LLM embutido, benchmark de chaves por categoria de atrito, replicação do artigo-base, evidência pareada do efeito do SDD.
 
 \section{Organização do trabalho}
 \label{sec:introducao-organizacao-do-trabalho}
