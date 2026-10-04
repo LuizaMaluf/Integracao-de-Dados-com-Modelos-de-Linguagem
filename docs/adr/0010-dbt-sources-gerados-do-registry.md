@@ -1,6 +1,6 @@
 # ADR 0010 — Sources e models bronze do dbt gerados a partir do Source Registry (Costura B)
 
-**Status:** Aceito
+**Status:** Descontinuada (2026-10-03) — fora do escopo do TCC; ver `docs/specs/limpeza-escopo.md`. Status anterior: Aceito.
 
 ## Contexto
 

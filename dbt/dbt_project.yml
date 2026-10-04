@@ -16,14 +16,5 @@ clean-targets:
   - dbt_packages
   - logs
 
-models:
-  gov_hub:
-    bronze:
-      +materialized: incremental
-      +schema: bronze
-    silver:
-      +materialized: table
-      +schema: silver
-    gold:
-      +materialized: table
-      +schema: gold
+# Os models de join são gerados em models/ pelo estágio determinístico
+# (templates Jinja a partir do Dicionário de Mapeamento — ADR 0011).

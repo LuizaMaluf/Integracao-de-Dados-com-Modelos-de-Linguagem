@@ -1,6 +1,6 @@
 # ADR 0004 — Integration Gateway como ponte entre ingestion e IntegrationAgent
 
-**Status:** Proposto
+**Status:** Descontinuada (2026-10-03) — fora do escopo do TCC; ver `docs/specs/limpeza-escopo.md`. Status anterior: Proposto.
 
 ## Contexto
 

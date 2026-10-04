@@ -1,12 +1,12 @@
 """
-Costura C — Postgres Loader: a integração lê direto do banco.
+Postgres Loader: a integração lê direto do banco (ex.: o PostgreSQL do GovHub).
 
 Carrega uma tabela do PostgreSQL como ``(DataFrame, TableMetadata)``, no lugar do
 CSV exportado à mão. Simétrico ao ``CsvLoader``.
 
 Aceita ``schema.tabela``, ``pg://schema.tabela`` ou só ``tabela`` (schema ``silver``).
-As colunas de linhagem do Silver Sync (``dt_ingest``, ``_silver_table``) são
-removidas por padrão: são iguais entre tabelas e virariam falsas candidatas a chave.
+As colunas de linhagem de carga (``dt_ingest``, ``_silver_table``) são removidas por
+padrão: são iguais entre tabelas e virariam falsas candidatas a chave.
 """
 from __future__ import annotations
 

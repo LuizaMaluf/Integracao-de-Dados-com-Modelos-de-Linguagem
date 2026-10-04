@@ -3,6 +3,7 @@ Semantic analyzer: column name similarity and domain group matching.
 """
 import re
 from difflib import SequenceMatcher
+
 from govhub.integration.config.domain import DOMAIN_SEMANTIC_GROUPS
 
 
@@ -19,22 +20,15 @@ def name_similarity(col_a: str, col_b: str) -> float:
     return SequenceMatcher(None, a, b).ratio()
 
 
-def find_domain_group(col_name: str, store=None) -> str | None:
+def find_domain_group(col_name: str) -> str | None:
     normalized = normalize_col_name(col_name)
 
-    # Build merged groups: start with builtin, overlay store entries on top
-    merged_groups: dict = dict(DOMAIN_SEMANTIC_GROUPS)
-    if store is not None:
-        for ctx in store.get_domain_contexts():
-            for group, aliases in ctx.get("semantic_groups", {}).items():
-                merged_groups[group] = aliases
-
-    for group, aliases in merged_groups.items():
+    for group, aliases in DOMAIN_SEMANTIC_GROUPS.items():
         for alias in aliases:
             if normalize_col_name(alias) == normalized:
                 return group
     # partial match fallback
-    for group, aliases in merged_groups.items():
+    for group, aliases in DOMAIN_SEMANTIC_GROUPS.items():
         for alias in aliases:
             if normalize_col_name(alias) in normalized or normalized in normalize_col_name(alias):
                 return group

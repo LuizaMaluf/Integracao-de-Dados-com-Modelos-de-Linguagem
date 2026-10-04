@@ -1,6 +1,6 @@
 # ADR 0005 — Context Store Passivo — quatro tabelas no schema `context`
 
-**Status:** Aceito
+**Status:** Descontinuada (2026-10-03) — fora do escopo do TCC; ver `docs/specs/limpeza-escopo.md`. Status anterior: Aceito.
 
 ## Contexto
 

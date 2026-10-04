@@ -1,33 +1,29 @@
 # Integração Semântica de Bases de Dados
 
-Sistema genérico para identificação de chaves de integração entre tabelas CSV, com suporte a enriquecimento por contexto de domínio. Desenvolvido no contexto do TCC de integração de bases orçamentárias federais brasileiras.
+Descoberta de chaves de integração entre bases governamentais, com um modelo de linguagem embutido entre estágios determinísticos. Desenvolvido no TCC *Integração de dados públicos com modelos de linguagem* (UnB), sobre as bases com que o GovHub trabalha.
 
 ## Language
 
 ### Pipeline
 
 **Integration Pipeline**:
-A sequência ordenada de cinco etapas que transforma dois arquivos CSV em uma chave de integração documentada: validar-contexto → analisar-tabela → comparar-colunas → identificar-chave → gerar-relatorio.
+A sequência de estágios que transforma duas tabelas numa Integration Key validada: coleta de evidências (Evidence Layer e Content Evidence Layer) → Decision Layer → estágio determinístico que gera e executa o join e seus testes.
 _Avoid_: fluxo, workflow, processo
 
 **Domain Context**:
-Arquivo JSON reutilizável que descreve o vocabulário semântico de um domínio específico — grupos de colunas equivalentes, padrões regex de identificadores e pesos de confiança. Gerado uma vez por domínio pela skill `definir-contexto` e consumido por todas as demais skills. Na avaliação, é congelado junto com o Conjunto de Teste e entra como fator de ablação (com e sem Domain Context).
+Vocabulário semântico do domínio orçamentário federal — grupos de colunas equivalentes e padrões de identificador — usado pela coleta de evidências. Na avaliação, é congelado junto com o Conjunto de Teste e entra como fator de ablação (com e sem Domain Context).
 _Avoid_: configuração, metadados, schema
 
-**Context Coverage**:
-Fração das colunas das tabelas de entrada que o Domain Context consegue reconhecer. Usada na validação inicial do pipeline para decidir se o contexto está adequado. Limiar mínimo recomendado: 60%.
-_Avoid_: cobertura, aderência
-
 **Evidence Layer**:
-Papel da skill `comparar-colunas` no pipeline: coleta dados brutos de compatibilidade (match rate, perfis, transformações necessárias) para cada par de colunas candidato, sem tomar decisões. Produz insumo para a Decision Layer.
+Estágio determinístico que coleta dados brutos de compatibilidade (semelhança de nome, match rate, perfis, padrões) para cada par de colunas e ranqueia os Candidate Keys, sem tomar a decisão. Produz insumo para a Decision Layer.
 _Avoid_: análise, comparação
 
 **Content Evidence Layer**:
-Papel da skill `comparar-dados` no pipeline: produz sinais de compatibilidade baseados nos valores reais das colunas — independente de semelhança de nome. Ativada pelo `mapear-integracoes` para pares de tabelas com afinidade < 0.45 que o caminho semântico não conseguiu resolver. Detecta format match (mesmo padrão regex dominante) e sobreposição de valores, incluindo relações de substring que indicam Derived Keys. Produz Candidate Keys com `content_score` para o Decision Layer, sem propor transformações.
+Parte da coleta de evidências que produz sinais baseados nos valores das colunas, independentes do nome: mesmo padrão de formato, sobreposição de valores e relações de substring que indicam Derived Keys. Promove a Candidate Key, com um `content_score`, pares que a semelhança de nome não encontraria.
 _Avoid_: análise de conteúdo, comparação de dados, validação de valores
 
 **Decision Layer**:
-Papel da skill `identificar-chave` no pipeline: recebe as evidências da Evidence Layer ou da Content Evidence Layer e o esquema completo das duas tabelas, e decide a melhor chave de integração — um Candidate Key ou outra chave que ela mesma propõe — ou se abstém (Abstenção), usando raciocínio LLM quando disponível. As evidências ordenam as opções, mas não limitam a resposta. É o único ponto do pipeline onde o LLM atua (ver LLM embutido); sua saída é um Dicionário de Mapeamento, nunca SQL.
+Estágio que recebe as evidências da Evidence Layer ou da Content Evidence Layer e o esquema completo das duas tabelas, e decide a melhor chave de integração — um Candidate Key ou outra chave que ela mesma propõe — ou se abstém (Abstenção), usando raciocínio LLM quando disponível. As evidências ordenam as opções, mas não limitam a resposta. É o único ponto do pipeline onde o LLM atua (ver LLM embutido); sua saída é um Dicionário de Mapeamento, nunca SQL.
 _Avoid_: seleção, escolha
 
 **LLM embutido**:

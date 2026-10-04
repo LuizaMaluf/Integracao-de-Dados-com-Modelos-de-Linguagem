@@ -18,7 +18,7 @@ O repositório sustenta um TCC de **engenharia de dados aplicada ao setor públi
 
 **Tese.** Como no SPAPI-Tester (artigo-base), o LLM não substitui o pipeline: entra só na etapa que exige julgamento — o de-para entre bases — e devolve dados estruturados para estágios determinísticos. O mesmo princípio vale para a construção do pipeline: no SDD, a spec é a estrutura fixa e o agente de IA só preenche a implementação.
 
-**Fora do foco.** A infraestrutura de ingestão e transformação (Airflow, MinIO, dbt, costuras A/B/C, ADRs 0001–0010) já existe e serve de apoio para obter os dados; a arquitetura config-driven não é objeto de avaliação do TCC.
+**Fora do foco.** A ingestão das bases é feita pelo GovHub (`data-application-gov-hub`), que já carrega os sistemas em schemas do PostgreSQL; este repositório lê de lá (`PostgresLoader`) ou de snapshots datados exportados de lá. A pilha de ingestão própria (Airflow, MinIO, costuras A/B/C) foi removida em 2026-10-03 e está registrada em `docs/historico/` e nas ADRs 0001–0010, descontinuadas.
 
 ## Artigo-base: SPAPI-Tester
 
@@ -83,8 +83,8 @@ O LLM decide o de-para e devolve dados estruturados; quem gera e executa o SQL �
 | 2 | Fundamentação teórica | Interoperabilidade e dados abertos no setor público, integração de dados, schema matching, perfilamento, LLMs, Spec-Driven Development | Seção de referencial abaixo |
 | 3 | Trabalhos relacionados | Matching, LLMs para dados, artigo-base; tabela comparativa | `docs/tcc/artigo-base.md` |
 | 4 | Metodologia | DSR com estudo de caso; SDD como processo de construção; ciclos, PoC IBGE, protocolo de avaliação | `docs/specs/`, histórico de commits |
-| 5 | Pipeline proposto | Coleta de evidências, Decision Layer com LLM embutido, Dicionário de Mapeamento e Catálogo de Transformações, estágio Jinja → dbt; a infraestrutura de ingestão existente aparece só como apoio | ADR 0011, `CONTEXT.md`, `docs/architecture/` |
-| 6 | Implementação | Stack (Airflow, MinIO, DuckDB, dbt, PostgreSQL, LLM), módulos, testes, reprodutibilidade | `src/govhub/`, `tests/`, `docker-compose.yml` |
+| 5 | Pipeline proposto | Coleta de evidências, Decision Layer com LLM embutido, Dicionário de Mapeamento e Catálogo de Transformações, estágio Jinja → dbt; a ingestão é do GovHub | ADR 0011, `CONTEXT.md` |
+| 6 | Implementação | Stack (Python, DSPy, dbt, PostgreSQL, LLM proprietário e de pesos abertos), módulos, testes, reprodutibilidade | `src/govhub/`, `tests/`, `dbt/` |
 | 7 | Avaliação e resultados | QP1 acurácia por categoria de atrito, QP2 modelos abertos × proprietários, QP3 tempo e custo, QP4 pares reais, QP5 SDD | Harness de avaliação, resultados JSON, registros das specs |
 | 8 | Discussão | Achados, o que eles revelam sobre a interoperabilidade das bases, limitações, ameaças à validade, implicações para o GovHub | — |
 | 9 | Conclusão | Respostas às QPs, contribuições, trabalhos futuros | — |
@@ -117,10 +117,7 @@ Referências clássicas por eixo, listadas de memória: **confirmar autor, ano e
 | LLMs | Narayan et al. (2022), *Can foundation models wrangle your data?*, PVLDB | LLMs em tarefas de dados |
 | LLMs | Wei et al. (2022), *Chain-of-thought prompting*, NeurIPS | Raciocínio registrado na Decision Layer |
 | LLMs | Lewis et al. (2020), *Retrieval-augmented generation*, NeurIPS | Domain Context como conhecimento injetado |
-| Arquitetura de dados | Kimball e Ross (2013), *The Data Warehouse Toolkit*, 3ª ed. | Camada gold |
-| Arquitetura de dados | Armbrust et al. (2021), *Lakehouse*, CIDR | Camadas bronze/silver/gold |
-| Arquitetura de dados | Reis e Housley (2022), *Fundamentals of Data Engineering* | Ciclo de vida, orquestração, ELT |
-| Arquitetura de dados | Kleppmann (2017), *Designing Data-Intensive Applications* | Idempotência (costura A) |
+| Engenharia de dados | Reis e Housley (2022), *Fundamentals of Data Engineering* | Contexto: ciclo de vida dos dados, ELT |
 | Spec-Driven Development | Böckeler (2025), *Understanding Spec-Driven-Development: Kiro, spec-kit, and Tessl*, martinfowler.com | Panorama e críticas do SDD com agentes de IA |
 | Spec-Driven Development | GitHub (2025), *Spec Kit*, github.com/github/spec-kit | Fluxo de referência spec → plano → tarefas → implementação |
 | Especificação | Meyer (1992), *Applying "Design by Contract"*, IEEE Computer | Contrato como especificação verificável |
@@ -158,7 +155,7 @@ Posicionar pela combinação e pelo domínio, não por "não existe nada igual".
 
 ## Metodologia
 
-**Design Science Research com estudo de caso**, como no artigo-base: a DSR organiza construção e avaliação do artefato; o estudo de caso real (bases do GovHub) dá a validação fora do ambiente controlado. O histórico do repo registra os ciclos (PoC IBGE → costuras → validação no ambiente do container) e as ADRs registram as decisões. Princípio adotado do artigo: o LLM entra sem mudar o fluxo de trabalho do analista, só automatiza as etapas de tradução.
+**Design Science Research com estudo de caso**, como no artigo-base: a DSR organiza construção e avaliação do artefato; o estudo de caso real (bases do GovHub) dá a validação fora do ambiente controlado. O histórico do repo registra os ciclos (skills da Fase 01 → pacote com Decision Layer → pilha de ingestão própria, depois removida; ver `docs/historico/`) e as ADRs registram as decisões. Princípio adotado do artigo: o LLM entra sem mudar o fluxo de trabalho do analista, só automatiza as etapas de tradução.
 
 **Spec-Driven Development (SDD) como foco do processo.** A DSR é o método de pesquisa; o SDD é como o artefato é construído e também objeto de avaliação (QP5). Cada ciclo segue: (1) spec em `docs/specs/` com problema, escopo, contrato e critérios de aceite verificáveis (modelo em `docs/specs/_template.md`); (2) plano; (3) implementação por agente de IA a partir da spec; (4) validação contra os critérios e os testes; (5) ADR quando há decisão de arquitetura. A spec cumpre no desenvolvimento o papel que o processo estruturado cumpre no artigo-base: é a estrutura fixa, e o agente só preenche a implementação.
 
@@ -220,7 +217,7 @@ A QP2 compara modelos só na condição S; B3 e B4 rodam com o modelo principal.
 
 ## Lacunas e plano de trabalho
 
-A infraestrutura de ingestão e transformação já funciona de ponta a ponta (costuras A/B/C, `docs/specs/costuras-e2e.md`) e fica como está. O que falta para o TCC é a Decision Layer nova e a avaliação:
+A ingestão é do GovHub; a pilha própria foi removida (ver `docs/historico/`). O que falta para o TCC é a Decision Layer nova e a avaliação:
 
 - **Ground truth** rotulado por categoria de atrito; hoje só há o par IBGE e fixtures de teste.
 - **Gerador de Pares Perturbados**: uma perturbação por Categoria de Atrito, variante anonimizada, semente fixa e divisão desenvolvimento/teste estratificada.
@@ -232,13 +229,13 @@ A infraestrutura de ingestão e transformação já funciona de ponta a ponta (c
 - **Ablação do Domain Context**: opção que desliga os grupos de sinônimos e os padrões de chave, com e sem LLM.
 - **Baselines externos e do LLM**: B1 (adaptador para dois métodos do Valentine), B3 (LLM sem evidências) e B4 (LLM escrevendo o SQL, executado num DuckDB só de leitura).
 - **Custo do LLM**: o `llm_reasoner` não registra tokens nem latência.
-- **Dados reais congelados**: snapshots datados de IBGE, SIAFI e Transferegov.
+- **Snapshots das bases do GovHub**: script que exporta tabelas datadas do PostgreSQL do GovHub para o ground truth e a QP4 (próxima spec).
 
 Para seguir o artigo-base (ADR 0011):
 
 - **DSPy na Decision Layer**: assinatura tipada com `ChainOfThought`, saída validada e nova chamada quando o parsing falhar.
 - **Catálogo de Transformações**: operações tipadas com template SQL e teste unitário cada; congelar junto com o ground truth.
-- **Estágio Jinja → dbt**: gerar o model de join e os testes dbt a partir do dicionário de mapeamento, um template por operação do catálogo, como o gerador de sources já faz para o bronze.
+- **Estágio Jinja → dbt**: gerar o model de join e os testes dbt a partir do dicionário de mapeamento, um template por operação do catálogo, no mesmo padrão do antigo gerador de sources (ADR 0010, descontinuada).
 - **Troca de modelo por configuração**: um proprietário e um de pesos abertos local, sem mudar código.
 - **Estudo cruzado com analistas (QP3)**: protocolo, sorteio da divisão de pares entre analistas, cronometragem com teto de 60 min.
 
@@ -273,7 +270,7 @@ O portão que decide o cronograma é o ground truth: congelar o Conjunto de Test
 | Poucos analistas disponíveis no GovHub (QP3) | Estudo cruzado sem poder estatístico | Mínimo de 2 analistas com divisão trocada; reportar por par e por analista, como estudo de caso, sem generalizar |
 | APIs públicas instáveis ou com limite de acesso | Atrasos na coleta | Congelar snapshots datados |
 | Dados pessoais (ex.: SIAPE) | Risco LGPD | Usar bases agregadas/públicas; não versionar dados pessoais |
-| Escopo crescer (PDF, DAG factory, dashboards, arquitetura config-driven) | TCC não fecha | Congelar escopo: Decision Layer, estágio Jinja → dbt, benchmark, avaliação e SDD; a infraestrutura de ingestão fica como está |
+| Escopo crescer (PDF, DAG factory, dashboards, arquitetura config-driven) | TCC não fecha | Congelar escopo: Decision Layer, estágio Jinja → dbt, benchmark, avaliação e SDD; a ingestão é do GovHub |
 | Catálogo de Transformações insuficiente para casos reais | Abstenções em pares que têm chave | Contar e reportar as Abstenções por "transformação fora do catálogo"; não ampliar o catálogo depois de congelado |
 
 **Ameaças à validade** (Wohlin et al., 2012): *interna* — a autora constrói o agente, anota os Pares Reais e conduz os dois braços da QP5; *externa* — domínio orçamentário federal, e Pares Perturbados podem não refletir os atritos reais; *de constructo* — o Acerto de Execução aproxima, mas não mede, a utilidade para o analista, que só a QP3 assistida mede diretamente; *de conclusão* — poucos Pares Reais e 6 a 8 incrementos na QP5.

@@ -5,15 +5,17 @@ import pandas as pd
 import pytest
 
 from govhub import cli
-from govhub.sync.silver_sync import sync_dataframe
 
 
 @pytest.mark.pg
 def test_cli_integra_duas_tabelas_do_postgres(pg_engine, pg_schema, tmp_path, monkeypatch, capsys):
-    a = pd.DataFrame({"cd_ug": [110001, 110002, 110003], "nome": ["A", "B", "C"]})
-    b = pd.DataFrame({"ug_codigo": [110001, 110002, 110009], "valor": [10, 20, 30]})
-    sync_dataframe(a, "ugs", "ugs_1", schema=pg_schema, engine=pg_engine)
-    sync_dataframe(b, "pagamentos", "pagamentos_1", schema=pg_schema, engine=pg_engine)
+    linhagem = {"dt_ingest": pd.Timestamp("2026-09-28")}
+    a = pd.DataFrame({"cd_ug": [110001, 110002, 110003], "nome": ["A", "B", "C"],
+                      **linhagem, "_silver_table": "ugs_1"})
+    b = pd.DataFrame({"ug_codigo": [110001, 110002, 110009], "valor": [10, 20, 30],
+                      **linhagem, "_silver_table": "pagamentos_1"})
+    a.to_sql("ugs", pg_engine, schema=pg_schema, index=False)
+    b.to_sql("pagamentos", pg_engine, schema=pg_schema, index=False)
 
     out = tmp_path / "resultado.json"
     monkeypatch.setattr(sys, "argv", [

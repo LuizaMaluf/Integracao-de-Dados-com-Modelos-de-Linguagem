@@ -1,6 +1,6 @@
 # ADR 0006 — Profile em dois momentos + `ContextResolver` como mediador dbt
 
-**Status:** Aceito
+**Status:** Descontinuada (2026-10-03) — fora do escopo do TCC; ver `docs/specs/limpeza-escopo.md`. Status anterior: Aceito.
 
 ## Contexto
 

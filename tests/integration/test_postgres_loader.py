@@ -6,7 +6,6 @@ from govhub.integration.loaders.postgres_loader import (
     is_pg_source,
     parse_source,
 )
-from govhub.sync.silver_sync import sync_dataframe
 
 
 @pytest.mark.parametrize("source, esperado", [
@@ -31,8 +30,13 @@ def test_is_pg_source():
 
 @pytest.mark.pg
 def test_load_remove_linhagem_e_monta_metadata(pg_engine, pg_schema):
-    df = pd.DataFrame({"cd_ibge": [5300108, 5208707], "nome": ["Brasília", "Goiânia"]})
-    sync_dataframe(df, "municipios", "municipios_20260928", schema=pg_schema, engine=pg_engine)
+    df = pd.DataFrame({
+        "cd_ibge": [5300108, 5208707],
+        "nome": ["Brasília", "Goiânia"],
+        "dt_ingest": pd.Timestamp("2026-09-28"),
+        "_silver_table": "municipios_20260928",
+    })
+    df.to_sql("municipios", pg_engine, schema=pg_schema, index=False)
 
     out, meta = PostgresLoader(engine=pg_engine).load(f"pg://{pg_schema}.municipios")
     assert list(out.columns) == ["cd_ibge", "nome"]

@@ -1,6 +1,6 @@
 # ADR 0003 — Adicionar Bronze Store (MinIO) antes do Silver
 
-**Status:** Proposto
+**Status:** Descontinuada (2026-10-03) — fora do escopo do TCC; ver `docs/specs/limpeza-escopo.md`. Status anterior: Proposto.
 
 ## Contexto
 

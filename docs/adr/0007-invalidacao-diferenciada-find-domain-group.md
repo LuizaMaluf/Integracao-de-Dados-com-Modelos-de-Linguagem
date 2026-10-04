@@ -1,6 +1,6 @@
 # ADR 0007 — Invalidação diferenciada + `find_domain_group` conectado ao banco
 
-**Status:** Aceito
+**Status:** Descontinuada (2026-10-03) — fora do escopo do TCC; ver `docs/specs/limpeza-escopo.md`. Status anterior: Aceito.
 
 ## Contexto
 

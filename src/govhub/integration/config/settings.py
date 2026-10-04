@@ -1,5 +1,6 @@
-from pydantic_settings import BaseSettings
 from pathlib import Path
+
+from pydantic_settings import BaseSettings
 
 ROOT_DIR = Path(__file__).resolve().parents[4]  # raiz do repo
 
@@ -26,7 +27,7 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
-        # O .env da raiz é compartilhado com ingestão, dbt e docker-compose.
+        # O .env da raiz é compartilhado com o dbt e o docker-compose.
         extra = "ignore"
 
 

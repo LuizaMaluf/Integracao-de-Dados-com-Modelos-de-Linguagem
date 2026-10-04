@@ -29,10 +29,12 @@ def pg_engine():
 
 @pytest.fixture
 def pg_schema(pg_engine):
-    """Schema temporário, removido ao fim do teste."""
+    """Schema temporário, criado no início e removido ao fim do teste."""
     from sqlalchemy import text
 
     schema = f"test_{uuid.uuid4().hex[:8]}"
+    with pg_engine.begin() as conn:
+        conn.execute(text(f'CREATE SCHEMA "{schema}"'))
     yield schema
     with pg_engine.begin() as conn:
         conn.execute(text(f'DROP SCHEMA IF EXISTS "{schema}" CASCADE'))

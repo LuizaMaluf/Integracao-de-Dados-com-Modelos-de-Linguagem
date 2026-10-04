@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "govhub"
 version = "0.1.0"
-description = "Ingestão, transformação e integração semântica de bases governamentais brasileiras"
+description = "Descoberta de chaves de integração entre bases governamentais com LLM embutido"
 requires-python = ">=3.11"
 dependencies = [
     "anthropic>=0.28",
@@ -15,21 +15,10 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# Dependências da camada de ingestão e das costuras (usadas no container do Airflow)
-ingestion = [
-    "httpx",
-    "pdfplumber",
-    "camelot-py[cv]",
-    "unstructured[pdf]",
-    "openpyxl",
+# Leitura de tabelas do PostgreSQL (PostgresLoader, testes `pg`)
+postgres = [
     "sqlalchemy",
     "psycopg2-binary",
-    "fsspec",
-    "s3fs",
-    "boto3",
-    "duckdb",
-    "pyarrow",
-    "PyYAML",
 ]
 dev = [
     "pytest>=8.2",
@@ -43,16 +32,12 @@ govhub = "govhub.cli:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
-[tool.setuptools.package-data]
-"govhub.integration.store" = ["schema.sql"]
-
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src", "airflow"]
+pythonpath = ["src"]
 addopts = "-v --tb=short --import-mode=importlib"
 markers = [
     "pg: precisa de PostgreSQL real (POSTGRES_*); pulado se indisponível",
-    "e2e: fluxo completo registry → Postgres → dbt → integração",
 ]
 
 [tool.ruff]

@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-TCC de Luiza Maluf (UnB) — *Integração de dados públicos com modelos de linguagem: um pipeline construído por Spec-Driven Development para descoberta de chaves entre bases governamentais*. Foco: descoberta de chaves com LLM embutido e SDD; a infraestrutura de ingestão (config-driven) é só apoio.
+TCC de Luiza Maluf (UnB) — *Integração de dados públicos com modelos de linguagem: um pipeline construído por Spec-Driven Development para descoberta de chaves entre bases governamentais*. Foco: descoberta de chaves com LLM embutido e SDD. A ingestão das bases é do GovHub (`data-application-gov-hub`); este repositório lê do PostgreSQL do GovHub ou de snapshots exportados de lá.
 Glossário do domínio em `CONTEXT.md`; decisões em `docs/adr/`.
 
 ## Contexto do TCC
@@ -13,20 +13,18 @@ Glossário do domínio em `CONTEXT.md`; decisões em `docs/adr/`.
 - Avaliação sempre por Categoria de Atrito (`CONTEXT.md`), por modelo e contra baseline sem LLM; o Conjunto de Teste do ground truth é congelado antes de ajustar o agente, e o ajuste só usa o Conjunto de Desenvolvimento.
 
 ## Estrutura
-- `src/govhub/` — pacote Python único: `ingestion/` (inclui `registry.py`, contrato do YAML), `integration/`, `sync/` (costuras A/B + e2e), `cli.py`
-- `airflow/dags/` (DAGs finas, só orquestram) e `airflow/configs/` (um YAML por fonte)
-- `dbt/` — projeto dbt (bronze → silver → gold)
-- `tests/{ingestion,integration,sync}/`
+- `src/govhub/` — pacote Python único: `integration/` (evidências, Decision Layer, loaders), `llm.py` (cliente LLM único), `postgres.py`, `cli.py`
+- `dbt/` — esqueleto do projeto dbt; os models de join saem do estágio Jinja → dbt
+- `tests/integration/`
+- `docs/historico/` — ciclos anteriores (skills da Fase 01, pilha de ingestão); nada ali está ativo
 
 ## Comandos
-- `pip install -e ".[ingestion,dev]"` — instala o pacote
+- `pip install -e ".[postgres,dev]"` — instala o pacote
 - `make test` / `make lint`
-- `make up` — Airflow + MinIO + PostgreSQL (docker-compose na raiz)
-- `make dbt-generate` — regenera `dbt/models/bronze/_generated/` a partir de `airflow/configs/` (commitar o resultado)
-- `make dbt-run` — dbt fora do container, lendo o `.env` da raiz
-- `python -m govhub.sync.e2e <fonte_a> <fonte_b> [--no-llm]` — fluxo costuras A → B → C
-- Testes `pg`/`e2e` rodam só com `POSTGRES_*` apontando para um banco acessível
-- `govhub --table-a A.csv --table-b B.csv [--no-llm]` — integração via CLI
+- `make up` — PostgreSQL local (docker-compose na raiz), para os testes `pg` e o dbt
+- `make dbt-run` / `make dbt-test` — dbt lendo o `.env` da raiz
+- Testes `pg` rodam só com `POSTGRES_*` apontando para um banco acessível
+- `govhub --table-a A.csv --table-b B.csv [--no-llm]` — integração via CLI; aceita também `pg://schema.tabela`
 
 ## Convenções
 - Imports sempre absolutos a partir de `govhub.*`; nunca usar `sys.path.insert`.
