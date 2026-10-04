@@ -1,9 +1,9 @@
 """
 Structural analyzer: dtype compatibility, cardinality, uniqueness, null rate.
 """
-import pandas as pd
 from dataclasses import dataclass
 
+import pandas as pd
 
 DTYPE_COMPAT: dict[str, set[str]] = {
     "object": {"object", "category"},

@@ -6,10 +6,10 @@ from pathlib import Path
 
 import pandas as pd
 
-from govhub.integration.loaders.base import TableMetadata
 from govhub.integration.agent.candidate_generator import CandidateGenerator
 from govhub.integration.agent.llm_reasoner import reason_with_llm
 from govhub.integration.config.settings import settings
+from govhub.integration.loaders.base import TableMetadata
 
 
 class IntegrationAgent:
@@ -42,7 +42,10 @@ class IntegrationAgent:
         else:
             best = candidates[0]
             result = {
-                "summary": f"Best candidate: {best.columns_a} ↔ {best.columns_b} (score={best.score})",
+                "summary": (
+                    f"Best candidate: {best.columns_a} ↔ {best.columns_b}"
+                    f" (score={best.score})"
+                ),
                 "candidate_keys": [
                     {
                         "table_a_columns": c.columns_a,

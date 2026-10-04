@@ -6,12 +6,17 @@ from itertools import product
 
 import pandas as pd
 
-from govhub.integration.analyzers.semantic import semantic_score, find_domain_group
-from govhub.integration.analyzers.structural import profile_column, dtype_compatible, cardinality_label
+from govhub.integration.analyzers.content_analyzer import PROMOTION_THRESHOLD
+from govhub.integration.analyzers.content_analyzer import analyze as content_analyze
+from govhub.integration.analyzers.semantic import find_domain_group, semantic_score
 from govhub.integration.analyzers.statistical import overlap_stats
-from govhub.integration.analyzers.content_analyzer import analyze as content_analyze, PROMOTION_THRESHOLD
-from govhub.integration.transformers.pattern_detector import detect_pattern
+from govhub.integration.analyzers.structural import (
+    cardinality_label,
+    dtype_compatible,
+    profile_column,
+)
 from govhub.integration.loaders.base import TableMetadata
+from govhub.integration.transformers.pattern_detector import detect_pattern
 
 
 @dataclass
@@ -35,7 +40,9 @@ class CandidateKey:
     def score(self) -> float:
         # Content-promoted pairs: replace the semantic term with content_score so
         # that pairs the name-similarity path missed are ranked on content signal.
-        semantic_term = self.content_score if self.content_score is not None else self.semantic_score
+        semantic_term = (
+            self.content_score if self.content_score is not None else self.semantic_score
+        )
         return round(
             0.35 * semantic_term
             + 0.30 * self.match_rate
@@ -104,7 +111,9 @@ class CandidateGenerator:
             semantic_score=sem,
             structural_score=struct,
             match_rate=mr,
-            cardinality=cardinality_label(max(profile_a.uniqueness_rate, profile_b.uniqueness_rate)),
+            cardinality=cardinality_label(
+                max(profile_a.uniqueness_rate, profile_b.uniqueness_rate)
+            ),
             pattern_a=pattern_a,
             pattern_b=pattern_b,
             overlap=overlap,
@@ -137,13 +146,19 @@ class CandidateGenerator:
         ea: list[str] = []
         transforms: list[str] = []
 
-        ef.append(f"Content-promoted: content_score={evidence.content_score:.3f} >= {PROMOTION_THRESHOLD}")
+        ef.append(
+            f"Content-promoted: content_score={evidence.content_score:.3f}"
+            f" >= {PROMOTION_THRESHOLD}"
+        )
         if evidence.format_match:
             ef.append(f"Format match: both columns match pattern '{evidence.format_a}'")
         if evidence.overlap_rate >= 0.5:
             ef.append(f"Value overlap: {evidence.overlap_rate:.1%} of A values found in B")
         if evidence.substring_match_rate >= 0.5:
-            ef.append(f"Substring relation detected: rate={evidence.substring_match_rate:.2f} (possible Derived Key)")
+            ef.append(
+                f"Substring relation detected: rate={evidence.substring_match_rate:.2f}"
+                " (possible Derived Key)"
+            )
             transforms.append("Investigate substring/concatenation transform to align keys")
 
         ea.append(f"Low name similarity ({sem:.2f}): '{col_a}' vs '{col_b}'")
@@ -159,7 +174,9 @@ class CandidateGenerator:
             semantic_score=sem,
             structural_score=struct,
             match_rate=evidence.overlap_rate,
-            cardinality=cardinality_label(max(profile_a.uniqueness_rate, profile_b.uniqueness_rate)),
+            cardinality=cardinality_label(
+                max(profile_a.uniqueness_rate, profile_b.uniqueness_rate)
+            ),
             pattern_a=pattern_a,
             pattern_b=pattern_b,
             overlap={},

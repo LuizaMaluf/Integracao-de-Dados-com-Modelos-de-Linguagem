@@ -2,15 +2,17 @@
 LLM-based reasoning layer: sends candidates to Claude for final judgment.
 """
 import json
+
 from govhub import llm
 from govhub.integration.agent.candidate_generator import CandidateKey
-from govhub.integration.loaders.base import TableMetadata
 from govhub.integration.config.settings import settings
+from govhub.integration.loaders.base import TableMetadata
 
-
-SYSTEM_PROMPT = """Você é um especialista em integração de bases de dados governamentais brasileiras.
-Analise os candidatos a chave de integração fornecidos e produza o resultado final em JSON.
-Seja preciso, objetivo e baseie cada decisão em evidências observáveis."""
+SYSTEM_PROMPT = (
+    "Você é um especialista em integração de bases de dados governamentais brasileiras.\n"
+    "Analise os candidatos a chave de integração fornecidos e produza o resultado final em JSON.\n"
+    "Seja preciso, objetivo e baseie cada decisão em evidências observáveis."
+)
 
 
 def build_user_prompt(

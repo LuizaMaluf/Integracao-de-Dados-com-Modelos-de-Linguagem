@@ -1,7 +1,10 @@
-import pandas as pd
 from pathlib import Path
-from .base import BaseLoader, TableMetadata
+
+import pandas as pd
+
 from govhub.integration.config.settings import settings
+
+from .base import BaseLoader, TableMetadata
 
 
 class CsvLoader(BaseLoader):

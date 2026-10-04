@@ -3,7 +3,6 @@ Integration test: CandidateGenerator promotes pairs via Content Evidence Layer
 when semantic similarity is below the threshold but content_score is high.
 """
 import pandas as pd
-import pytest
 
 from govhub.integration.agent.candidate_generator import CandidateGenerator
 from govhub.integration.loaders.base import TableMetadata

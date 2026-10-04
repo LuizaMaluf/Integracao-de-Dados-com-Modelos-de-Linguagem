@@ -1,8 +1,8 @@
 """
 Detects value patterns in a series and maps them to known domain patterns.
 """
-import re
 import pandas as pd
+
 from govhub.integration.config.domain import DOMAIN_KEY_PATTERNS
 
 

@@ -2,6 +2,7 @@
 Statistical analyzer: value overlap, match rate between column pairs.
 """
 import pandas as pd
+
 from govhub.integration.transformers.normalizer import normalize_series
 
 

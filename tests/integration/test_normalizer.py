@@ -1,5 +1,6 @@
 import pandas as pd
-from govhub.integration.transformers.normalizer import normalize_series, pad_left, extract_digits
+
+from govhub.integration.transformers.normalizer import extract_digits, normalize_series, pad_left
 
 
 def test_normalize_series_strips_and_uppercases():

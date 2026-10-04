@@ -1,7 +1,6 @@
 """
 Value normalization utilities for cross-table matching.
 """
-import re
 import pandas as pd
 
 

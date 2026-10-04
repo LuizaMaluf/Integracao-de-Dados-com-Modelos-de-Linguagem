@@ -1,7 +1,10 @@
 import pandas as pd
-import pytest
 
-from govhub.integration.analyzers.content_analyzer import analyze, PROMOTION_THRESHOLD, ContentEvidence
+from govhub.integration.analyzers.content_analyzer import (
+    PROMOTION_THRESHOLD,
+    ContentEvidence,
+    analyze,
+)
 
 
 def _series(values):
