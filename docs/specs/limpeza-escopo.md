@@ -20,6 +20,7 @@ O repositório acumula a pilha de ingestão config-driven (Airflow, MinIO, DuckD
   8. **Loader e testes do PostgreSQL:** os testes de `PostgresLoader` e da CLI deixam de depender do `silver_sync` e carregam os dados com `pandas.DataFrame.to_sql`.
   9. **Documentos ativos:** README enxuto (o que é o TCC, estrutura, comandos); `CLAUDE.md` (Estrutura e Comandos); `CONTEXT.md` (termos que citam skills: Integration Pipeline, Domain Context, Context Coverage, Evidence Layer, Content Evidence Layer, Decision Layer); `docs/tcc/proposta.md` ("Fora do foco", lacunas, capítulos 5 e 6).
   10. **Lint (incluído depois da aprovação):** corrigir os 30 erros de estilo do ruff que restaram no código mantido (ordem de imports, imports sem uso, linhas longas), sem mudar comportamento — o CA2 pressupunha um lint que já passava, e havia 78 erros antes da limpeza.
+  11. **Esqueleto LaTeX local (pedido depois da implementação):** remover `docs/tcc/latex/`; o texto do TCC fica só no Overleaf.
 - **Fora:**
   - `poc/` (local, fora do git) e a branch `gh-pages`.
   - Reescrever `docs/tcc/index.html` além do link morto.
@@ -68,7 +69,7 @@ Incremento avaliado em comparação pareada? Não — manutenção, anterior ao 
 | Intervenções (registradas literalmente abaixo) | 0 | — |
 | Tokens | não medido | — |
 | Tempo da autora (escrita da spec + acompanhamento) | não medido | — |
-| Mudanças na spec depois de aprovada | 1 (item 10 do escopo: correção do lint) | — |
+| Mudanças na spec depois de aprovada | 2 (itens 10 e 11 do escopo: correção do lint; remoção do esqueleto LaTeX, a pedido da autora) | — |
 | Divergências spec × código encontradas | 1: o CA2 supunha lint passando; havia 78 erros antes da limpeza | — |
 | Observações | CA1–CA8 verificados em 2026-10-03: 34 testes passando e 2 `pg` pulados sem banco; os 2 `pg` também passaram contra um PostgreSQL 17 descartável. O `.venv` do repositório está quebrado (aponta para o caminho antigo do repo); a verificação usou um ambiente novo. O prompt do LLM ficou idêntico após quebrar a linha longa. A ADR 0011 manteve o status; o texto só trocou a referência ao `dbt_source_generator` removido. | |
 

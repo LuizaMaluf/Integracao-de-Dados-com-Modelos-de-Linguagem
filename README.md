@@ -82,7 +82,7 @@ src/govhub/
 dbt/                esqueleto do projeto dbt; os models de join saem do estágio Jinja → dbt
 tests/integration/  testes (os marcados `pg` precisam de POSTGRES_*)
 docs/
-  tcc/              proposta, artigo-base, esqueleto LaTeX (texto no Overleaf)
+  tcc/              proposta e artigo-base (o texto do TCC fica no Overleaf)
   adr/              decisões de arquitetura
   specs/            specs do Spec-Driven Development (modelo em _template.md)
   historico/        ciclos anteriores: skills da Fase 01 e a pilha de ingestão removida
