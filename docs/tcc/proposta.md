@@ -72,7 +72,8 @@ O LLM decide o de-para e devolve dados estruturados; quem gera e executa o SQL �
 
 - Pipeline aberto e reproduzível de descoberta de chaves com LLM embutido: saída tipada, Catálogo de Transformações e validação por execução, com decisões registradas em ADRs.
 - Benchmark de chaves de integração em bases públicas brasileiras, rotulado por categoria de atrito: Pares Reais anotados e um gerador reproduzível de Pares Perturbados.
-- Replicação do método do SPAPI-Tester em outro domínio (dados públicos), com evidência de quando o LLM ajuda e quando não.
+- Mapa de Fluxo dos dados orçamentários federais em nível de política (documentos, sistemas, identificadores e elos, com as normas), reutilizável pelo GovHub e independente do pipeline.
+- Replicação do método do SPAPI-Tester em outro domínio (dados públicos), com evidência de quando o LLM ajuda e quando não, e de quanto o contexto do fluxo do dado pesa nesse acerto.
 - Evidência pareada do efeito do SDD com agente de IA na construção de um pipeline de dados (com spec × sem spec, medida por testes-oráculo).
 
 ## Estrutura da monografia
@@ -116,7 +117,7 @@ Referências clássicas por eixo, listadas de memória: **confirmar autor, ano e
 | LLMs | Brown et al. (2020), *Language models are few-shot learners*, NeurIPS | Aprendizado em contexto |
 | LLMs | Narayan et al. (2022), *Can foundation models wrangle your data?*, PVLDB | LLMs em tarefas de dados |
 | LLMs | Wei et al. (2022), *Chain-of-thought prompting*, NeurIPS | Raciocínio registrado na Decision Layer |
-| LLMs | Lewis et al. (2020), *Retrieval-augmented generation*, NeurIPS | Domain Context como conhecimento injetado |
+| LLMs | Lewis et al. (2020), *Retrieval-augmented generation*, NeurIPS | Domain Context (Dicionário e Mapa de Fluxo) como conhecimento injetado |
 | Engenharia de dados | Reis e Housley (2022), *Fundamentals of Data Engineering* | Contexto: ciclo de vida dos dados, ELT |
 | Spec-Driven Development | Böckeler (2025), *Understanding Spec-Driven-Development: Kiro, spec-kit, and Tessl*, martinfowler.com | Panorama e críticas do SDD com agentes de IA |
 | Spec-Driven Development | GitHub (2025), *Spec Kit*, github.com/github/spec-kit | Fluxo de referência spec → plano → tarefas → implementação |
@@ -173,7 +174,7 @@ Posicionar pela combinação e pelo domínio, não por "não existe nada igual".
 | QP1 | Decision Layer nos Pares de Avaliação, rotulados por categoria de atrito | Cobertura de Candidatos (teto do pipeline sem LLM); Acerto de Chave (top-1) e Acerto de Execução, geral e por categoria; Abstenção correta nos Pares Negativos; fração das chaves certas propostas fora da lista; MRR só para os baselines que produzem ranking | B0 a B4 (abaixo) |
 | QP2 | QP1 na condição S com 2 ou 3 modelos, ao menos um de pesos abertos rodando localmente | Taxa de sucesso por modelo, tokens, latência | Modelo proprietário |
 | QP3 | Desenho cruzado: 2 ou 3 analistas do GovHub (nunca a autora, sem acesso ao Gabarito) resolvem 6 a 8 Pares Reais do Conjunto de Teste; cada um faz metade sozinho e metade revisando o Dicionário de Mapeamento do pipeline, com a divisão trocada entre analistas para controlar dificuldade do par e aprendizado | Tempo até declarar chave e transformação (teto de 60 min por par; acima disso, "não resolvido"); Acerto de Chave e Acerto de Execução pelo Gabarito; `timings_s`, tokens, custo em R$ do modelo proprietário e tempo de máquina do local | Analista sozinho |
-| QP4 | Pipeline aplicado a pares reais ainda não integrados no GovHub | Chaves confirmadas por quem conhece as bases; Abstenções corretas; achados de interoperabilidade (atritos, pares sem chave comum, problemas ao executar o join) para a discussão | — |
+| QP4 | Pipeline aplicado aos pares que o GovHub ainda não integra (dez candidatos em `inventario-govhub.md`: PNCP × Compras.gov, SIAFI API × Tesouro Gerencial, SICONV × IBGE, PPA × SIAFI, Ancine × SALIC, …); as FKs documentadas e não implementadas do MGI formam um subgrupo com gabarito documentado | Chaves confirmadas por quem conhece as bases; Abstenções corretas; achados de interoperabilidade (atritos, pares sem chave comum, problemas ao executar o join) para a discussão | — |
 | QP5 | Comparação pareada em 6 a 8 incrementos (ex.: Abstenção, Catálogo de Transformações, DSPy, Jinja → dbt, gerador de Pares Perturbados, harness, baselines): o mesmo incremento em dois braços, a partir do mesmo commit, com o mesmo agente e modelo — um recebe a spec completa, o outro só a seção *Problema* | Testes-oráculo passando na primeira entrega e ao final; iterações; intervenções; tokens; tempo da autora, incluindo escrever a spec; análise pareada por incremento (descritiva e Wilcoxon) | Braço sem spec do mesmo incremento |
 
 **Baselines.** A tese tem duas metades — (i) as evidências determinísticas ajudam o LLM; (ii) o LLM é melhor fora do artefato executado — e cada uma tem um baseline que a testa. Todas as condições passam pelo mesmo harness (Acerto de Chave e Acerto de Execução).
@@ -182,10 +183,10 @@ Posicionar pela combinação e pelo domínio, não por "não existe nada igual".
 | --- | --- | --- |
 | B0 · só nome | Similaridade de nome, nada mais | Piso |
 | B1 · matcher clássico | Dois métodos do Valentine (COMA e um baseado em valores); a correspondência mais bem ranqueada vale como chave; limiar de Abstenção calibrado no Conjunto de Desenvolvimento | Se o sistema supera o matching clássico; sem transformação, só tem Acerto de Execução quando a chave dispensa transformação |
-| B2 · evidências sem LLM | Pipeline sem LLM, com e sem Domain Context | Teto do determinístico (ablação 2 × 2) |
+| B2 · evidências sem LLM | Pipeline sem LLM, nos três níveis de Domain Context | Teto do determinístico (ablação 2 × 3) |
 | B3 · LLM sozinho | Mesma assinatura e mesmo catálogo, só com esquema e amostras — sem Candidate Keys nem evidências | Metade (i): as evidências ajudam o LLM? |
 | B4 · LLM escreve o SQL | Mesmas entradas de S; o LLM devolve o SQL do join, executado num DuckDB só de leitura sobre os snapshots | Metade (ii): o estágio determinístico ajuda? |
-| S · sistema | LLM embutido, com e sem Domain Context | — |
+| S · sistema | LLM embutido, nos três níveis de Domain Context (sem contexto, Dicionário, Dicionário + Mapa de Fluxo) | A hipótese central: o acerto nos pares difíceis vem de dar ao LLM o fluxo do dado |
 
 A QP2 compara modelos só na condição S; B3 e B4 rodam com o modelo principal.
 
@@ -193,7 +194,7 @@ A QP2 compara modelos só na condição S; B3 e B4 rodam com o modelo principal.
 
 | Parte | Como se monta | Tamanho | Uso |
 | --- | --- | --- | --- |
-| Pares Reais | Tabelas públicas com relação conhecida (ex.: IBGE municípios × estados, Transferegov × SIAFI, Portal da Transparência × SIAFI), Gabarito anotado à mão com justificativa escrita; uma segunda pessoa revisa uma amostra e reporta-se a concordância | 12 a 20 | Validade externa e base da QP4; vários rótulos por par, resultado reportado no agregado |
+| Pares Reais | Pares de tabelas que o GovHub **já cruza em produção** (29 joins entre fontes diferentes levantados em `inventario-govhub.md`: Tesouro Gerencial × Compras.gov, × TransfereGov, × SICONV, emendas × Câmara/Senado, SIAPE × SIORG, MCMV × CAIXA, …). O Gabarito é a condição de join e a transformação do SQL em produção, documentadas pela autora e confirmadas numa amostra por alguém do GovHub. Quando houver mais de 20, amostragem estratificada por categoria; versões duplicadas saem do repositório `mir`, o mais recente | 12 a 20 | Validade externa; vários rótulos por par, resultado reportado no agregado |
 | Pares Perturbados | A tabela B é gerada de uma tabela real aplicando **uma** Categoria de Atrito por vez à chave (renomear, abreviar, mascarar, recodificar, derivar, aninhar), Gabarito conhecido por construção; negativos removem a chave de B | 15 a 20 por categoria (≈ 120) | Acurácia por categoria com poder estatístico; um rótulo por par |
 
 - **Sem níveis de dificuldade**: as categorias já estratificam o benchmark.
@@ -201,8 +202,12 @@ A QP2 compara modelos só na condição S; B3 e B4 rodam com o modelo principal.
 - **Desenvolvimento × teste**: cerca de 20% dos pares (estratificado por parte e por categoria) formam o Conjunto de Desenvolvimento, livre para ajustar assinatura, catálogo e evidências; os 80% restantes formam o Conjunto de Teste, rodado só nos experimentos finais. **Congelar o Conjunto de Teste antes de ajustar o agente**, junto com o limiar do Acerto de Execução e o Catálogo de Transformações.
 - **Gerador reproduzível**: o gerador de perturbações é código versionado com semente fixa; os sinônimos usados na categoria Equivalência semântica vêm de uma lista escrita à parte do Domain Context.
 - **Pares já vistos**: todo Par Real usado na PoC ou que inspirou o Domain Context (ex.: o par IBGE) vai para o Conjunto de Desenvolvimento.
+- **Tabelas-semente dos Pares Perturbados**: tabelas públicas sem dados pessoais e com chave bem definida (`siafi.ne_tesouro`, `compras_gov.contratos`, `transfere_gov.planos_acao`, `siconv.proposta`, IBGE municípios).
+- **Dados pessoais fora**: nenhum par cuja chave seja CPF e nenhuma tabela do SIAPE, Sisbolsas, BB Ágil ou das planilhas do MinC entra no ground truth; SIAPE × SIORG entra só pelas chaves não pessoais (sigla e código combinado da unidade). Os dados ficam no PostgreSQL do GovHub; o repositório versiona só os Gabaritos (colunas e transformação).
 
-**Domain Context congelado e ablação 2 × 2.** O Domain Context atual (grupos de sinônimos e padrões de chave) é um dicionário escrito à mão — a alternativa que a ADR 0011 rejeita — e alimenta tanto o pipeline sem LLM quanto as evidências que o LLM recebe. Ele é congelado junto com o Conjunto de Teste e entra como fator: {sem LLM, com LLM} × {sem Domain Context, com Domain Context}. A ablação mede se o LLM substitui o dicionário, o complementa ou se o acerto vem dele. Na variante anonimizada, o casamento por nome do dicionário se desliga sozinho, mas os padrões de valor continuam ativos.
+**Domain Context em dois artefatos e ablação 2 × 3.** O Domain Context tem duas partes (ADR 0012): o **Dicionário** (sinônimos de coluna e padrões de identificador, o que já existe) e o **Mapa de Fluxo**: o processo da política em nível de documento — quais documentos existem (TED, NC, PF, NE, convênio, contrato), qual sistema registra cada um, o formato de cada identificador e onde o identificador de um documento é carregado no registro de outro, com a norma que sustenta cada elo. O Mapa faz aqui o papel que a documentação dos silos faz no artigo-base: é o conhecimento implícito do analista, dado ao LLM. Os joins reais mais difíceis do inventário (número do TED dentro da descrição da NE, convênio dentro do texto da NE) só são visíveis com ele. O LLM nomeia o que uma coluna carrega e o estágio determinístico extrai com `extrair_identificador(tipo)`, cujo padrão vem do Mapa; o LLM nunca escreve regex.
+
+Os dois artefatos são congelados junto com o Conjunto de Teste e entram como fator: {sem LLM, com LLM} × {sem contexto, só Dicionário, Dicionário + Mapa de Fluxo}. A ablação mede se o LLM substitui o dicionário, o complementa, e quanto do acerto nos pares difíceis vem do Mapa. Na variante anonimizada, o casamento por nome do Dicionário se desliga sozinho, mas os padrões de valor e o Mapa continuam ativos. O Mapa é escrito a partir de normas e manuais públicos e do conhecimento do time do GovHub, descreve documentos e elos (nunca condições de join), cita a norma de cada elo e é revisado por alguém do GovHub antes do congelamento.
 
 **Critério de acerto em dois níveis.** *Acerto de Chave*: as colunas escolhidas coincidem com alguma Chave Aceitável (ou a Decision Layer se absteve num Par Negativo). *Acerto de Execução*: o join produzido com a chave e a transformação propostas reproduz o Join de Referência acima do limiar. O segundo nível distingue colunas certas com transformação errada e faz o papel da execução dos testes no artigo-base.
 
@@ -226,7 +231,8 @@ A ingestão é do GovHub; a pilha própria foi removida (ver `docs/historico/`).
 - **Entrada completa para o LLM**: hoje ele vê só os 10 primeiros candidatos de uma coluna; passa a receber também esquema, perfil e amostra de todas as colunas, e pode propor chave fora da lista, validada por execução.
 - **JSON aninhado achatado no perfilamento**: etapa determinística, para que a categoria Estrutura aninhada chegue à Decision Layer.
 - **Baseline só por nome**: opção no `IntegrationAgent` que desliga as evidências de conteúdo.
-- **Ablação do Domain Context**: opção que desliga os grupos de sinônimos e os padrões de chave, com e sem LLM.
+- **Mapa de Fluxo** (ADR 0012): escrever o mapa do fluxo de dados orçamentários federais a partir das normas, com revisão do GovHub; formato estruturado, versionado.
+- **Ablação do Domain Context**: opção que liga e desliga Dicionário e Mapa de Fluxo separadamente, com e sem LLM.
 - **Baselines externos e do LLM**: B1 (adaptador para dois métodos do Valentine), B3 (LLM sem evidências) e B4 (LLM escrevendo o SQL, executado num DuckDB só de leitura).
 - **Custo do LLM**: o `llm_reasoner` não registra tokens nem latência.
 - **Snapshots das bases do GovHub**: script que exporta tabelas datadas do PostgreSQL do GovHub para o ground truth e a QP4 (próxima spec).
@@ -234,7 +240,7 @@ A ingestão é do GovHub; a pilha própria foi removida (ver `docs/historico/`).
 Para seguir o artigo-base (ADR 0011):
 
 - **DSPy na Decision Layer**: assinatura tipada com `ChainOfThought`, saída validada e nova chamada quando o parsing falhar.
-- **Catálogo de Transformações**: operações tipadas com template SQL e teste unitário cada; congelar junto com o ground truth.
+- **Catálogo de Transformações**: operações tipadas com template SQL e teste unitário cada, incluindo `extrair_identificador(tipo)` com padrão vindo do Mapa de Fluxo; congelar junto com o ground truth.
 - **Estágio Jinja → dbt**: gerar o model de join e os testes dbt a partir do dicionário de mapeamento, um template por operação do catálogo, no mesmo padrão do antigo gerador de sources (ADR 0010, descontinuada).
 - **Troca de modelo por configuração**: um proprietário e um de pesos abertos local, sem mudar código.
 - **Estudo cruzado com analistas (QP3)**: protocolo, sorteio da divisão de pares entre analistas, cronometragem com teto de 60 min.
@@ -265,11 +271,11 @@ O portão que decide o cronograma é o ground truth: congelar o Conjunto de Test
 | A autora escreve a spec, orienta o agente e avalia o resultado (QP5) | Viés a favor do SDD | Testes-oráculo escritos antes e escondidos do agente; braço sem spec como controle; ordem dos braços sorteada; intervenções padronizadas e registradas literalmente; protocolo congelado antes do primeiro incremento; registro de todos os incrementos, inclusive dos que falharam |
 | Ground truth pequeno ou enviesado para o que o agente já acerta | Acurácia inflada ou sem poder estatístico | Pares Perturbados por categoria (15 a 20 cada); Conjunto de Teste congelado antes de ajustar o agente; Pares Negativos nas duas partes |
 | LLM não determinístico e modelo que muda de versão | Resultados não reproduzíveis | Fixar versão e temperatura, repetir execuções, versionar prompts e respostas |
-| Domain Context escrito a partir dos próprios pares avaliados | Acerto atribuído ao LLM vem do dicionário | Congelar o Domain Context com o Conjunto de Teste; Pares Reais já vistos no Conjunto de Desenvolvimento; ablação 2 × 2 |
+| Domain Context escrito a partir dos próprios pares avaliados (Dicionário ou Mapa de Fluxo) | Acerto atribuído ao LLM vem do contexto que já contém a resposta | Mapa escrito a partir de normas, com a norma citada em cada elo e sem condições de join; revisão do GovHub; congelar com o Conjunto de Teste; Pares Reais já vistos no Conjunto de Desenvolvimento; ablação 2 × 3 |
 | Contaminação: o modelo pode conhecer SIAFI/IBGE do pré-treino | Superestima a generalização | Variante anonimizada de cada Par Perturbado; reportar a diferença com e sem nomes |
 | Poucos analistas disponíveis no GovHub (QP3) | Estudo cruzado sem poder estatístico | Mínimo de 2 analistas com divisão trocada; reportar por par e por analista, como estudo de caso, sem generalizar |
 | APIs públicas instáveis ou com limite de acesso | Atrasos na coleta | Congelar snapshots datados |
-| Dados pessoais (ex.: SIAPE) | Risco LGPD | Usar bases agregadas/públicas; não versionar dados pessoais |
+| Dados pessoais (SIAPE, Sisbolsas, BB Ágil, CPF como chave) | Risco LGPD | Excluir do ground truth os pares com chave em CPF e as tabelas de dados pessoais; versionar só Gabaritos, nunca dados |
 | Escopo crescer (PDF, DAG factory, dashboards, arquitetura config-driven) | TCC não fecha | Congelar escopo: Decision Layer, estágio Jinja → dbt, benchmark, avaliação e SDD; a ingestão é do GovHub |
 | Catálogo de Transformações insuficiente para casos reais | Abstenções em pares que têm chave | Contar e reportar as Abstenções por "transformação fora do catálogo"; não ampliar o catálogo depois de congelado |
 
@@ -281,8 +287,11 @@ O portão que decide o cronograma é o ground truth: congelar o Conjunto de Test
 - [x] Foco: descoberta de chaves com LLM embutido (QP1–QP4) e SDD (QP5); interoperabilidade como motivação; arquitetura config-driven fora do foco
 - [x] Orientação: Carla Rocha e Isaque Alves
 - [x] Peso do SDD: central, combinado com a orientação — a QP5 é principal, não exploratória
-- [x] Universo de bases: todas as bases com que o GovHub trabalha
-- [ ] Inventário dessas bases e seleção dos Pares Reais, dos pares da QP4 e das tabelas-semente dos Pares Perturbados
+- [x] Universo de bases: todas as bases com que o GovHub trabalha; inventário em `inventario-govhub.md`
+- [x] Divisão: Pares Reais = joins já em produção (Gabarito vem do SQL do GovHub); QP4 = pares não integrados; pares com chave em CPF e tabelas de dados pessoais ficam fora
+- [ ] Seleção final dos 12 a 20 Pares Reais e das tabelas-semente, depois de conferir o inventário no código
+- [x] Transformações fora do Catálogo: Mapa de Fluxo como contexto do LLM + `extrair_identificador(tipo)` (ADR 0012); cascatas viram Chaves Aceitáveis múltiplas e filtros viram escopo do par
+- [ ] Formato e escopo inicial do Mapa de Fluxo (quais documentos e normas entram primeiro) e quem do GovHub revisa
 - [ ] Limiar do Acerto de Execução (fixado junto com o Conjunto de Teste)
 - [x] QP3 como estudo cruzado (analista sozinho × assistido pelo pipeline), com analistas do GovHub
 - [ ] Quem são os 2 ou 3 analistas e quais Pares Reais entram no estudo cruzado

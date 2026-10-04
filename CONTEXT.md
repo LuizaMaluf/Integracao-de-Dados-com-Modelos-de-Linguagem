@@ -11,8 +11,16 @@ A sequência de estágios que transforma duas tabelas numa Integration Key valid
 _Avoid_: fluxo, workflow, processo
 
 **Domain Context**:
-Vocabulário semântico do domínio orçamentário federal — grupos de colunas equivalentes e padrões de identificador — usado pela coleta de evidências. Na avaliação, é congelado junto com o Conjunto de Teste e entra como fator de ablação (com e sem Domain Context).
+Conhecimento do domínio orçamentário federal dado ao pipeline, em dois artefatos: o Dicionário e o Mapa de Fluxo. Congelado junto com o Conjunto de Teste; entra na avaliação como fator de ablação em três níveis (sem contexto, só Dicionário, Dicionário + Mapa de Fluxo).
 _Avoid_: configuração, metadados, schema
+
+**Dicionário**:
+Parte do Domain Context com os grupos de colunas equivalentes (sinônimos) e os padrões de identificador. Usado pela coleta de evidências.
+_Avoid_: dicionário de sinônimos, lista de aliases
+
+**Mapa de Fluxo**:
+Parte do Domain Context que descreve o processo da política em nível de documento: quais documentos existem (TED, NC, PF, NE, convênio, contrato), qual sistema registra cada um, o formato do identificador de cada um e onde o identificador de um documento é carregado no registro de outro, com a norma que sustenta cada elo. Escrito a partir de normas públicas, descreve documentos e elos, nunca condições de join. Ver ADR 0012.
+_Avoid_: modelo de dados, diagrama ER, regras de negócio
 
 **Evidence Layer**:
 Estágio determinístico que coleta dados brutos de compatibilidade (semelhança de nome, match rate, perfis, padrões) para cada par de colunas e ranqueia os Candidate Keys, sem tomar a decisão. Produz insumo para a Decision Layer.
@@ -35,7 +43,7 @@ Saída tipada da Decision Layer: Integration Key (ou Abstenção), transformaç�
 _Avoid_: resposta do LLM, JSON de saída, mapping
 
 **Catálogo de Transformações**:
-Conjunto fechado e versionado de operações tipadas (ex.: extrair trecho, concatenar colunas, remover máscara, mapear valores) com que a Decision Layer expressa como alinhar as colunas de uma Integration Key. Cada operação tem uma tradução fixa para SQL no estágio determinístico; uma chave que não cabe no catálogo leva à Abstenção. Congelado junto com o Conjunto de Teste.
+Conjunto fechado e versionado de operações tipadas (ex.: extrair trecho, concatenar colunas, remover máscara, mapear valores, extrair identificador de um tipo do Mapa de Fluxo) com que a Decision Layer expressa como alinhar as colunas de uma Integration Key. O LLM nomeia a operação e seus parâmetros; nunca escreve regex ou SQL. Cada operação tem uma tradução fixa para SQL no estágio determinístico; uma chave que não cabe no catálogo leva à Abstenção. Congelado junto com o Conjunto de Teste.
 _Avoid_: transformações livres, regras de transformação, DSL
 
 **Estágio determinístico**:
@@ -84,7 +92,7 @@ Par de tabelas (A, B) com Gabarito, rotulado com uma ou mais Categorias de Atrit
 _Avoid_: caso de teste, exemplo, par do benchmark
 
 **Par Real**:
-Par de Avaliação formado por duas tabelas públicas que existem de fato, com Gabarito anotado à mão e justificativa escrita. Pode ter várias Categorias de Atrito.
+Par de Avaliação formado por duas tabelas que o GovHub já cruza em produção; o Gabarito é a condição de join e a transformação do SQL em produção, documentadas pela autora e confirmadas por alguém do GovHub. Pode ter várias Categorias de Atrito.
 _Avoid_: par natural, caso real
 
 **Par Perturbado**:
@@ -96,11 +104,11 @@ Parte do ground truth (cerca de 80% de cada tipo de par e de cada categoria) con
 _Avoid_: holdout, validação
 
 **Gabarito**:
-Conjunto de Chaves Aceitáveis de um Par de Avaliação: anotado à mão num Par Real, conhecido por construção num Par Perturbado. Vazio num Par Negativo.
+Conjunto de Chaves Aceitáveis de um Par de Avaliação: extraído do join em produção num Par Real, conhecido por construção num Par Perturbado. Vazio num Par Negativo.
 _Avoid_: resposta certa, label
 
 **Chave Aceitável**:
-Integration Key considerada correta para um Par de Avaliação: colunas de A, colunas de B e a transformação que as alinha, expressa no Catálogo de Transformações. Um par pode ter várias (ex.: no par IBGE, o prefixo do código do município ou o `UF.id` aninhado).
+Integration Key considerada correta para um Par de Avaliação: colunas de A, colunas de B e a transformação que as alinha, expressa no Catálogo de Transformações. Um par pode ter várias (ex.: no par IBGE, o prefixo do código do município ou o `UF.id` aninhado; numa cascata de fallbacks em produção, cada etapa é uma Chave Aceitável e a primeira é a principal). Filtros que o join em produção aplica (UG, janela de Exercício) são **escopo do par**, aplicado às duas tabelas antes da avaliação, não parte da chave.
 _Avoid_: chave certa, chave esperada
 
 **Par Negativo**:
