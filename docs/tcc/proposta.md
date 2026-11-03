@@ -240,8 +240,8 @@ A ingestão é do GovHub; a pilha própria foi removida (ver `docs/historico/`).
 Para seguir o artigo-base (ADR 0011):
 
 - **DSPy na Decision Layer**: assinatura tipada com `ChainOfThought`, saída validada e nova chamada quando o parsing falhar.
-- **Catálogo de Transformações**: operações tipadas com template SQL e teste unitário cada, incluindo `extrair_identificador(tipo)` com padrão vindo do Mapa de Fluxo; congelar junto com o ground truth.
-- **Estágio Jinja → dbt**: gerar o model de join e os testes dbt a partir do dicionário de mapeamento, um template por operação do catálogo, no mesmo padrão do antigo gerador de sources (ADR 0010, descontinuada).
+- **Catálogo de Transformações**: operações tipadas com template SQL e teste unitário cada, incluindo `extrair_identificador(tipo)` com padrão vindo do Mapa de Fluxo; congelar junto com o ground truth. Para `mapear_valores`, os pares aceitos vêm exclusivamente do Dicionário versionado ou de valores observados em ambas as colunas; o modelo não pode criar equivalências novas.
+- **Estágio Jinja → dbt**: gerar o model de join e os testes dbt a partir do dicionário de mapeamento, um template por operação do catálogo, no mesmo padrão do antigo gerador de sources (ADR 0010, descontinuada). A execução do join é necessária, mas não suficiente: além de testes de nulidade e relacionamento, o pipeline verifica a cardinalidade esperada, cobertura nas duas direções e razão de multiplicação de linhas. Quando houver uma regra independente de domínio, como compatibilidade de UF, período ou tipo de entidade, ela também é aplicada.
 - **Troca de modelo por configuração**: um proprietário e um de pesos abertos local, sem mudar código.
 - **Estudo cruzado com analistas (QP3)**: protocolo, sorteio da divisão de pares entre analistas, cronometragem com teto de 60 min.
 
@@ -291,6 +291,7 @@ O portão que decide o cronograma é o ground truth: congelar o Conjunto de Test
 - [x] Divisão: Pares Reais = joins já em produção (Gabarito vem do SQL do GovHub); QP4 = pares não integrados; pares com chave em CPF e tabelas de dados pessoais ficam fora
 - [ ] Seleção final dos 12 a 20 Pares Reais e das tabelas-semente, depois de conferir o inventário no código
 - [x] Transformações fora do Catálogo: Mapa de Fluxo como contexto do LLM + `extrair_identificador(tipo)` (ADR 0012); cascatas viram Chaves Aceitáveis múltiplas e filtros viram escopo do par
+- [x] Limites de `mapear_valores` e validação: equivalências só do Dicionário ou da interseção observada; validação inclui cardinalidade, cobertura bidirecional, multiplicação de linhas e restrições independentes quando disponíveis (ADR 0011)
 - [ ] Formato e escopo inicial do Mapa de Fluxo (quais documentos e normas entram primeiro) e quem do GovHub revisa
 - [ ] Limiar do Acerto de Execução (fixado junto com o Conjunto de Teste)
 - [x] QP3 como estudo cruzado (analista sozinho × assistido pelo pipeline), com analistas do GovHub
