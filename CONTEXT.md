@@ -31,7 +31,7 @@ Parte da coleta de evidências que produz sinais baseados nos valores das coluna
 _Avoid_: análise de conteúdo, comparação de dados, validação de valores
 
 **Decision Layer**:
-Estágio que recebe as evidências da Evidence Layer ou da Content Evidence Layer e o esquema completo das duas tabelas, e decide a melhor chave de integração — um Candidate Key ou outra chave que ela mesma propõe — ou se abstém (Abstenção), usando raciocínio LLM quando disponível. As evidências ordenam as opções, mas não limitam a resposta. É o único ponto do pipeline onde o LLM atua (ver LLM embutido); sua saída é um Dicionário de Mapeamento, nunca SQL.
+Estágio que recebe as evidências da Evidence Layer ou da Content Evidence Layer e o esquema completo das duas tabelas, e decide a melhor chave de integração — um Candidate Key ou outra chave que ela mesma propõe — ou se abstém (Abstenção), usando o LLM quando disponível. As evidências ordenam as opções, mas não limitam a resposta. É o único ponto do pipeline onde o LLM atua (ver LLM embutido); sua saída é um Dicionário de Mapeamento, nunca SQL.
 _Avoid_: seleção, escolha
 
 **LLM embutido**:
@@ -39,7 +39,7 @@ Princípio herdado do artigo-base (SPAPI-Tester, `docs/tcc/artigo-base.md`): o L
 _Avoid_: agente autônomo, IA que integra as bases, LLM gerando o join
 
 **Dicionário de Mapeamento**:
-Saída tipada da Decision Layer: Integration Key (ou Abstenção), transformação de cada lado expressa no Catálogo de Transformações, Categoria de Atrito resolvida, confiança e justificativa (raciocínio registrado). Consumida por um estágio determinístico (templates Jinja → model dbt de join + testes).
+Saída tipada da Decision Layer: Integration Key (ou Abstenção), transformação de cada lado expressa no Catálogo de Transformações, Categoria de Atrito resolvida, confiança e justificativa curta registrada. Consumida por um estágio determinístico (templates Jinja → model dbt de join + testes).
 _Avoid_: resposta do LLM, JSON de saída, mapping
 
 **Catálogo de Transformações**:

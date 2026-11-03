@@ -16,7 +16,7 @@ O artigo-base do TCC (SPAPI-Tester, `docs/tcc/artigo-base.md`) resolve o mesmo t
 4. **Mapeamento de valores limitado.** A operação `mapear_valores` só pode usar pares presentes no Dicionário versionado ou pares observados nas duas colunas perfiladas. O LLM não pode inventar valores, códigos ou equivalências de domínio. Cada par aplicado deve ser registrado como evidência no dicionário de mapeamento.
 5. **Validação além da execução.** Um join executado é sinal necessário, mas não suficiente. Além dos testes dbt, a validação confere a cardinalidade esperada, a taxa de correspondência em ambas as direções e a razão de multiplicação de linhas. Quando disponível, aplica uma restrição independente de domínio — como UF, período ou tipo de entidade. Falhar qualquer uma dessas verificações rejeita a decisão.
 6. **Modelo trocado por configuração.** Provedor e modelo (proprietário ou de pesos abertos rodando localmente) vêm do `.env`, sem mudança de código, para permitir a comparação da QP2.
-7. **Raciocínio e custo registrados.** Cada decisão guarda o raciocínio, o modelo, a versão, os tokens e a latência junto do resultado.
+7. **Justificativa e custo registrados.** Cada decisão guarda a justificativa curta, o modelo, a versão, os tokens e a latência junto do resultado.
 
 ## Alternativas rejeitadas
 

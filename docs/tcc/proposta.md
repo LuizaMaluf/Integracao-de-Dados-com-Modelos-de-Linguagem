@@ -39,7 +39,7 @@ O repositório sustenta um TCC de **engenharia de dados aplicada ao setor públi
 ```mermaid
 flowchart LR
     A["<b>Coleta de evidências</b><br/><i>determinístico</i><br/>perfil e amostra de todas as colunas<br/>JSON aninhado achatado<br/>score semântico e de conteúdo<br/>Candidate Keys ranqueadas"]
-    B["<b>Decisão semântica</b><br/><i>LLM embutido</i><br/>assinatura tipada + CoT<br/>abreviações, formatos, Derived Keys<br/>saída: dicionário de mapeamento (JSON)"]
+    B["<b>Decisão semântica</b><br/><i>LLM embutido</i><br/>esquema de saída tipado<br/>com justificativa curta<br/>abreviações, formatos, Derived Keys<br/>saída: dicionário de mapeamento (JSON)"]
     C["<b>Geração e validação</b><br/><i>determinístico</i><br/>template Jinja → model dbt<br/>testes dbt validam o join<br/>relatório da decisão"]
     A --> B --> C
 ```
@@ -62,7 +62,7 @@ O LLM decide o de-para e devolve dados estruturados; quem gera e executa o SQL �
 
 **Objetivos específicos:**
 
-1. Implementar a Decision Layer com um LLM embutido via DSPy (assinatura tipada, ChainOfThought, autocorreção), com Abstenção, chaves propostas fora da lista de candidatos e Catálogo de Transformações (ADR 0011).
+1. Implementar a Decision Layer com um LLM embutido via DSPy (esquema de saída tipado com justificativa curta, autocorreção), com Abstenção, chaves propostas fora da lista de candidatos e Catálogo de Transformações (ADR 0011).
 2. Implementar o estágio determinístico que gera, a partir do Dicionário de Mapeamento, o model dbt de join e seus testes.
 3. Construir o benchmark de chaves de integração: Pares Reais anotados e gerador de Pares Perturbados, rotulados por categoria de atrito.
 4. Avaliar acurácia, comparação entre modelos, tempo e custo e aplicação em pares reais, contra baselines (QP1–QP4).
@@ -101,7 +101,7 @@ Referências clássicas por eixo, listadas de memória: **confirmar autor, ano e
 | Eixo | Referência | Para que serve no TCC |
 | --- | --- | --- |
 | Artigo-base | Wang, Yu, Feldt e Parthasarathy, *Automating a Complete Software Test Process Using LLMs: An Automotive Case Study* (confirmar ano e veículo) | Modelo da tese, da arquitetura e da avaliação |
-| LLMs como programa | Khattab et al. (2024), *DSPy: Compiling Declarative Language Model Calls into Self-Improving Pipelines*, ICLR | Assinaturas tipadas, `ChainOfThought` e saída estruturada na Decision Layer |
+| LLMs como programa | Khattab et al. (2024), *DSPy: Compiling Declarative Language Model Calls into Self-Improving Pipelines*, ICLR | Esquema de saída tipado com justificativa curta e autocorreção na Decision Layer |
 | Integração de dados | Lenzerini (2002), *Data integration: a theoretical perspective*, PODS | Definição formal de integração |
 | Integração de dados | Doan, Halevy e Ives (2012), *Principles of Data Integration*, Morgan Kaufmann | Livro-texto: matching, mapeamento, heterogeneidade |
 | Integração de dados | Halevy, Rajaraman e Ordille (2006), *Data integration: the teenage years*, VLDB | Panorama e desafios abertos |
@@ -116,7 +116,6 @@ Referências clássicas por eixo, listadas de memória: **confirmar autor, ano e
 | Record linkage | Christen (2012), *Data Matching*, Springer | Normalização de identificadores |
 | LLMs | Brown et al. (2020), *Language models are few-shot learners*, NeurIPS | Aprendizado em contexto |
 | LLMs | Narayan et al. (2022), *Can foundation models wrangle your data?*, PVLDB | LLMs em tarefas de dados |
-| LLMs | Wei et al. (2022), *Chain-of-thought prompting*, NeurIPS | Raciocínio registrado na Decision Layer |
 | LLMs | Lewis et al. (2020), *Retrieval-augmented generation*, NeurIPS | Domain Context (Dicionário e Mapa de Fluxo) como conhecimento injetado |
 | Engenharia de dados | Reis e Housley (2022), *Fundamentals of Data Engineering* | Contexto: ciclo de vida dos dados, ELT |
 | Spec-Driven Development | Böckeler (2025), *Understanding Spec-Driven-Development: Kiro, spec-kit, and Tessl*, martinfowler.com | Panorama e críticas do SDD com agentes de IA |
@@ -239,7 +238,7 @@ A ingestão é do GovHub; a pilha própria foi removida (ver `docs/historico/`).
 
 Para seguir o artigo-base (ADR 0011):
 
-- **DSPy na Decision Layer**: assinatura tipada com `ChainOfThought`, saída validada e nova chamada quando o parsing falhar.
+- **DSPy na Decision Layer**: esquema de saída tipado com justificativa curta, saída validada e nova chamada quando o parsing falhar.
 - **Catálogo de Transformações**: operações tipadas com template SQL e teste unitário cada, incluindo `extrair_identificador(tipo)` com padrão vindo do Mapa de Fluxo; congelar junto com o ground truth. Para `mapear_valores`, os pares aceitos vêm exclusivamente do Dicionário versionado ou de valores observados em ambas as colunas; o modelo não pode criar equivalências novas.
 - **Estágio Jinja → dbt**: gerar o model de join e os testes dbt a partir do dicionário de mapeamento, um template por operação do catálogo, no mesmo padrão do antigo gerador de sources (ADR 0010, descontinuada). A execução do join é necessária, mas não suficiente: além de testes de nulidade e relacionamento, o pipeline verifica a cardinalidade esperada, cobertura nas duas direções e razão de multiplicação de linhas. Quando houver uma regra independente de domínio, como compatibilidade de UF, período ou tipo de entidade, ela também é aplicada.
 - **Troca de modelo por configuração**: um proprietário e um de pesos abertos local, sem mudar código.
