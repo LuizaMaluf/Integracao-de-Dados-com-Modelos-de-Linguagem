@@ -314,7 +314,7 @@
   <div class="wrap">
     <p class="eyebrow reveal">Trabalho de Conclusão de Curso · UnB/FCTE</p>
     <h1 class="display reveal d1">Integração de dados públicos<br><span class="gradient-text">com modelos de linguagem.</span></h1>
-    <p class="lead reveal d2">Um pipeline construído por Spec-Driven Development para descoberta de chaves entre bases governamentais — com o modelo de linguagem embutido só onde é preciso julgamento.</p>
+    <p class="lead reveal d2">Um pipeline construído por Spec-Driven Development para descoberta de chaves entre bases governamentais — com o modelo de linguagem decidindo só o que o código consegue checar.</p>
     <div class="cta reveal d3">
       <a class="pill pill-primary" href="https://github.com/LuizaMaluf/Integracao-de-Dados-com-Modelos-de-Linguagem/blob/main/docs/tcc/proposta.md">Ler a proposta</a>
       <a class="pill pill-ghost" href="#tese">Ver a tese</a>
@@ -351,7 +351,7 @@
   <div class="wrap-wide">
     <p class="eyebrow reveal">A tese</p>
     <h2 class="headline reveal d1">O LLM não substitui o pipeline.<br><span class="gradient-text">Ele entra só no de-para.</span></h2>
-    <p class="lead reveal d2" style="max-width:820px;margin:24px auto 0">Antes e depois dele, tudo é determinístico. O modelo decide qual coluna liga uma base à outra e devolve um dicionário tipado — nunca escreve o SQL que é executado. O mesmo princípio vale para a construção do pipeline: no SDD, a spec é a estrutura fixa, e o agente de IA só preenche a implementação.</p>
+    <p class="lead reveal d2" style="max-width:820px;margin:24px auto 0"><em>Bounded agency</em>: o modelo decide só o que exige julgamento, e artefatos que ele não produziu — o catálogo, as checagens executáveis, a spec revisada — restringem e checam a decisão. Em <em>run time</em>, ele escolhe a chave dentro de um catálogo fechado ou se abstém e devolve um dicionário tipado; nunca escreve o SQL que é executado. Em <em>build time</em>, o agente de código implementa a partir de uma spec revisada por pessoas, e oráculos escondidos dele checam o resultado.</p>
     <div class="pipeline">
       <div class="stage reveal">
         <div class="kind">Determinístico</div>
@@ -363,7 +363,7 @@
       <div class="stage llm reveal d1">
         <div class="kind">LLM embutido</div>
         <h3>Decisão semântica</h3>
-        <ul><li>Assinatura tipada + chain-of-thought (DSPy)</li><li>Contexto: Dicionário e Mapa de Fluxo (ADR 0012)</li><li>Abreviações, formatos, Derived Keys</li><li>Pode propor chave fora da lista, ou se abster</li><li>Saída: Dicionário de Mapeamento</li></ul>
+        <ul><li>Esquema de saída tipado + justificativa curta (DSPy)</li><li>Contexto: Glossário e Mapa de Fluxo (ADR 0012)</li><li>Abreviações, formatos, Derived Keys</li><li>Pode propor chave fora da lista, ou se abster</li><li>Saída: Dicionário de Mapeamento</li></ul>
         <div class="paper">No artigo-base: DSPy + GPT-4o / LLaMA3</div>
       </div>
       <div class="arrow reveal d2" aria-hidden="true">→</div>
@@ -383,7 +383,7 @@
     <div class="center">
       <p class="eyebrow reveal">Artigo-base</p>
       <h2 class="headline reveal d1">Um método da indústria automotiva,<br>aplicado a dados públicos.</h2>
-      <p class="lead reveal d2" style="max-width:780px;margin:24px auto 0"><em>Automating a Complete Software Test Process Using LLMs: An Automotive Case Study</em> — Wang, Yu, Feldt e Parthasarathy (Chalmers e Volvo Group). O SPAPI-Tester resolve o mesmo “de-para” entre fontes em silos que este TCC enfrenta. O TCC segue o artigo em três pontos: a tese, a arquitetura e o desenho da avaliação.</p>
+      <p class="lead reveal d2" style="max-width:780px;margin:24px auto 0"><em>Automating a Complete Software Test Process Using LLMs: An Automotive Case Study</em> — Wang, Yu, Feldt e Parthasarathy (Chalmers e Volvo Group), ICSE 2025, pp. 373-384. O SPAPI-Tester automatiza um processo de teste industrial cujas etapas manuais incluem o mesmo “de-para” entre fontes em silos que este TCC enfrenta: usa LLM em cada etapa manual discreta, inclusive para gerar os casos de teste, e deixa a renderização e a execução dos testes em código determinístico. O TCC segue a arquitetura e o desenho da avaliação, e restringe o LLM a uma etapa só.</p>
     </div>
     <table class="compare reveal">
       <thead><tr><th></th><th>No artigo</th><th>Neste TCC</th></tr></thead>
@@ -392,9 +392,9 @@
         <tr><th>Fontes em silos</th><td data-l="No artigo">Swagger, sinais CAN, veículo virtual</td><td class="ours" data-l="Neste TCC">SIAFI, Transferegov, Portal da Transparência, IBGE</td></tr>
         <tr><th>O de-para</th><td data-l="No artigo">Propriedade da API → sinal CAN → estado do veículo</td><td class="ours" data-l="Neste TCC">Coluna da base A → coluna da base B (Integration Key)</td></tr>
         <tr><th>Atritos</th><td data-l="No artigo">Grafia, abreviações, formatos, equivalências lógicas e semânticas, unidades, pseudocódigo</td><td class="ours" data-l="Neste TCC">Sete categorias de atrito; sem unidades (não viram chave), com Derived Key e estrutura aninhada</td></tr>
-        <tr><th>Uso do LLM</th><td data-l="No artigo">DSPy: assinatura tipada, chain-of-thought, autocorreção do parsing</td><td class="ours" data-l="Neste TCC">Decision Layer com DSPy (ADR 0011); hoje ainda com prompt direto</td></tr>
-        <tr><th>O que o LLM entrega</th><td data-l="No artigo">Dicionário JSON com mapeamento de valores; nunca escreve o teste</td><td class="ours" data-l="Neste TCC">Integration Key + transformações de um Catálogo fechado; nunca escreve o SQL</td></tr>
-        <tr><th>Estágio final</th><td data-l="No artigo">Jinja → PyTest</td><td class="ours" data-l="Neste TCC">Jinja → model dbt de join + testes dbt</td></tr>
+        <tr><th>Uso do LLM</th><td data-l="No artigo">Em cada etapa manual, inclusive para gerar os casos de teste; DSPy: assinatura tipada, chain-of-thought, autocorreção do parsing</td><td class="ours" data-l="Neste TCC">Numa etapa só, o de-para: Decision Layer com DSPy e autocorreção só para saída inválida (ADR 0011); hoje ainda com prompt direto</td></tr>
+        <tr><th>O que o LLM entrega</th><td data-l="No artigo">Dicionário JSON com mapeamento de valores e casos de teste como dados; o script sai do template</td><td class="ours" data-l="Neste TCC">Integration Key (ou Abstenção) + transformações de um Catálogo fechado + cardinalidade esperada; nunca escreve o SQL</td></tr>
+        <tr><th>Estágio final</th><td data-l="No artigo">Jinja → PyTest, executado por código</td><td class="ours" data-l="Neste TCC">Jinja → model dbt de join + testes dbt e checagens da decisão</td></tr>
         <tr><th>Avaliação</th><td data-l="No artigo">Tempo por API (engenheiro × ferramenta), sucesso por modelo, precisão por categoria de atrito, APIs reais e bugs</td><td class="ours" data-l="Neste TCC">Analista sozinho × assistido pelo pipeline, acurácia por modelo e por categoria de atrito, pares reais com chave confirmada</td></tr>
       </tbody>
     </table>
@@ -407,14 +407,14 @@
   <div class="wrap">
     <div class="center">
       <p class="eyebrow reveal">Pipeline proposto</p>
-      <h2 class="headline reveal d1">Entre o GovHub<br>e o join validado.</h2>
-      <p class="lead reveal d2" style="max-width:780px;margin:24px auto 0">A ingestão das bases é do GovHub, que já carrega os sistemas em schemas do PostgreSQL. Este trabalho começa onde a ingestão termina: duas tabelas entram, uma chave de integração validada por execução sai.</p>
+      <h2 class="headline reveal d1">Entre o Gov Hub<br>e o join validado.</h2>
+      <p class="lead reveal d2" style="max-width:780px;margin:24px auto 0">A ingestão das bases é do Gov Hub, plataforma de dados aberta desenvolvida pelo Lab Livre, laboratório da UnB, em parceria com órgãos federais; ele já carrega os sistemas em schemas do PostgreSQL. Este trabalho começa onde a ingestão termina: duas tabelas entram, uma chave de integração validada por execução sai.</p>
     </div>
     <div class="grid g3">
       <div class="card reveal">
         <div class="tag">Entrada</div>
-        <h3>Tabelas do GovHub</h3>
-        <p>Lidas direto do PostgreSQL do GovHub (<code>pg://schema.tabela</code>) ou de snapshots datados exportados de lá. Nenhuma pilha de ingestão própria.</p>
+        <h3>Tabelas do Gov Hub</h3>
+        <p>Lidas direto do PostgreSQL do Gov Hub (<code>pg://schema.tabela</code>) ou de snapshots datados exportados de lá. Nenhuma pilha de ingestão própria.</p>
         <div class="stack">PostgreSQL · CSV</div>
       </div>
       <div class="card reveal d1">
@@ -449,17 +449,17 @@
       <p class="lead reveal d2" style="max-width:780px;margin:24px auto 0">Objetivo geral: propor, implementar por Spec-Driven Development e avaliar um pipeline que use modelos de linguagem embutidos entre estágios determinísticos para descobrir chaves de integração entre bases governamentais heterogêneas.</p>
     </div>
     <div class="grid g2 bg">
-      <div class="card reveal"><div class="tag">QP1 · Acurácia</div><h3>Com que acurácia o LLM embutido descobre a chave, por categoria de atrito?</h3><p>Acerto de Chave e Acerto de Execução nos Pares de Avaliação, inclusive Abstenção correta nos Pares Negativos, geral e por categoria — contra os baselines B0 a B4.</p></div>
+      <div class="card reveal"><div class="tag">QP1 · Acurácia</div><h3>Por categoria de atrito, o que o LLM acrescenta sobre B2 e como se compara com B4?</h3><p>Acerto de Chave, Acerto de Execução (F1 ≥ 0,90) e Matriz de decisão nos Pares de Avaliação, geral e por categoria — contra os baselines B0 a B4. No pôster do CAIN 2027, é a RQ1.</p></div>
       <div class="card reveal d1"><div class="tag">QP2 · Modelos</div><h3>Um modelo de pesos abertos, local, alcança o proprietário?</h3><p>Os mesmos pares com 2 ou 3 modelos, ao menos um aberto rodando localmente; sucesso por modelo, tokens e latência. No governo, pesa por soberania de dados e LGPD.</p></div>
-      <div class="card reveal"><div class="tag">QP3 · Analista</div><h3>O pipeline torna o analista mais rápido e mais certeiro, e a que custo?</h3><p>Estudo cruzado: analistas do GovHub resolvem Pares Reais metade sozinhos e metade revisando a saída do pipeline. Tempo até declarar a chave, acurácia pelo Gabarito; tokens, latência e custo à parte.</p></div>
-      <div class="card reveal d1"><div class="tag">QP4 · Pares reais</div><h3>Em pares que o GovHub ainda não integra, o pipeline descobre chaves que quem conhece as bases confirma?</h3><p>Dez candidatos no inventário do GovHub (PNCP × Compras.gov, SIAFI API × Tesouro Gerencial, SICONV × IBGE, PPA × SIAFI, Ancine × SALIC…). Chaves confirmadas e Abstenções corretas; os achados — atritos, pares sem chave comum, problemas ao executar o join — alimentam a discussão sobre interoperabilidade.</p></div>
-      <div class="card reveal" style="grid-column:1/-1"><div class="tag">QP5 · Spec-Driven Development</div><h3>O SDD permite que um agente de IA construa e estenda o pipeline com qualidade verificável?</h3><p>Comparação pareada: cada incremento avaliado é implementado duas vezes pelo mesmo agente, a partir do mesmo commit — com a spec completa e só com a seção <em>Problema</em>. Testes-oráculo escritos pela autora antes e escondidos do agente medem os dois braços. Comparam-se correção, intervenções e custo, incluindo o tempo de escrever a spec.</p></div>
+      <div class="card reveal"><div class="tag">QP3 · Analista</div><h3>O pipeline torna o analista mais rápido e mais certeiro, e a que custo?</h3><p>Estudo cruzado: analistas do Gov Hub resolvem Pares Reais metade sozinhos e metade revisando a saída do pipeline. Tempo até declarar a chave, acurácia pelo Gabarito; tokens, latência e custo à parte.</p></div>
+      <div class="card reveal d1"><div class="tag">QP4 · Pares reais</div><h3>Em pares que o Gov Hub ainda não integra, o pipeline descobre chaves que quem conhece as bases confirma?</h3><p>Dez candidatos no inventário do Gov Hub (PNCP × Compras.gov, SIAFI API × Tesouro Gerencial, SICONV × IBGE, PPA × SIAFI, Ancine × SALIC…). Chaves confirmadas e Abstenções corretas; os achados — atritos, pares sem chave comum, problemas ao executar o join — alimentam a discussão sobre interoperabilidade.</p></div>
+      <div class="card reveal" style="grid-column:1/-1"><div class="tag">QP5 · Spec-Driven Development</div><h3>A spec completa melhora o que o agente entrega, medido por oráculos escondidos?</h3><p>Comparação pareada: cada incremento avaliado é implementado duas vezes pelo mesmo agente, a partir do mesmo commit — com a spec completa e só com o <em>Problema</em> e um Contrato mínimo de invocação e saída. Oráculos compartilhados e de critério, escritos pela autora antes e escondidos do agente, medem os dois braços e são relatados à parte. Comparam-se correção, intervenções e custo, incluindo o tempo de escrever a spec; resultado em diferença pareada mediana por incremento. No pôster do CAIN 2027, é a RQ2.</p></div>
     </div>
     <div class="contrib reveal">
       <div><b>Pipeline aberto</b>Descoberta de chaves com LLM embutido: saída tipada, Catálogo de Transformações e validação por execução, com ADRs.</div>
       <div><b>Benchmark</b>Chaves de integração em bases públicas brasileiras, por categoria de atrito: Pares Reais anotados e gerador de Pares Perturbados.</div>
-      <div><b>Mapa de Fluxo</b>Dados orçamentários federais em nível de política: documentos, sistemas, identificadores e elos, com as normas. Reutilizável pelo GovHub.</div>
-      <div><b>Replicação</b>O método do SPAPI-Tester em dados públicos, com evidência de quando o LLM ajuda e de quanto o contexto do fluxo pesa.</div>
+      <div><b>Mapa de Fluxo</b>Dados orçamentários federais em nível de política: documentos, sistemas, identificadores e elos, com as normas. Reutilizável pelo Gov Hub.</div>
+      <div><b>Bounded agency</b>O padrão do SPAPI-Tester em dados públicos, com o LLM restrito a uma etapa, com evidência de quando o LLM ajuda e de quanto o contexto do fluxo pesa.</div>
       <div><b>Evidência sobre o SDD</b>Efeito pareado do SDD com agente de IA na construção de um pipeline de dados, medido por testes-oráculo.</div>
     </div>
     <p class="note reveal center" style="margin-left:auto;margin-right:auto">Contribuições esperadas, na ordem da proposta.</p>
@@ -472,7 +472,7 @@
     <div class="center">
       <p class="eyebrow reveal">Método</p>
       <h2 class="headline reveal d1">Construído por spec.<br>Avaliado com dados reais.</h2>
-      <p class="lead reveal d2" style="max-width:780px;margin:24px auto 0">A Design Science Research organiza a pesquisa e o estudo de caso com bases do GovHub valida o resultado. O Spec-Driven Development é como o artefato é construído — e também objeto de avaliação (QP5): nenhum incremento começa pelo código.</p>
+      <p class="lead reveal d2" style="max-width:780px;margin:24px auto 0">A Design Science Research organiza a pesquisa e o estudo de caso com bases do Gov Hub valida o resultado. O Spec-Driven Development é como o artefato é construído — e também objeto de avaliação (QP5): nenhum incremento começa pelo código.</p>
     </div>
     <div class="friction">
       <div class="fr reveal"><b>1 · Spec</b><span>problema, escopo, contrato e critérios de aceite verificáveis em docs/specs/</span></div>
@@ -486,22 +486,22 @@
       <p class="lead reveal d1" style="max-width:780px;margin:18px auto 0">Registrar que “com spec, o agente cumpriu a spec” não mede nada: o agente vê os critérios e escreve os próprios testes. Por isso cada incremento avaliado tem um controle.</p>
     </div>
     <div class="friction">
-      <div class="fr reveal"><b>Testes-oráculo antes</b><span>a autora escreve a spec e uma suíte derivada dos critérios de aceite, fora do workspace do agente</span></div>
-      <div class="fr reveal d1"><b>Com spec × sem spec</b><span>worktrees a partir do mesmo commit, mesmo agente e modelo, ordem sorteada; o braço sem spec recebe só o <em>Problema</em></span></div>
+      <div class="fr reveal"><b>Testes-oráculo antes</b><span>a autora escreve a spec e dois grupos de oráculos fora do workspace do agente: compartilhados (do Problema e do Contrato mínimo) e de critério (dos critérios de aceite)</span></div>
+      <div class="fr reveal d1"><b>Com spec × sem spec</b><span>worktrees a partir do mesmo commit, mesmo agente e modelo, ordem sorteada; o braço sem spec recebe o <em>Problema</em> e o Contrato mínimo, sem os critérios de aceite</span></div>
       <div class="fr reveal d2"><b>Intervenções padronizadas</b><span>até K rodadas em que a autora só relata o comportamento observado, registradas literalmente</span></div>
-      <div class="fr reveal d3"><b>Só o braço com spec entra</b><span>os testes-oráculo rodam nos dois; o repositório continua construído por SDD</span></div>
+      <div class="fr reveal d3"><b>Só o braço com spec entra</b><span>os dois grupos de oráculos rodam nos dois braços e são relatados à parte; o repositório continua construído por SDD</span></div>
     </div>
-    <p class="note reveal center" style="margin-left:auto;margin-right:auto">Medidas: correção (testes-oráculo), autonomia (intervenções) e custo (tempo da autora, incluindo escrever a spec, e tokens), em 6 a 8 incrementos. O protocolo é ele mesmo uma spec, congelada antes do primeiro incremento avaliado.</p>
+    <p class="note reveal center" style="margin-left:auto;margin-right:auto">Medidas: correção (oráculos passando, por grupo), autonomia (intervenções) e custo (tempo da autora, incluindo escrever a spec, e tokens), em 6 a 8 incrementos; resultado principal em diferença pareada mediana por incremento. O protocolo é ele mesmo uma spec, congelada antes do primeiro incremento avaliado.</p>
 
     <div class="center" style="margin-top:88px">
       <h3 class="title reveal">Ground truth em duas partes.</h3>
       <p class="lead reveal d1" style="max-width:780px;margin:18px auto 0">Cada Par de Avaliação tem um Gabarito: o conjunto de Chaves Aceitáveis, com colunas e transformação. As duas partes incluem Pares Negativos, em que a resposta certa é a Abstenção.</p>
     </div>
     <div class="grid g2">
-      <div class="card reveal"><div class="tag">12 a 20 pares</div><h3>Pares Reais</h3><p>Pares que o GovHub <strong>já cruza em produção</strong>: 29 joins entre fontes diferentes levantados no inventário (Tesouro Gerencial × Compras.gov, × TransfereGov, × SICONV, emendas × Câmara/Senado…). O Gabarito é a condição de join e a transformação do SQL em produção, documentadas pela autora e confirmadas numa amostra por alguém do GovHub.</p></div>
-      <div class="card reveal d1"><div class="tag">15 a 20 por categoria · ≈ 120</div><h3>Pares Perturbados</h3><p>A tabela B é gerada de uma tabela-semente pública sem dados pessoais (<code>siafi.ne_tesouro</code>, <code>compras_gov.contratos</code>, <code>transfere_gov.planos_acao</code>, <code>siconv.proposta</code>, IBGE municípios) aplicando <strong>uma</strong> categoria de atrito por vez à chave. Gabarito por construção, gerador com semente fixa, variante com nomes de coluna anonimizados.</p></div>
+      <div class="card reveal"><div class="tag">12 a 20 condições reais</div><h3>Pares Reais</h3><p>Pares que o Gov Hub <strong>já cruza em produção</strong>: 29 joins entre fontes diferentes levantados no inventário (Tesouro Gerencial × Compras.gov, × TransfereGov, × SICONV, emendas × Câmara/Senado…). O Gabarito é a condição de join e a transformação do SQL em produção, anotadas pela autora e auditadas por um engenheiro do Gov Hub. Em cascatas, cada etapa vale como uma Chave Aceitável; a cascata completa fica fora do escopo.</p></div>
+      <div class="card reveal d1"><div class="tag">≈ 120, um atrito cada · mais Pares Negativos</div><h3>Pares Perturbados</h3><p>A tabela B é gerada de uma tabela-semente pública sem dados pessoais (<code>siafi.ne_tesouro</code>, <code>compras_gov.contratos</code>, <code>transfere_gov.planos_acao</code>, <code>siconv.proposta</code>, IBGE municípios) aplicando <strong>uma</strong> categoria de atrito por vez à chave. Gabarito por construção, gerador com semente fixa, variante com nomes de coluna anonimizados. Um subconjunto exploratório de 15 a 20 pares com atritos combinados é relatado à parte.</p></div>
     </div>
-    <p class="note reveal center" style="margin-left:auto;margin-right:auto">Sem níveis de dificuldade: as categorias já estratificam. Cerca de 20% dos pares formam o Conjunto de Desenvolvimento; os 80% restantes, o Conjunto de Teste — congelado antes de ajustar o agente, junto com o Domain Context (Dicionário e Mapa de Fluxo), o Catálogo de Transformações e o limiar do Acerto de Execução. Dados pessoais ficam fora: nenhum par com chave em CPF, nada do SIAPE, Sisbolsas ou BB Ágil; o repositório versiona só os Gabaritos, nunca os dados.</p>
+    <p class="note reveal center" style="margin-left:auto;margin-right:auto">Sem níveis de dificuldade: as categorias já estratificam. A divisão é feita por tabela-semente e par de fontes, antes da perturbação: cerca de 20% dos pares formam o Conjunto de Desenvolvimento; os 80% restantes, o Conjunto de Teste — congelado antes de ajustar o agente, junto com o Domain Context (Glossário e Mapa de Fluxo), o Catálogo de Transformações e o limiar do Acerto de Execução. Dados pessoais ficam fora: nenhum par com chave em CPF; onde a chave pode ser CPF (favorecido pessoa física), o escopo do par fica restrito a pessoa jurídica; das tabelas do SIAPE, Sisbolsas, BB Ágil e das planilhas do MinC, só colunas não pessoais. O repositório versiona só os Gabaritos, nunca os dados.</p>
 
     <div class="center" style="margin-top:88px">
       <h3 class="title reveal">Sete categorias de atrito.</h3>
@@ -527,16 +527,17 @@
     <div class="conds">
       <div class="cond reveal"><div class="k">B0 · só nome</div><h3>Similaridade de nome</h3><p>Nada mais.</p><div class="q">Piso</div></div>
       <div class="cond reveal d1"><div class="k">B1 · matcher clássico</div><h3>Dois métodos do Valentine</h3><p>COMA e um baseado em valores; a correspondência mais bem ranqueada vale como chave.</p><div class="q">Supera o matching clássico?</div></div>
-      <div class="cond reveal d2"><div class="k">B2 · evidências sem LLM</div><h3>Pipeline sem LLM</h3><p>Nos três níveis de Domain Context: ablação 2 × 3.</p><div class="q">Teto do determinístico</div></div>
-      <div class="cond reveal"><div class="k">B3 · LLM sozinho</div><h3>Só esquema e amostras</h3><p>Mesma assinatura e catálogo, sem Candidate Keys nem evidências.</p><div class="q">As evidências ajudam o LLM?</div></div>
-      <div class="cond reveal d1"><div class="k">B4 · LLM escreve o SQL</div><h3>Join escrito pelo modelo</h3><p>Mesmas entradas de S; o SQL roda num DuckDB só de leitura sobre os snapshots.</p><div class="q">O estágio determinístico ajuda?</div></div>
-      <div class="cond sys reveal d2"><div class="k">S · sistema</div><h3>LLM embutido</h3><p>Nos três níveis de Domain Context: sem contexto, só Dicionário, Dicionário + Mapa de Fluxo. A QP2 compara modelos só aqui.</p><div class="q">Hipótese central: o acerto nos pares difíceis vem de dar ao LLM o fluxo do dado</div></div>
+      <div class="cond reveal d2"><div class="k">B2 · evidências sem LLM</div><h3>Regras sobre o mesmo catálogo</h3><p>Evidências do estágio 1 com os defeitos do protótipo corrigidos, busca exaustiva limitada no catálogo e limiar de Abstenção calibrado no Desenvolvimento; nos três níveis de Domain Context: ablação 2 × 3.</p><div class="q">Teto do determinístico</div></div>
+      <div class="cond reveal"><div class="k">B3 · LLM sozinho</div><h3>Só esquema e amostras</h3><p>Mesma assinatura, catálogo, modelo e nível de Domain Context de S, sem Candidate Keys nem evidências.</p><div class="q">As evidências ajudam o LLM?</div></div>
+      <div class="cond reveal d1"><div class="k">B4 · LLM escreve o SQL</div><h3>Join escrito pelo modelo</h3><p>Mesmas entradas de S; o SQL roda num DuckDB só de leitura sobre os snapshots. Comparado sem o portão de validação; com o portão, em análise secundária.</p><div class="q">O estágio determinístico ajuda?</div></div>
+      <div class="cond sys reveal d2"><div class="k">S · sistema</div><h3>LLM embutido</h3><p>Nos três níveis de Domain Context: sem contexto, só Glossário, Glossário + Mapa de Fluxo; nos pares de texto livre, também com extração genérica sem o Mapa. A QP2 compara modelos só aqui.</p><div class="q">Hipótese central: o acerto nos pares difíceis vem de dar ao LLM o fluxo do dado</div></div>
     </div>
     <div class="levels">
-      <div class="level reveal"><b>Acerto de Chave</b><span>As colunas escolhidas coincidem com alguma Chave Aceitável — ou a Decision Layer se absteve num Par Negativo.</span></div>
-      <div class="level reveal d1"><b>Acerto de Execução</b><span>O join produzido com a chave e a transformação propostas reproduz o Join de Referência acima do limiar. Faz o papel da execução dos testes no artigo-base.</span></div>
+      <div class="level reveal"><b>Acerto de Chave</b><span>As colunas escolhidas coincidem com alguma Chave Aceitável.</span></div>
+      <div class="level reveal d1"><b>Acerto de Execução</b><span>F1 dos pares de linhas do join proposto contra o Join de Referência; acerto com F1 ≥ 0,90, limiar congelado com o Conjunto de Teste. Faz o papel da execução dos testes no artigo-base.</span></div>
+      <div class="level reveal d2" style="grid-column:1/-1"><b>Matriz de decisão</b><span>Abstenções corretas e erradas, relatadas à parte do Acerto de Chave.</span></div>
     </div>
-    <p class="note reveal" style="margin-left:auto;margin-right:auto">Não determinismo: 5 execuções por par na condição S e 3 em B3 e B4, com temperatura e versão fixas; prompts e respostas versionados. Análise: comparações definidas antes (S × B2, S × B3, S × B4, S × B1, aberto × proprietário), bootstrap pareado com IC de 95%, McNemar como complemento e correção de Holm; por categoria e com/sem nomes, descritivo com intervalo de Wilson.</p>
+    <p class="note reveal" style="margin-left:auto;margin-right:auto">Não determinismo: 5 execuções por par em S, B3 e B4, com o mesmo modelo, temperatura e limite de autocorreção; tokens reais relatados, falhas incluídas. Análise: comparações definidas antes (S × B1 no Acerto de Chave; S × B2, S × B3 e S × B4 no Acerto de Execução, no nível Glossário + Mapa de Fluxo; aberto × proprietário no mesmo nível), bootstrap pareado com IC de 95%, McNemar como complemento e correção de Holm; por categoria e com/sem nomes, descritivo com intervalo de Wilson.</p>
   </div>
 </section>
 
@@ -546,7 +547,7 @@
     <div class="center">
       <p class="eyebrow reveal">Trabalhos relacionados</p>
       <h2 class="headline reveal d1">Não um matcher melhor.<br>Uma combinação.</h2>
-      <p class="lead reveal d2" style="max-width:780px;margin:24px auto 0">O diferencial é juntar o que costuma aparecer separado: LLM embutido com saída tipada, validação da decisão por execução, avaliação por categoria de atrito em dados públicos brasileiros e um processo de construção avaliado junto com o artefato.</p>
+      <p class="lead reveal d2" style="max-width:780px;margin:24px auto 0">O diferencial é juntar o que costuma aparecer separado: bounded agency (o LLM escolhe num catálogo fechado ou se abstém, e código gera e checa o join), avaliação por categoria de atrito em dados públicos brasileiros e um processo de construção avaliado junto com o artefato.</p>
     </div>
     <div class="pos-scroll">
       <table class="pos reveal">
@@ -556,8 +557,9 @@
           <tr><th>Benchmarks de matching</th><td>Valentine</td><td>Avalia</td><td>Sim</td><td>Não</td><td>Não</td><td>Não</td></tr>
           <tr><th>Descoberta em data lakes</th><td>Aurum</td><td>Tabelas relacionadas</td><td>Sim</td><td>Não</td><td>Não</td><td>Não</td></tr>
           <tr><th>LLMs para dados</th><td>Narayan et al. (2022)</td><td>Sim (tarefa isolada)</td><td>Sim</td><td>Sim</td><td>Não</td><td>Não</td></tr>
-          <tr><th>LLM embutido em processo industrial</th><td>SPAPI-Tester</td><td>De-para entre documentos</td><td>Não</td><td>Sim</td><td>Sim (PyTest)</td><td>Não</td></tr>
-          <tr class="ours"><th>Este TCC</th><td>GovHub</td><td>Sim, com Derived Keys</td><td>Sim</td><td>Sim</td><td>Sim (dbt)</td><td>Sim (SDD, QP5)</td></tr>
+          <tr><th>Join com LLM controlador</th><td>MetaJoin (QJoin na v1)</td><td>Sempre devolve um join, sem Abstenção</td><td>Sim</td><td>Sim (v2)</td><td>Verifica os especialistas</td><td>Não</td></tr>
+          <tr><th>LLM embutido em processo industrial</th><td>SPAPI-Tester</td><td>De-para entre documentos e casos de teste</td><td>Não</td><td>Sim, em cada etapa manual</td><td>Sim (PyTest, por código)</td><td>Não</td></tr>
+          <tr class="ours"><th>Este TCC</th><td>Gov Hub</td><td>Sim, com Derived Keys ou Abstenção</td><td>Sim</td><td>Sim, numa etapa só</td><td>Sim (dbt e checagens)</td><td>Sim (SDD, QP5)</td></tr>
         </tbody>
       </table>
     </div>
@@ -618,7 +620,7 @@
       <article class="chap reveal d1">
         <div class="chap-top"><span class="chap-n">2</span><span class="tag t1">TCC 1</span></div>
         <h3>Fundamentação teórica</h3>
-        <ul><li><span>2.1</span>Interoperabilidade e dados abertos no setor público</li><li><span>2.2</span>Integração de dados e schema matching</li><li><span>2.3</span>Perfilamento de dados</li><li><span>2.4</span>Modelos de linguagem: saída estruturada, DSPy e cadeia de raciocínio</li><li><span>2.5</span>Spec-Driven Development e agentes de IA de código</li></ul>
+        <ul><li><span>2.1</span>Interoperabilidade e dados abertos no setor público</li><li><span>2.2</span>Integração de dados e schema matching</li><li><span>2.3</span>Perfilamento de dados</li><li><span>2.4</span>Modelos de linguagem: saída estruturada, validação e autocorreção</li><li><span>2.5</span>Spec-Driven Development e agentes de IA de código</li></ul>
       </article>
       <article class="chap reveal d2">
         <div class="chap-top"><span class="chap-n">3</span><span class="tag t1">TCC 1</span></div>
@@ -633,7 +635,7 @@
       <article class="chap reveal d1">
         <div class="chap-top"><span class="chap-n">5</span><span class="tag t2">TCC 2</span></div>
         <h3>Pipeline proposto</h3>
-        <ul><li><span>5.1</span>Coleta de evidências</li><li><span>5.2</span>Decision Layer com LLM embutido (ADR 0011)</li><li><span>5.3</span>Dicionário de Mapeamento e Catálogo de Transformações</li><li><span>5.4</span>Domain Context: Dicionário e Mapa de Fluxo (ADR 0012)</li><li><span>5.5</span>Estágio Jinja → dbt</li><li><span>5.6</span>A ingestão é do GovHub</li></ul>
+        <ul><li><span>5.1</span>Coleta de evidências</li><li><span>5.2</span>Decision Layer com LLM embutido (ADR 0011)</li><li><span>5.3</span>Dicionário de Mapeamento e Catálogo de Transformações</li><li><span>5.4</span>Domain Context: Glossário e Mapa de Fluxo (ADR 0012)</li><li><span>5.5</span>Estágio Jinja → dbt</li><li><span>5.6</span>A ingestão é do Gov Hub</li></ul>
       </article>
       <article class="chap reveal d2">
         <div class="chap-top"><span class="chap-n">6</span><span class="tag t2">TCC 2</span></div>
@@ -648,7 +650,7 @@
       <article class="chap reveal d1">
         <div class="chap-top"><span class="chap-n">8</span><span class="tag t2">TCC 2</span></div>
         <h3>Discussão</h3>
-        <ul><li><span>8.1</span>Achados</li><li><span>8.2</span>O que revelam sobre a interoperabilidade das bases</li><li><span>8.3</span>Limitações e ameaças à validade</li><li><span>8.4</span>Implicações para o GovHub</li></ul>
+        <ul><li><span>8.1</span>Achados</li><li><span>8.2</span>O que revelam sobre a interoperabilidade das bases</li><li><span>8.3</span>Limitações e ameaças à validade</li><li><span>8.4</span>Implicações para o Gov Hub</li></ul>
       </article>
       <article class="chap reveal d2">
         <div class="chap-top"><span class="chap-n">9</span><span class="tag t2">TCC 2</span></div>
@@ -668,12 +670,12 @@
       <h2 class="headline reveal d1">O que pode dar errado,<br>e o que segura.</h2>
     </div>
     <div class="grid g2 bg">
-      <div class="card reveal"><div class="tag">Viés a favor do SDD</div><h3>A autora escreve a spec, orienta o agente e avalia</h3><p>Testes-oráculo escritos antes e escondidos; braço sem spec como controle; ordem sorteada; intervenções padronizadas e registradas; protocolo congelado; todos os incrementos registrados, inclusive os que falharam.</p></div>
-      <div class="card reveal d1"><div class="tag">Ground truth</div><h3>Pequeno ou enviesado para o que o agente já acerta</h3><p>Pares Perturbados por categoria; Conjunto de Teste congelado antes de ajustar o agente; Pares Negativos nas duas partes; Pares Reais já vistos vão para o Conjunto de Desenvolvimento.</p></div>
-      <div class="card reveal"><div class="tag">Vazamento pelo contexto</div><h3>Dicionário ou Mapa de Fluxo escritos a partir dos próprios pares</h3><p>O Mapa é escrito a partir de normas, cita a norma de cada elo e não contém condições de join; revisão do GovHub; congelado com o Conjunto de Teste; ablação 2 × 3 mede quanto do acerto vem dele.</p></div>
+      <div class="card reveal"><div class="tag">Viés a favor do SDD</div><h3>A autora escreve a spec, orienta o agente e avalia</h3><p>Testes-oráculo escritos antes e escondidos, compartilhados e de critério relatados à parte; braço sem spec como controle, com o mesmo Contrato mínimo; ordem sorteada; intervenções padronizadas e registradas; protocolo congelado; todos os incrementos registrados, inclusive os que falharam.</p></div>
+      <div class="card reveal d1"><div class="tag">Ground truth</div><h3>Pequeno ou enviesado para o que o agente já acerta</h3><p>Pares Perturbados por categoria; Conjunto de Teste congelado antes de ajustar o agente; Pares Negativos nas duas partes; Pares Reais já vistos vão para o Conjunto de Desenvolvimento. Catálogo e Pares Reais vêm do mesmo inventário: os Pares Reais medem ajuste, e a QP4 ganha peso.</p></div>
+      <div class="card reveal"><div class="tag">Vazamento pelo contexto</div><h3>Glossário ou Mapa de Fluxo escritos a partir dos próprios pares</h3><p>O Mapa é escrito a partir de normas, cita uma fonte pública para cada formato e cada elo e não contém condições de join; os padrões de extração vêm dos formatos, nunca do SQL de produção; revisão do Gov Hub; congelado com o Conjunto de Teste; ablação 2 × 3 mede quanto do acerto vem dele.</p></div>
       <div class="card reveal d1"><div class="tag">Contaminação</div><h3>O modelo pode conhecer SIAFI e IBGE do pré-treino</h3><p>Variante anonimizada de cada Par Perturbado; reportar a diferença com e sem nomes.</p></div>
-      <div class="card reveal"><div class="tag">Dados pessoais</div><h3>Risco LGPD</h3><p>Excluir do ground truth os pares com chave em CPF e as tabelas de dados pessoais (SIAPE, Sisbolsas, BB Ágil); versionar só Gabaritos, nunca dados.</p></div>
-      <div class="card reveal d1"><div class="tag">Escopo</div><h3>O TCC não fecha</h3><p>Escopo congelado: Decision Layer, estágio Jinja → dbt, benchmark, avaliação e SDD. A ingestão é do GovHub; PDF, DAG factory e arquitetura config-driven ficam fora.</p></div>
+      <div class="card reveal"><div class="tag">Dados pessoais</div><h3>Risco LGPD</h3><p>Excluir do ground truth os pares com chave em CPF; restringir a pessoa jurídica os pares em que a chave pode ser CPF; das tabelas de dados pessoais (SIAPE, Sisbolsas, BB Ágil), só colunas não pessoais; versionar só Gabaritos, nunca dados.</p></div>
+      <div class="card reveal d1"><div class="tag">Escopo</div><h3>O TCC não fecha</h3><p>Escopo congelado: Decision Layer, estágio Jinja → dbt, benchmark, avaliação e SDD. A ingestão é do Gov Hub; PDF, DAG factory e arquitetura config-driven ficam fora.</p></div>
     </div>
     <p class="note reveal center" style="margin-left:auto;margin-right:auto">Ameaças à validade (Wohlin et al., 2012): interna — a autora constrói o agente, anota os Pares Reais e conduz os dois braços da QP5; externa — domínio orçamentário federal e Pares Perturbados podem não refletir os atritos reais; de constructo — o Acerto de Execução aproxima, mas não mede, a utilidade para o analista; de conclusão — poucos Pares Reais e 6 a 8 incrementos na QP5.</p>
   </div>
@@ -690,11 +692,10 @@
     <details class="reveal" open>
       <summary>Artigo-base e LLMs</summary>
       <ul>
-        <li>Wang, Yu, Feldt e Parthasarathy — <em>Automating a Complete Software Test Process Using LLMs: An Automotive Case Study</em></li>
+        <li>Wang, Yu, Feldt e Parthasarathy — <em>Automating a Complete Software Test Process Using LLMs: An Automotive Case Study</em>, ICSE 2025</li>
         <li>Khattab et al. (2024) — <em>DSPy: Compiling Declarative Language Model Calls into Self-Improving Pipelines</em></li>
         <li>Narayan et al. (2022) — <em>Can Foundation Models Wrangle Your Data?</em></li>
         <li>Brown et al. (2020) — <em>Language Models are Few-Shot Learners</em></li>
-        <li>Wei et al. (2022) — <em>Chain-of-Thought Prompting Elicits Reasoning in Large Language Models</em></li>
         <li>Lewis et al. (2020) — <em>Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks</em></li>
       </ul>
     </details>
@@ -753,7 +754,7 @@
 
 <footer>
   <div class="wrap">
-    <span>TCC de Luiza Maluf · Universidade de Brasília (FCTE) · Lab Livre · dados do GovHub</span>
+    <span>TCC de Luiza Maluf · Universidade de Brasília (FCTE) · Lab Livre · dados do Gov Hub</span>
     <span>Orientação: Carla Rocha e Isaque Alves · <a href="https://github.com/LuizaMaluf/Integracao-de-Dados-com-Modelos-de-Linguagem/blob/main/docs/tcc/proposta.md">Proposta</a> · <a href="https://github.com/LuizaMaluf/Integracao-de-Dados-com-Modelos-de-Linguagem/blob/main/docs/tcc/artigo-base.md">Artigo-base</a> · <a href="https://github.com/LuizaMaluf/Integracao-de-Dados-com-Modelos-de-Linguagem">Repositório</a></span>
   </div>
 </footer>

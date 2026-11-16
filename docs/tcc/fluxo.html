@@ -197,14 +197,14 @@
   <div class="wrap">
     <p class="eyebrow">Fluxo informacional · versão de 2026-10-03</p>
     <h1 class="display">Três fluxos.<br><span class="gradient-text">Um único de-para.</span></h1>
-    <p class="lead">Como a informação anda da política pública até o join validado, do SQL que o GovHub já roda até o resultado por categoria de atrito, e da spec até a comparação com o braço sem spec.</p>
+    <p class="lead">Como a informação anda da política pública até o join validado, do SQL que o Gov Hub já roda até o resultado por categoria de atrito, e da spec até a comparação com o braço sem spec.</p>
     <div class="cta">
       <a class="pill pill-primary" href="https://github.com/LuizaMaluf/Integracao-de-Dados-com-Modelos-de-Linguagem/blob/main/docs/tcc/proposta.md">Ler a proposta</a>
       <a class="pill pill-ghost" href="#dado">Começar pelo dado</a>
     </div>
     <div class="legend" aria-label="Legenda das figuras">
       <span><i class="l-sys"></i>Sistemas e dados</span>
-      <span><i class="l-gov"></i>GovHub · fora do foco</span>
+      <span><i class="l-gov"></i>Gov Hub · fora do foco</span>
       <span><i class="l-det"></i>Estágio determinístico</span>
       <span><i class="l-llm"></i>LLM embutido</span>
       <span><i class="l-eval"></i>Avaliação e saídas</span>
@@ -221,7 +221,7 @@
     </div>
     <figure>
       <div class="fig-scroll">
-      <svg viewBox="0 0 1400 760" role="img" aria-label="Os sistemas de origem alimentam o PostgreSQL do GovHub; este repositório lê de lá, coleta evidências de forma determinística, deixa o LLM decidir a chave com o Domain Context e gera o model dbt de join, que é executado e validado. O LLM nunca escreve SQL.">
+      <svg viewBox="0 0 1400 760" role="img" aria-label="Os sistemas de origem alimentam o PostgreSQL do Gov Hub; este repositório lê de lá, coleta evidências de forma determinística, deixa o LLM decidir a chave com o Domain Context e gera o model dbt de join, que é executado e validado. O LLM nunca escreve SQL.">
         <defs>
           <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#86868b"/></marker>
           <marker id="a1b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0071e3"/></marker>
@@ -245,14 +245,14 @@
         </g>
         <text x="1350" y="22" text-anchor="end" class="lbl">a norma manda anotar o nº do TED na descrição da NE; o Compras.gov guarda a NE curta: o fluxo da política atravessa os sistemas</text>
 
-        <!-- Linha 2: GovHub -->
+        <!-- Linha 2: Gov Hub -->
         <rect x="40" y="136" width="1310" height="96" rx="16" class="dash"/>
-        <text x="60" y="158" class="k">GOVHUB · data-application-* · FORA DO FOCO DO TCC</text>
+        <text x="60" y="158" class="k">GOV HUB · data-application-* · FORA DO FOCO DO TCC</text>
         <rect x="60" y="170" width="900" height="48" rx="10" class="box"/>
-        <text x="76" y="190" class="t">Ingestão (Airflow) → PostgreSQL do GovHub</text>
+        <text x="76" y="190" class="t">Ingestão (Airflow) → PostgreSQL do Gov Hub</text>
         <text x="76" y="207" class="t2 mono">schemas: siafi · compras_gov · transfere_gov · siconv · pncp · ppa · ibge · camara_deputados · senado_federal</text>
         <rect x="990" y="170" width="340" height="48" rx="10" class="box"/>
-        <text x="1006" y="190" class="t">Models dbt do GovHub</text>
+        <text x="1006" y="190" class="t">Models dbt do Gov Hub</text>
         <text x="1006" y="207" class="t2">29 joins entre fontes já em produção → Gabarito (Fig. 2)</text>
 
         <!-- Fronteira do repositório -->
@@ -268,7 +268,7 @@
         <rect x="60" y="300" width="290" height="262" rx="16" class="box"/>
         <text x="76" y="322" class="k">DOMAIN CONTEXT · CONGELADO</text>
         <rect x="76" y="336" width="258" height="78" rx="10" class="box"/>
-        <text x="90" y="357" class="t">Dicionário</text>
+        <text x="90" y="357" class="t">Glossário</text>
         <text x="90" y="374" class="t2">sinônimos: nr_empenho ≈ num_empenho</text>
         <text x="90" y="389" class="t2">padrões de identificador · NE, CNPJ</text>
         <text x="90" y="404" class="t2 mono">domain.py</text>
@@ -277,8 +277,8 @@
         <text x="90" y="466" class="t2">TED→NC→PF→NE · convênio · contrato</text>
         <text x="90" y="481" class="t2">quem registra · formato do identificador</text>
         <text x="90" y="496" class="t2">onde o id. de um aparece no outro</text>
-        <text x="90" y="511" class="t2">a norma de cada elo · escrito das normas</text>
-        <text x="90" y="526" class="t2">revisado pelo GovHub · nunca contém joins</text>
+        <text x="90" y="511" class="t2">fonte pública por formato e por elo</text>
+        <text x="90" y="526" class="t2">revisado pelo Gov Hub · nunca contém joins</text>
         <text x="90" y="541" class="t2">= a documentação dos silos do artigo-base</text>
 
         <!-- Estágio 1 -->
@@ -300,14 +300,14 @@
         <rect x="700" y="300" width="290" height="262" rx="16" fill="url(#llm1)" stroke="#2997ff" stroke-opacity="0.6" filter="url(#glow1)"/>
         <text x="716" y="322" class="llm-k">LLM EMBUTIDO · DSPy</text>
         <text x="716" y="346" class="det-t">Decision Layer</text>
-        <text x="716" y="370" class="det-t2">assinatura tipada + ChainOfThought</text>
+        <text x="716" y="370" class="det-t2">esquema de saída tipado + justificativa curta</text>
         <text x="716" y="388" class="det-t2">vê evidências, Candidate Keys e esquema</text>
-        <text x="716" y="406" class="det-t2">+ Domain Context (Dicionário e Mapa)</text>
+        <text x="716" y="406" class="det-t2">+ Domain Context (Glossário e Mapa)</text>
         <text x="716" y="424" class="det-t2">pode propor chave fora da lista</text>
         <text x="716" y="442" class="det-t2">nomeia a operação do Catálogo; nunca regex</text>
-        <text x="716" y="460" class="det-t2">saída inválida → autocorreção (DSPy)</text>
+        <text x="716" y="460" class="det-t2">inválida → autocorrige; reprovada → Abstenção</text>
         <line x1="716" y1="478" x2="974" y2="478" stroke="#2d2d2f"/>
-        <text x="716" y="498" class="det-t2">registra raciocínio, tokens e latência</text>
+        <text x="716" y="498" class="det-t2">registra justificativa curta, tokens e latência</text>
         <text x="716" y="516" class="det-t2">modelo trocado por configuração (QP2)</text>
         <text x="716" y="546" class="llm-k">único ponto do pipeline onde o LLM atua</text>
 
@@ -347,7 +347,7 @@
 
               </svg>
       </div>
-      <figcaption><b>Figura 1.</b> A informação nasce na política (um TED gera NC, PF e NE; o número do TED vai anotado na NE) e chega ao PostgreSQL do GovHub pelos pipelines dele, que ficam fora do foco. Este repositório lê de lá, coleta evidências de forma determinística e entrega ao LLM as evidências, o esquema completo e o Domain Context. O LLM decide o de-para e devolve um Dicionário de Mapeamento tipado ou se abstém; a transformação é nomeada no Catálogo e o SQL sai de templates. O Mapa de Fluxo é o que torna visível a chave escondida em texto livre.</figcaption>
+      <figcaption><b>Figura 1.</b> A informação nasce na política (um TED gera NC, PF e NE; o número do TED vai anotado na NE) e chega ao PostgreSQL do Gov Hub — plataforma de dados aberta do Lab Livre, laboratório da UnB, feita em parceria com órgãos federais — pelos pipelines dele, que ficam fora do foco. Este repositório lê de lá, coleta evidências de forma determinística e entrega ao LLM as evidências, o esquema completo e o Domain Context. Sob bounded agency, o LLM decide só o de-para e devolve um Dicionário de Mapeamento tipado, com a cardinalidade esperada, ou se abstém; a transformação é nomeada no Catálogo e o SQL sai de templates. O Mapa de Fluxo é o que torna visível a chave escondida em texto livre.</figcaption>
     </figure>
   </div>
 </section>
@@ -361,7 +361,7 @@
     </div>
     <figure>
       <div class="fig-scroll">
-      <svg viewBox="0 0 1400 620" role="img" aria-label="Os joins em produção do GovHub viram Pares Reais; tabelas-semente viram Pares Perturbados; o Conjunto de Teste é congelado. O harness roda seis condições e mede Acerto de Chave, Acerto de Execução e Abstenção; o plano de análise responde QP1 e QP2; o estudo cruzado com analistas responde QP3; os pares não integrados respondem QP4.">
+      <svg viewBox="0 0 1400 620" role="img" aria-label="Os joins em produção do Gov Hub viram Pares Reais; tabelas-semente viram Pares Perturbados; o Conjunto de Teste é congelado. O harness roda seis condições e mede Acerto de Chave, Acerto de Execução e a Matriz de decisão; o plano de análise responde QP1 e QP2; o estudo cruzado com analistas responde QP3; os pares não integrados respondem QP4.">
         <defs>
           <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6e6e73"/></marker>
           <marker id="a2b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2997ff"/></marker>
@@ -371,7 +371,7 @@
         <!-- Coluna esquerda: origens (x 40–320) -->
         <text x="40" y="22" class="k">ORIGENS</text>
         <rect x="40" y="34" width="280" height="66" rx="12" class="box"/>
-        <text x="56" y="56" class="t">Models dbt do GovHub</text>
+        <text x="56" y="56" class="t">Models dbt do Gov Hub</text>
         <text x="56" y="73" class="t2">29 joins entre fontes, com transformação</text>
         <text x="56" y="88" class="t2">condição do SQL = Gabarito</text>
 
@@ -390,22 +390,22 @@
         <rect x="350" y="20" width="320" height="366" rx="16" class="region"/>
         <text x="366" y="42" class="kb">GROUND TRUTH · TESTE CONGELADO</text>
         <rect x="366" y="56" width="288" height="92" rx="10" class="box"/>
-        <text x="380" y="77" class="t">Pares Reais <tspan class="t2">· 12 a 20</tspan></text>
+        <text x="380" y="77" class="t">Pares Reais <tspan class="t2">· 12 a 20 condições</tspan></text>
         <text x="380" y="94" class="t2">Gabarito: colunas + transformação do SQL</text>
-        <text x="380" y="109" class="t2">cascata = várias Chaves Aceitáveis</text>
+        <text x="380" y="109" class="t2">cascata: cada etapa é uma Chave Aceitável</text>
         <text x="380" y="124" class="t2">filtros do join = escopo do par</text>
-        <text x="380" y="139" class="t2">amostra confirmada por alguém do GovHub</text>
+        <text x="380" y="139" class="t2">auditado por um engenheiro do Gov Hub</text>
         <rect x="366" y="158" width="288" height="94" rx="10" class="box"/>
-        <text x="380" y="179" class="t">Pares Perturbados <tspan class="t2">· 15–20 por categoria</tspan></text>
+        <text x="380" y="179" class="t">Pares Perturbados <tspan class="t2">· ≈ 120, um atrito cada</tspan></text>
         <text x="380" y="196" class="t2">tabela B gerada com UMA categoria de atrito</text>
         <text x="380" y="211" class="t2">Gabarito por construção · semente fixa</text>
         <text x="380" y="226" class="t2">variante com nomes de coluna anonimizados</text>
-        <text x="380" y="241" class="t2">sinônimos de uma lista à parte do Dicionário</text>
+        <text x="380" y="241" class="t2">sinônimos de uma lista à parte do Glossário</text>
         <rect x="366" y="262" width="288" height="40" rx="10" class="box"/>
         <text x="380" y="283" class="t">Pares Negativos <tspan class="t2">· Gabarito ∅ → Abstenção</tspan></text>
-        <text x="366" y="326" class="t2">Desenvolvimento 20%: ajuste livre, inclui o par IBGE</text>
-        <text x="366" y="342" class="t2">Teste 80%: congelado (Catálogo, Contexto, limiar)</text>
-        <text x="366" y="366" class="t2">Fora: CPF como chave; SIAPE, Sisbolsas, BB Ágil</text>
+        <text x="366" y="326" class="t2">Divisão por tabela-semente e par de fontes</text>
+        <text x="366" y="342" class="t2">Dev 20% (inclui o par IBGE) · Teste 80% congelado</text>
+        <text x="366" y="366" class="t2">Fora: CPF como chave e colunas pessoais</text>
 
         <path d="M320,67 H366" class="arrow" marker-end="url(#a2)"/>
         <path d="M320,183 H366" class="arrow" marker-end="url(#a2)"/>
@@ -414,11 +414,11 @@
         <rect x="700" y="110" width="300" height="150" rx="16" class="det"/>
         <text x="716" y="132" class="det-k">DETERMINÍSTICO</text>
         <text x="716" y="156" class="det-t">Harness de avaliação</text>
-        <text x="716" y="178" class="det-t2">Acerto de Chave (top-1) · Abstenção correta</text>
-        <text x="716" y="194" class="det-t2">Acerto de Execução: executa o join e compara</text>
-        <text x="716" y="210" class="det-t2">com o Join de Referência (limiar fixado)</text>
+        <text x="716" y="178" class="det-t2">Acerto de Chave (top-1) · Matriz de decisão</text>
+        <text x="716" y="194" class="det-t2">Acerto de Execução: F1 dos pares de linhas</text>
+        <text x="716" y="210" class="det-t2">contra o Join de Referência (F1 ≥ 0,90)</text>
         <text x="716" y="226" class="det-t2">Cobertura de Candidatos · chaves fora da lista</text>
-        <text x="716" y="248" class="det-k">5 execuções em S · 3 em B3 e B4</text>
+        <text x="716" y="248" class="det-k">5 execuções em S, B3 e B4</text>
         <path d="M670,185 H700" class="arrow-b" marker-end="url(#a2b)"/>
 
         <!-- Condições (x 1030–1360) -->
@@ -426,20 +426,20 @@
         <text x="1046" y="42" class="k">CONDIÇÕES · MESMO HARNESS</text>
         <text x="1046" y="66" class="t">B0 <tspan class="t2">só similaridade de nome · piso</tspan></text>
         <text x="1046" y="90" class="t">B1 <tspan class="t2">Valentine: COMA + método por valores</tspan></text>
-        <text x="1046" y="114" class="t">B2 <tspan class="t2">evidências sem LLM · teto do determinístico</tspan></text>
-        <text x="1046" y="138" class="t">B3 <tspan class="t2">LLM sozinho: só esquema e amostras</tspan></text>
-        <text x="1046" y="162" class="t">B4 <tspan class="t2">LLM escreve o SQL · DuckDB só de leitura</tspan></text>
+        <text x="1046" y="114" class="t">B2 <tspan class="t2">regras sobre o mesmo catálogo, sem LLM</tspan></text>
+        <text x="1046" y="138" class="t">B3 <tspan class="t2">LLM sem evidências · resto igual a S</tspan></text>
+        <text x="1046" y="162" class="t">B4 <tspan class="t2">LLM escreve o SQL · sem portão de validação</tspan></text>
         <rect x="1046" y="180" width="298" height="100" rx="10" fill="url(#llm2)" stroke="#2997ff" stroke-opacity="0.6"/>
         <text x="1060" y="201" class="llm-k">S · SISTEMA · LLM EMBUTIDO</text>
         <text x="1060" y="221" class="det-t2">× 3 níveis de Domain Context:</text>
-        <text x="1060" y="237" class="det-t2">sem contexto · só Dicionário · Dicionário + Mapa</text>
+        <text x="1060" y="237" class="det-t2">sem contexto · só Glossário · Glossário + Mapa</text>
         <text x="1060" y="253" class="det-t2">QP2 compara modelos só aqui</text>
         <text x="1060" y="269" class="det-t2">(proprietário × pesos abertos local)</text>
         <text x="1046" y="304" class="t2">B2 e S nos 3 níveis → ablação 2 × 3</text>
-        <text x="1046" y="322" class="t2">S × B2 · o LLM acrescenta ao determinístico?</text>
-        <text x="1046" y="338" class="t2">S × B3 · as evidências ajudam o LLM?</text>
-        <text x="1046" y="354" class="t2">S × B4 · o estágio determinístico ajuda?</text>
-        <text x="1046" y="370" class="t2">S × B1 · supera o matching clássico?</text>
+        <text x="1046" y="322" class="t2">S × B1 · Acerto de Chave</text>
+        <text x="1046" y="338" class="t2">S × B2, B3, B4 · Acerto de Execução,</text>
+        <text x="1046" y="354" class="t2">no nível Glossário + Mapa de Fluxo</text>
+        <text x="1046" y="370" class="t2">empate com B2 em formato é resultado válido</text>
         <path d="M1030,185 H1000" class="arrow" marker-start="url(#a2)" marker-end="url(#a2)"/>
 
         <!-- Plano de análise -->
@@ -453,7 +453,7 @@
 
         <!-- Analistas -->
         <rect x="350" y="410" width="320" height="80" rx="12" class="box"/>
-        <text x="366" y="432" class="t">Analistas do GovHub <tspan class="t2">· 2 ou 3</tspan></text>
+        <text x="366" y="432" class="t">Analistas do Gov Hub <tspan class="t2">· 2 ou 3</tspan></text>
         <text x="366" y="449" class="t2">6 a 8 Pares Reais do Teste · desenho cruzado</text>
         <text x="366" y="464" class="t2">metade sozinhos, metade revisando a saída de S</text>
         <text x="366" y="479" class="t2">teto de 60 min por par · acurácia pelo Gabarito</text>
@@ -466,13 +466,13 @@
           <path d="M1195,386 V520"/>
         </g>
         <text x="188" y="440" class="lbl">pipeline (S) nos pares novos</text>
-        <text x="188" y="454" class="lbl">+ confirmação do GovHub</text>
+        <text x="188" y="454" class="lbl">+ confirmação do Gov Hub</text>
         <text x="1202" y="440" class="lbl">S com 2 ou 3 modelos,</text>
         <text x="1202" y="454" class="lbl">tokens e latência</text>
 
         <rect x="40" y="522" width="280" height="78" rx="12" class="out"/>
         <text x="56" y="544" class="kb">QP4 · PARES REAIS NOVOS</text>
-        <text x="56" y="564" class="t">Chaves confirmadas pelo GovHub</text>
+        <text x="56" y="564" class="t">Chaves confirmadas pelo Gov Hub</text>
         <text x="56" y="582" class="t2">Abstenções corretas · achados → discussão</text>
 
         <rect x="350" y="522" width="320" height="78" rx="12" class="out"/>
@@ -482,8 +482,8 @@
 
         <rect x="700" y="522" width="300" height="78" rx="12" class="out"/>
         <text x="716" y="544" class="kb">QP1 · ACURÁCIA POR CATEGORIA</text>
-        <text x="716" y="564" class="t">S × B0…B4 · 7 categorias de atrito</text>
-        <text x="716" y="582" class="t2">Acerto de Chave e de Execução · Abstenção</text>
+        <text x="716" y="564" class="t">O que o LLM acrescenta sobre B2 e B4?</text>
+        <text x="716" y="582" class="t2">por categoria · Acerto de Chave e de Execução</text>
 
         <rect x="1030" y="522" width="330" height="78" rx="12" class="out"/>
         <text x="1046" y="544" class="kb">QP2 · ABERTO × PROPRIETÁRIO</text>
@@ -491,7 +491,7 @@
         <text x="1046" y="582" class="t2">soberania de dados e LGPD no governo</text>
       </svg>
       </div>
-      <figcaption><b>Figura 2.</b> O Gabarito dos Pares Reais não é anotado à mão: vem do SQL que o GovHub já roda. Os Pares Perturbados dão poder estatístico por categoria. Tudo o que pode ser ajustado (Catálogo, Domain Context, limiar) congela junto com o Conjunto de Teste; o ajuste só usa o Conjunto de Desenvolvimento. O mesmo harness mede as seis condições, e cada comparação principal responde a uma metade da tese.</figcaption>
+      <figcaption><b>Figura 2.</b> O Gabarito dos Pares Reais não é anotado à mão: vem do SQL que o Gov Hub já roda. Os Pares Perturbados dão poder estatístico por categoria. Tudo o que pode ser ajustado (Catálogo, Domain Context, limiar) congela junto com o Conjunto de Teste; o ajuste só usa o Conjunto de Desenvolvimento. O mesmo harness mede as seis condições, e cada comparação principal responde a uma metade da tese.</figcaption>
     </figure>
   </div>
 </section>
@@ -505,7 +505,7 @@
     </div>
     <figure>
       <div class="fig-scroll">
-      <svg viewBox="0 0 1400 440" role="img" aria-label="Em cada incremento, a autora escreve a spec e os testes-oráculo antes de qualquer código. O mesmo agente implementa duas vezes a partir do mesmo commit, só com o problema e com a spec completa. Os testes-oráculo rodam nos dois braços e alimentam as métricas pareadas; só o braço com spec entra no repositório e constrói o pipeline.">
+      <svg viewBox="0 0 1400 440" role="img" aria-label="Em cada incremento, a autora escreve a spec e os testes-oráculo antes de qualquer código. O mesmo agente implementa duas vezes a partir do mesmo commit, só com o problema e o contrato mínimo, e com a spec completa. Os oráculos compartilhados e de critério rodam nos dois braços e alimentam as métricas pareadas; só o braço com spec entra no repositório e constrói o pipeline.">
         <defs>
           <marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#86868b"/></marker>
           <marker id="a3b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0071e3"/></marker>
@@ -533,19 +533,19 @@
         <text x="536" y="224" class="t2">de intervenção, registradas literalmente</text>
 
         <path d="M290,70 H520" class="arrow" marker-end="url(#a3)"/>
-        <text x="300" y="64" class="lbl">só o “Problema”</text>
+        <text x="300" y="64" class="lbl">“Problema” + Contrato mínimo</text>
         <path d="M290,140 H480 V193 H520" class="arrow-b" marker-end="url(#a3b)"/>
         <text x="300" y="152" class="lbl">spec completa</text>
         <path d="M290,128 H840" class="arrow" marker-end="url(#a3)"/>
-        <text x="560" y="140" class="lbl">critérios de aceite → testes-oráculo</text>
+        <text x="560" y="140" class="lbl">critérios de aceite → oráculos de critério</text>
 
         <rect x="840" y="36" width="240" height="198" rx="14" class="box"/>
         <text x="856" y="58" class="k">JUIZ INDEPENDENTE</text>
         <text x="856" y="80" class="t">Testes-oráculo</text>
-        <text x="856" y="100" class="t2">derivados dos critérios de aceite</text>
+        <text x="856" y="100" class="t2">compartilhados e de critério</text>
         <text x="856" y="116" class="t2">escritos pela autora, antes</text>
         <text x="856" y="132" class="t2">fora do alcance do agente</text>
-        <text x="856" y="156" class="t2">rodam nos dois braços,</text>
+        <text x="856" y="156" class="t2">rodam nos dois braços, à parte,</text>
         <text x="856" y="172" class="t2">na 1ª entrega e ao final</text>
         <text x="856" y="196" class="t2">o agente não corrige a prova</text>
         <text x="856" y="212" class="t2">que ele mesmo escreveria</text>
@@ -555,18 +555,18 @@
         <rect x="1120" y="36" width="240" height="198" rx="14" class="det"/>
         <text x="1136" y="58" class="det-k">MÉTRICAS PAREADAS</text>
         <text x="1136" y="84" class="det-t">Correção</text>
-        <text x="1136" y="100" class="det-t2">oráculo passando: 1ª entrega e final</text>
+        <text x="1136" y="100" class="det-t2">oráculos por grupo: 1ª entrega e final</text>
         <text x="1136" y="124" class="det-t">Autonomia</text>
         <text x="1136" y="140" class="det-t2">iterações · intervenções registradas</text>
         <text x="1136" y="164" class="det-t">Custo</text>
         <text x="1136" y="180" class="det-t2">tokens · tempo da autora, com a spec</text>
-        <text x="1136" y="212" class="det-k">pareada · Wilcoxon (n ≥ 6)</text>
+        <text x="1136" y="212" class="det-k">mediana pareada · Wilcoxon (n ≥ 6)</text>
         <path d="M1080,135 H1120" class="arrow" marker-end="url(#a3)"/>
 
         <path d="M1240,234 V268" class="arrow" marker-end="url(#a3)"/>
         <rect x="1120" y="270" width="240" height="60" rx="12" class="out"/>
         <text x="1136" y="292" class="kb">QP5 · SPEC-DRIVEN DEVELOPMENT</text>
-        <text x="1136" y="312" class="t">A spec mudou o resultado?</text>
+        <text x="1136" y="312" class="t">A spec completa ajuda o agente?</text>
 
         <path d="M660,234 V268" class="arrow-b" marker-end="url(#a3b)"/>
         <text x="670" y="256" class="lbl">só este braço entra no repositório</text>
@@ -576,7 +576,7 @@
 
         <text x="40" y="372" class="k">PRÉ-REGISTRO</text>
         <text x="40" y="392" class="t2">O protocolo da QP5 é ele mesmo uma spec, congelada antes do primeiro incremento avaliado, pela mesma lógica do Conjunto de Teste.</text>
-        <text x="40" y="412" class="t2">Paralelo com o artigo-base: lá, o processo estruturado é a estrutura fixa e o LLM preenche a tradução; aqui, a spec é a estrutura fixa e o agente preenche a implementação.</text>
+        <text x="40" y="412" class="t2">Bounded agency em build time: a spec revisada por pessoas é a estrutura fixa, o agente preenche a implementação e oráculos escondidos dele checam o resultado.</text>
       </svg>
       </div>
       <figcaption><b>Figura 3.</b> “Com spec, o agente cumpriu a spec” não mede o efeito do SDD, porque o agente vê os critérios e escreve os próprios testes. Por isso cada incremento avaliado é implementado duas vezes e julgado por testes que o agente nunca viu. Qualidade verificável vira três medidas: correção, autonomia e custo.</figcaption>
@@ -595,28 +595,29 @@
     <table class="qps">
       <thead><tr><th>QP</th><th>Pergunta</th><th>Experimento</th><th>Métricas</th><th>Baseline</th><th>Figura</th></tr></thead>
       <tbody>
-        <tr><th>QP1</th><td>Com que acurácia o LLM embutido descobre a Integration Key, por categoria de atrito?</td><td>Decision Layer nos Pares de Avaliação, inclusive Negativos</td><td><b>Acerto de Chave</b>, <b>Acerto de Execução</b>, Abstenção correta, Cobertura de Candidatos</td><td>B0 a B4; ablação 2 × 3 do Domain Context</td><td>2</td></tr>
+        <tr><th>QP1</th><td>Por categoria de atrito, o que o LLM acrescenta sobre B2 e como se compara com B4? <em>(RQ1 no pôster)</em></td><td>Decision Layer nos Pares de Avaliação, inclusive Negativos</td><td><b>Acerto de Chave</b>, <b>Acerto de Execução</b> (F1 ≥ 0,90), Matriz de decisão, Cobertura de Candidatos</td><td>B0 a B4; ablação 2 × 3 do Domain Context</td><td>2</td></tr>
         <tr><th>QP2</th><td>Um modelo de pesos abertos, local, alcança o proprietário?</td><td>QP1 na condição S com 2 ou 3 modelos</td><td>Sucesso por modelo, tokens, latência</td><td>Modelo proprietário</td><td>2</td></tr>
-        <tr><th>QP3</th><td>O pipeline torna o analista mais rápido e mais certeiro, e a que custo?</td><td>Estudo cruzado com 2 ou 3 analistas do GovHub, 6 a 8 Pares Reais</td><td>Tempo por par (teto 60 min), acurácia pelo Gabarito, custo do pipeline</td><td>Analista sozinho</td><td>2</td></tr>
-        <tr><th>QP4</th><td>Em pares que o GovHub ainda não integra, o pipeline descobre chaves que quem conhece as bases confirma?</td><td>S nos 10 pares não integrados do inventário</td><td>Chaves confirmadas, Abstenções corretas; achados de interoperabilidade para a discussão</td><td>—</td><td>2</td></tr>
-        <tr><th>QP5</th><td>O SDD permite que um agente de IA construa e estenda o pipeline com qualidade verificável?</td><td>Comparação pareada em 6 a 8 incrementos</td><td>Testes-oráculo (1ª entrega e final), iterações, intervenções, tokens, tempo da autora</td><td>Braço sem spec do mesmo incremento</td><td>3</td></tr>
+        <tr><th>QP3</th><td>O pipeline torna o analista mais rápido e mais certeiro, e a que custo?</td><td>Estudo cruzado com 2 ou 3 analistas do Gov Hub, 6 a 8 Pares Reais</td><td>Tempo por par (teto 60 min), acurácia pelo Gabarito, custo do pipeline</td><td>Analista sozinho</td><td>2</td></tr>
+        <tr><th>QP4</th><td>Em pares que o Gov Hub ainda não integra, o pipeline descobre chaves que quem conhece as bases confirma?</td><td>S nos 10 pares não integrados do inventário</td><td>Chaves confirmadas, Abstenções corretas; achados de interoperabilidade para a discussão</td><td>—</td><td>2</td></tr>
+        <tr><th>QP5</th><td>A spec completa melhora o que o agente entrega, medido por oráculos escondidos? <em>(RQ2 no pôster)</em></td><td>Comparação pareada em 6 a 8 incrementos; o braço sem spec recebe o Problema e o Contrato mínimo</td><td>Oráculos compartilhados e de critério, à parte (1ª entrega e final), iterações, intervenções, tokens, tempo da autora; diferença pareada mediana</td><td>Braço sem spec do mesmo incremento</td><td>3</td></tr>
       </tbody>
     </table>
     </div>
 
     <div class="grid g3">
       <div class="card">
-        <div class="tag">Decidido na revisão de 2026-10-03</div>
+        <div class="tag">Decidido até 2026-11-15</div>
         <h3>O que já está fechado</h3>
         <ul>
           <li class="done">Título e foco: LLM embutido + SDD; interoperabilidade como motivação</li>
-          <li class="done">Acerto em dois níveis; Abstenção; chave fora da lista</li>
-          <li class="done">Catálogo de Transformações fechado, com <code>extrair_identificador</code></li>
+          <li class="done">Bounded agency em run time e build time</li>
+          <li class="done">Acerto em dois níveis (Execução por F1 ≥ 0,90); Matriz de decisão; chave fora da lista</li>
+          <li class="done">Catálogo de Transformações fechado, com <code>extrair_identificador</code> (ADR 0013); cobertura 21/26 sem extração, 23/26 com ela</li>
           <li class="done">Benchmark em duas partes; teste congelado, ajuste no desenvolvimento</li>
           <li class="done">Domain Context em dois artefatos; ablação 2 × 3 (ADR 0012)</li>
-          <li class="done">Baselines B0–B4 e plano de análise pré-registrado</li>
+          <li class="done">Baselines B0–B4, 5 execuções em S, B3 e B4, plano de análise pré-registrado</li>
           <li class="done">QP3 cruzada; QP4 em pares não integrados; QP5 pareada</li>
-          <li class="done">Pares Reais = joins em produção do GovHub; dados pessoais fora</li>
+          <li class="done">Pares Reais = joins em produção do Gov Hub; CPF fora, pessoa jurídica onde a chave pode ser CPF</li>
         </ul>
       </div>
       <div class="card">
@@ -624,8 +625,9 @@
         <h3>O que falta decidir</h3>
         <ul>
           <li class="open">Seleção final dos 12 a 20 Pares Reais e das tabelas-semente</li>
-          <li class="open">Formato e primeiro recorte do Mapa de Fluxo; quem do GovHub revisa</li>
-          <li class="open">Limiar do Acerto de Execução</li>
+          <li class="open">Formato e primeiro recorte do Mapa de Fluxo; quem do Gov Hub revisa</li>
+          <li class="open">De-para código de UF → sigla no Glossário (decide o #26 da cobertura)</li>
+          <li class="open">CAIN 2027: quem apresenta em Dublin e com qual financiamento</li>
           <li class="open">Quais LLMs e versões fixar; orçamento de tokens</li>
           <li class="open">Quem são os analistas da QP3 e quais pares entram</li>
           <li class="open">Incrementos da comparação pareada e o valor de K</li>
@@ -636,11 +638,12 @@
         <div class="tag">Portões do cronograma</div>
         <h3>Quatro fases</h3>
         <ul>
+          <li class="open"><b>CAIN 2027 Posters</b> · submetido em 6/11/2026; resultado 11/01/2027; camera-ready 29/01/2027; Dublin, 25/04 a 01/05/2027</li>
           <li class="done"><b>Fase 1</b> · escopo e referencial → TCC 1, início de março de 2027</li>
           <li class="open"><b>Fase 2</b> · ground truth, gerador, harness, baselines → Conjunto de Teste congelado, fim de abril de 2027</li>
           <li class="open"><b>Fase 3</b> · QP1–QP4 → resultados congelados, fim de junho de 2027</li>
           <li class="open"><b>Fase 4</b> · escrita e defesa → TCC 2, agosto de 2027</li>
-          <li>Documentos: <a href="https://github.com/LuizaMaluf/Integracao-de-Dados-com-Modelos-de-Linguagem/blob/main/docs/tcc/proposta.md">proposta</a> · <a href="https://github.com/LuizaMaluf/Integracao-de-Dados-com-Modelos-de-Linguagem/blob/main/docs/tcc/inventario-govhub.md">inventário do GovHub</a> · <a href="https://github.com/LuizaMaluf/Integracao-de-Dados-com-Modelos-de-Linguagem/blob/main/CONTEXT.md">glossário</a> · <a href="https://github.com/LuizaMaluf/Integracao-de-Dados-com-Modelos-de-Linguagem/tree/main/docs/adr">ADRs</a></li>
+          <li>Documentos: <a href="https://github.com/LuizaMaluf/Integracao-de-Dados-com-Modelos-de-Linguagem/blob/main/docs/tcc/proposta.md">proposta</a> · <a href="https://github.com/LuizaMaluf/Integracao-de-Dados-com-Modelos-de-Linguagem/blob/main/docs/tcc/inventario-govhub.md">inventário do Gov Hub</a> · <a href="https://github.com/LuizaMaluf/Integracao-de-Dados-com-Modelos-de-Linguagem/blob/main/CONTEXT.md">glossário</a> · <a href="https://github.com/LuizaMaluf/Integracao-de-Dados-com-Modelos-de-Linguagem/tree/main/docs/adr">ADRs</a></li>
         </ul>
       </div>
     </div>
