@@ -4,7 +4,7 @@ Autora: Luiza Maluf (UnB/FCTE) · Orientação: Carla Rocha e Isaque Alves · ve
 
 **Calendário:** defesa do TCC 1 no início de março de 2027; defesa do TCC 2 em agosto de 2027; pôster no CAIN 2027 (ver "Cronograma").
 
-Artigo-base: ver [`artigo-base.md`](artigo-base.md). Decisões de arquitetura: [`docs/adr/`](../adr/).
+Artigo-base: ver [`artigo-base.md`](artigo-base.md). Decisões de arquitetura: [`docs/adr/`](https://github.com/LuizaMaluf/Integracao-de-Dados-com-Modelos-de-Linguagem/tree/main/docs/adr).
 
 ## Visão geral
 
@@ -29,7 +29,7 @@ O repositório sustenta um TCC de **engenharia de dados aplicada ao setor públi
 | Domínio | Testes de APIs de caminhões (Volvo) | Integração de bases do governo federal |
 | Fontes em silos | Swagger, tabelas de sinais CAN, Veículo Virtual | SIAFI, Transferegov, Portal da Transparência, IBGE |
 | O "de-para" | Propriedade da API → sinal CAN → estado do veículo virtual | Coluna da base A → coluna da base B (Integration Key) |
-| Atritos | Erros ortográficos, abreviações (`STANDARD` → `STD`), formatos, equivalências lógicas (`OFF` = `NOT_ON`), semânticas, unidades, pseudocódigo | Ver **Categoria de atrito** em [`CONTEXT.md`](../../CONTEXT.md); sem a categoria de unidades, que não aparece em chaves, e com Derived Key e Estrutura aninhada, que o artigo não tem |
+| Atritos | Erros ortográficos, abreviações (`STANDARD` → `STD`), formatos, equivalências lógicas (`OFF` = `NOT_ON`), semânticas, unidades, pseudocódigo | Ver **Categoria de atrito** em [`CONTEXT.md`](https://github.com/LuizaMaluf/Integracao-de-Dados-com-Modelos-de-Linguagem/blob/main/CONTEXT.md); sem a categoria de unidades, que não aparece em chaves, e com Derived Key e Estrutura aninhada, que o artigo não tem |
 | Escopo do de-para | Todas as propriedades da API | Só a Integration Key; o mapeamento das demais colunas equivalentes fica como trabalho futuro |
 | Uso do LLM | Em cada etapa manual discreta, inclusive para gerar os casos de teste; DSPy: assinatura tipada, `ChainOfThought`, autocorreção quando o parsing falha | Numa etapa só, o de-para; `llm_reasoner` hoje usa prompt direto; migrar para DSPy, com autocorreção só para saída inválida (ADR 0011) |
 | Saída do LLM | Dicionário JSON unificado, com mapeamento de valores e casos de teste como dados; o script de teste sai do template | Dicionário de Mapeamento: Integration Key (ou Abstenção), transformações do Catálogo de Transformações (fechado, ADR 0013) e cardinalidade esperada; o LLM nunca escreve o SQL |
