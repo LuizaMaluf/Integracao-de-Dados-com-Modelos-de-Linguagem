@@ -1,6 +1,6 @@
 # Integração Semântica de Bases de Dados
 
-Descoberta de chaves de integração entre bases governamentais, com um modelo de linguagem embutido entre estágios determinísticos. Desenvolvido no TCC *Integração de dados públicos com modelos de linguagem* (UnB), sobre as bases com que o Gov Hub trabalha.
+Descoberta de chaves de integração entre bases governamentais, com um modelo de linguagem embutido entre estágios determinísticos. Desenvolvido no TCC *Integração de dados públicos com modelos de linguagem* (UnB), sobre as bases com que o Gov Hub trabalha, com o MinC como domínio de aplicação (ADR 0014).
 
 ## Language
 
@@ -11,7 +11,7 @@ A sequência de estágios que transforma duas tabelas numa Integration Key valid
 _Avoid_: fluxo, workflow, processo
 
 **Domain Context**:
-Conhecimento do domínio orçamentário federal dado ao pipeline, em dois artefatos: o Glossário e o Mapa de Fluxo. Congelado junto com o Conjunto de Teste; entra na avaliação como fator de ablação em três níveis (sem contexto, só Glossário, Glossário + Mapa de Fluxo).
+Conhecimento do domínio de aplicação (orçamento federal e política cultural do MinC) dado ao pipeline, em dois artefatos: o Glossário e o Mapa de Fluxo. Congelado junto com o Conjunto de Teste; entra na avaliação como fator de ablação em três níveis (sem contexto, só Glossário, Glossário + Mapa de Fluxo).
 _Avoid_: configuração, metadados, schema
 
 **Glossário**:
@@ -19,7 +19,7 @@ Parte do Domain Context com os grupos de colunas equivalentes (sinônimos) e os 
 _Avoid_: Dicionário (nome antigo, confunde com o Dicionário de Mapeamento), dicionário de sinônimos, lista de aliases
 
 **Mapa de Fluxo**:
-Parte do Domain Context que descreve o processo da política em nível de documento: quais documentos existem (TED, NC, PF, NE, convênio, contrato), qual sistema registra cada um, o formato do identificador de cada um e onde o identificador de um documento é carregado no registro de outro, com a norma que sustenta cada elo. Escrito a partir de normas públicas, descreve documentos e elos, nunca condições de join. Cada formato de identificador cita uma fonte pública (norma ou manual oficial), e o padrão de `extrair_identificador` deriva desse formato, nunca do SQL de produção. Ver ADR 0012.
+Parte do Domain Context que descreve o processo da política em nível de documento: quais documentos existem (TED, NC, PF, NE, convênio, contrato, PRONAC, plano de ação do TransfereGov), qual sistema registra cada um, o formato do identificador de cada um e onde o identificador de um documento é carregado no registro de outro, com a norma que sustenta cada elo. Escrito a partir de normas públicas, descreve documentos e elos, nunca condições de join. Cada formato de identificador cita uma fonte pública (norma ou manual oficial), e o padrão de `extrair_identificador` deriva desse formato, nunca do SQL de produção. No MinC, cobre o PRONAC, a LPG/PNAB fundo a fundo e a parte TED/NE do SIAFI (ADR 0012 e ADR 0014).
 _Avoid_: modelo de dados, diagrama ER, regras de negócio
 
 **Evidence Layer**:
@@ -190,6 +190,11 @@ _Avoid_: ano, competência, período
 **SIAFI Identifier**:
 Identificador estruturado do SIAFI no formato `[UG 6dig][gestão 5dig][ANO 4dig][tipo 2 letras][seq 6dig]`. Tipos conhecidos: NE (empenho), NC (nota de crédito), PF (pagamento), OB (ordem bancária).
 _Avoid_: identificador completo, código SIAFI
+
+### Política cultural (MinC)
+
+**PRONAC**:
+Número do projeto cultural no SALIC. No Gov Hub, é montado com o ano em 2 dígitos e o sequencial: `lpad(trim(ano),2,'0')||trim(sequencial)`, em `macros/salic/chaves_salic.sql` no `data-application-minc`.
 
 ## Example dialogue
 
