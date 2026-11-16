@@ -4,7 +4,7 @@
 
 ## Contexto
 
-A ADR 0011 fixou um Catálogo de Transformações com nove operações e até três operações por lado, mas não definiu os parâmetros de cada uma. O inventário (`docs/tcc/inventario-govhub.md`) tem 29 condições de join entre fontes; três ficam fora do benchmark por terem chave em CPF (#19, #27 e #28), restando 26. Contra o rascunho do catálogo (`docs/tcc/cobertura-catalogo.md`), 14 das 26 cabem em até três operações por lado (54%), 18 cabem se a extração por `extrair_identificador(tipo)` contar (69%) e 8 dependem de definições ainda abertas. Esta ADR fecha essas definições antes do congelamento.
+A ADR 0011 fixou um Catálogo de Transformações com nove operações e até três operações por lado, mas não definiu os parâmetros de cada uma. O inventário (`docs/tcc/inventario-govhub.md`) tem 29 condições de join entre fontes; três ficam fora do benchmark por terem chave em CPF (#19, #27 e #28), restando 26. Contra o rascunho do catálogo (`docs/tcc/cobertura-catalogo.md`), 14 das 26 cabem em até três operações por lado (54%), 18 cabem se a extração por `extrair_identificador(tipo)` contar (69%) e 8 dependem de definições ainda abertas. Esta ADR fecha essas definições antes do congelamento. Depois dela, a ADR 0014 trouxe o #27 para o universo, com escopo restrito a pessoa jurídica, e o universo passou a 27 condições.
 
 ## Decisão
 
@@ -33,13 +33,13 @@ A ADR 0011 fixou um Catálogo de Transformações com nove operações e até tr
 
 ## Cobertura resultante
 
-Recontagem das 26 condições com as definições acima, detalhada em `docs/tcc/cobertura-catalogo.md`:
+Recontagem das 27 condições do universo da ADR 0014 com as definições acima, detalhada em `docs/tcc/cobertura-catalogo.md`:
 
-- **21/26 (81%)** cabem sem `extrair_identificador`;
-- **23/26 (88%)** cabem contando as 2 que precisam de `extrair_identificador` na primeira etapa (#8 e #12);
-- **3/26 (12%)** ficam fora e viram Abstenção: #17 (de-para fora do Glossário), #18 e #26 (mais de três operações num lado).
+- **22/27 (81%)** cabem sem `extrair_identificador`;
+- **24/27 (89%)** cabem contando as 2 que precisam de `extrair_identificador` na primeira etapa (#8 e #12);
+- **3/27 (11%)** ficam fora e viram Abstenção: #17 (de-para fora do Glossário), #18 e #26 (mais de três operações num lado).
 
-Com a regra do artigo, que põe na classe B toda condição com `extrair_identificador` em alguma etapa, são 19/26 (73%) sem extração e 23/26 (88%) com ela. Das 8 condições que dependiam de definição, 5 cabem (#4, #10, #11, #14 e #25) e 3 ficam fora.
+Com a regra do artigo, que põe na classe B toda condição com `extrair_identificador` em alguma etapa, são 20/27 (74%) sem extração e 24/27 (89%) com ela. Das 8 condições que dependiam de definição, 5 cabem (#4, #10, #11, #14 e #25) e 3 ficam fora. No universo de 26 do pôster, as mesmas definições davam 21/26 (81%) e 23/26 (88%).
 
 A contagem descreve ajuste, não generalização: o catálogo saiu do mesmo inventário de onde vêm os Pares Reais. Os Pares Reais medem a escolha da chave, e a generalização fica com a QP4.
 

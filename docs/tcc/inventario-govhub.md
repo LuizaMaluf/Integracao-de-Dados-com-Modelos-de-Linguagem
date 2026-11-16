@@ -6,8 +6,8 @@ Levantamento de 2026-10-03 nos repositórios `data-application-*` da organizaç�
 | --- | --- | --- | --- |
 | `data-application-gov-hub` | IPEA (projetos `ipea` e `mir`) | 2026-07-27 | Local em `~/Developer/projects/govhub/` |
 | `data-application-cidades` | MCID | 2026-08-13 (branch `chore/reanalise-acervo`) | Local; copia as DAGs e os dbt do gov-hub |
-| `data-application-minc` | MinC | 2026-09-22 | Local |
-| `data-application-mir` | MIR | 2026-10-02 | Só no GitHub; versão mais recente dos models `mir` |
+| `data-application-minc` | MinC | 2026-11-16 (`origin/main` `1d3f962`) | Local; #26, #27 e #29 conferidos nesse commit, sem joins novos entre fontes desde `c588691` |
+| `data-application-mir` | MIR | 2026-10-02 | Só no GitHub; fora pela ADR 0014, citado só como estado do pôster |
 | `data-application-mgi` | MGI | 2026-09-03 | Só no GitHub; só ingestão, nenhum model dbt |
 
 ## Fontes ingeridas
@@ -38,7 +38,9 @@ Levantamento de 2026-10-03 nos repositórios `data-application-*` da organizaç�
 
 ## Joins entre fontes já em produção (candidatos a Pares Reais)
 
-A condição de join e a transformação usadas em produção são o Gabarito. A coluna "Categoria" traz a Categoria de Atrito (`CONTEXT.md`), conferida no código em 2026-11-05. Contagem nas 29 condições, com sobreposição entre categorias: formato de identificador ou tipo 15, Derived Key 9, texto livre 4, sem transformação 1.
+A condição de join e a transformação usadas em produção são o Gabarito. A coluna "Categoria" traz a Categoria de Atrito (`CONTEXT.md`), conferida no código em 2026-11-05. Contagem nas 29 condições, com sobreposição entre categorias: formato de identificador ou tipo 14, Derived Key 9, texto livre 4, sem transformação 2.
+
+Quando a mesma condição existe no `data-application-gov-hub` e no `data-application-mir`, o Gabarito usa a versão do `data-application-gov-hub` (ADR 0014); o caminho do MIR fica entre parênteses só como histórico.
 
 ### SIAFI / Tesouro Gerencial × Compras.gov
 
@@ -55,10 +57,10 @@ A condição de join e a transformação usadas em produção são o Gabarito. A
 | # | Model | Condição | Transformação | Categoria |
 | --- | --- | --- | --- | --- |
 | 6 | `ipea/models/ted_dbt/views/num_transf_n_plano_acao.sql:21` (mir: `empenhos_ted_dbt/views/…:21`) | `using (nc, ug)` com `tx_numero_nota`, `cd_ug_emitente_nota` | `left(nc,6) as ug, right(nc,12) as nc` | Derived Key (decompõe o SIAFI Identifier); composta |
-| 7 | `ted_dbt/silver/pf_plano_acao.sql:43`; mir `silver/pf_unificado.sql:73` | `using (pf, ug_emitente)`; `using (pf_chave)` | `right(pf,12)`; `upper(trim(right(pf,12)))` × `upper(trim(tx_numero_programacao))` | Formato de identificador |
-| 8 | `ted_dbt/silver/empenhos_plano_acao.sql:31`; mir `silver/empenhos_por_plano_acao.sql:442-443` | `using (num_transf)`; `er.num_transf = cast(pa.num_transf as text)` | `num_transf` extraído de `ne_ccor_descricao` por uma cascata de 16 passos (14 por regex, 2 por herança entre linhas; no MIR HEAD `9807b9a` a cascata está em `silver/empenhos_ted_cascata.sql`; contagem em [`cobertura-catalogo.md`](cobertura-catalogo.md)); ano de 2 dígitos expandido por CASE | Extração de texto livre; Equivalência lógica |
+| 7 | `ted_dbt/silver/pf_plano_acao.sql:43` (mir: `silver/pf_unificado.sql:73`, com `upper(trim(...))` nos dois lados) | `using (pf, ug_emitente)` | `right(pf,12)` | Formato de identificador |
+| 8 | `ted_dbt/silver/empenhos_plano_acao.sql:8-31` (mir: `silver/empenhos_por_plano_acao.sql:442-443`, com a cascata de 16 passos do [estado do pôster](cobertura-catalogo.md#anexo-estado-do-pôster-cascata-do-8-no-mir)) | `using (num_transf)` | `num_transf` extraído de `ne_ccor_descricao` por um único `regexp_match(...)[3]`, com `replace(..., '.', '')` | Extração de texto livre |
 | 9 | `ted_dbt/silver/nc_plano_acao.sql:31`; mir `:21` | `nc_transferencia = pda.num_transf` | — | Grafia/nomenclatura |
-| 10 | `ted_dbt/gold/ted_resumo_orcamentario.sql:115`; mir `gold/…:149, 204-207` | `using (plano_acao)`; `using (plano_acao, num_transf)` | `ltrim(trim(cast(x as text)),'0')` | Formato (zeros à esquerda); composta |
+| 10 | `ted_dbt/gold/ted_resumo_orcamentario.sql:115` (mir: `gold/…:149, 204-207`, com `ltrim(trim(cast(x as text)),'0')` e chave `(plano_acao, num_transf)`) | `using (plano_acao)` | — | Sem transformação |
 | 11 | `ted_dbt/silver/bolsistas_nc_tesouro.sql:50-52`; mir `silver/nc_unificado.sql:67` | `fonte_recursos_codigo = nc_fonte_recursos and ptres = ptres`; `trim(ptres) = trim(ptres)` | `split_part(ptres,'.',1)` | Formato; composta (dois relatórios do Tesouro) |
 
 ### SIAFI × SICONV / emendas × Câmara e Senado
@@ -89,14 +91,16 @@ A condição de join e a transformação usadas em produção são o Gabarito. A
 | 23 | cidades `evolucao_financeira.sql:76-77`; `fds_empreendimento.sql:190-193` | `m.apf_raiz = left(e.apf, 6)` | `right(apf,6)` × `left(apf,6)` | Derived Key |
 | 24 | cidades `gold/mapa_nacional.sql:41`, `panorama_estadual.sql:165…` (MCMV × IBGE UF) | `f.uf = i.sigla` | `nullif(trim(sg_uf),'')` | Grafia |
 | 25 | cidades `conjuntura_dbt/silver/silver_financiamentos_habitacionais.sql:48-50`; `gold_ticket_medio_vs_incc.sql:47-49` | `on (ano, trimestre)` | trimestre derivado de `EXTRACT(MONTH)` por CASE | Derived Key; composta |
-| 26 | minc `cotas_dbt/gold/fct_pagamentos_elegiveis.sql:46-47` (planilhas TransfereGov × IBGE FCU) | `chave_municipio_uf = chave_municipio_uf` | `sem_acento(cidade)||'|'||sem_acento(uf)` × `sem_acento(nm_mun)||'|'||lower(sigla_uf)`, com código de UF → sigla por tabela CASE | Derived Key; Equivalência lógica; Grafia — planilhas do MinC: só colunas não pessoais no snapshot |
-| 27 | minc `agentes_dbt/gold/primeiro_acesso_anual.sql:66-69` (BB Ágil ∪ SALIC ∪ Ancine) | `beneficiario_documento` + `programa_fomento` + `ano` | `LPAD(REGEXP_REPLACE(doc,'[^0-9]',''), 11|14, '0')`, 11 ou 14 por tipo de pessoa | Formato (máscara, zeros); **CPF** |
+| 26 | minc `data_products/cultura_em_numeros/eixo2_meta3_pagamento_elegivel.sql:46`, chaves em `eixo2_meta3_perfil_agente.sql:122-125` e `transferegov/silver_territorio_municipio.sql:69-79` (planilhas TransfereGov × IBGE FCU) | `chave_municipio_uf = chave_municipio_uf` | `sem_acento(cidade)||'|'||sem_acento(uf)` × `sem_acento(nm_mun)||'|'||lower(sigla_uf)`, com código de UF → sigla por tabela CASE | Derived Key; Equivalência lógica; Grafia — planilhas do MinC: só colunas não pessoais no snapshot |
+| 27 | minc `data_products/cultura_em_numeros/eixo2_meta5_primeiro_acesso_anual.sql:66-67, 82-83`, sobre o UNION de `intermediate/int_ancine_bbagil_salic.sql` (BB Ágil ∪ SALIC ∪ Ancine) | `beneficiario_documento` | `LPAD(REGEXP_REPLACE(doc,'[^0-9]',''), 11|14, '0')`; o SALIC (`salic/silver_sac_captacao_proponente.sql:38-40`) e a Ancine (`ancine/silver_consulta.sql:105-112`) escolhem 11 ou 14 pelo número de dígitos, o BB Ágil (`bbagil/silver_pagamento_extrato_bbagil.sql:38-42`) pelo tipo de pessoa | Formato (máscara, zeros) — **CPF quando o agente é pessoa física**: escopo do par restrito a pessoa jurídica (ADR 0014) |
 | 28 | minc `cotas_dbt/gold/fct_pagamentos_bbagil.sql:37-41` (model desativado; não existe mais no HEAD, lido em minc `813aa20`) | `ente_bbagil = id_plano_acao::text`; `identificador_unico` | só dígitos | Formato — **chave é CPF** |
-| 29 | minc `extracao_bbagil_dag.py:94-99` (TransfereGov → BB Ágil; passo de ingestão em Python, não model dbt) | `agencia`, `conta` | `int()` descarta zeros à esquerda | Formato (zeros) — BB Ágil: só colunas não pessoais no snapshot |
+| 29 | minc `dags/data_ingest/bsc_pnab/extracao_bbagil_dag.py:110-111` (TransfereGov → BB Ágil; passo de ingestão em Python, não model dbt) | `agencia`, `conta` | `int()` descarta zeros à esquerda | Formato (zeros) — BB Ágil: só colunas não pessoais no snapshot |
 
 Joins dentro de uma mesma fonte com transformação, úteis como semente: SALIC PRONAC = `lpad(trim(ano),2,'0')||trim(sequencial)` (minc `macros/salic/chaves_salic.sql:40-47`); SIAPE `right(codigo_orgao_uorg,7)::integer = cast(codigo as int)`; SIORG `regexp_replace(x,'^.*/','')` em códigos de unidade.
 
-## Pares ainda não integrados (candidatos à QP4)
+## Pares ainda não integrados
+
+Pela ADR 0014, os candidatos à QP4 são só os do MinC, marcados com **QP4**.
 
 | Par | Onde | Observação |
 | --- | --- | --- |
@@ -104,9 +108,12 @@ Joins dentro de uma mesma fonte com transformação, úteis como semente: SALIC 
 | SIAFI API (`siafi.notas_empenho`) × Tesouro Gerencial (`siafi.ne_tesouro`) | gov-hub | Mesmo documento por dois caminhos; nenhum model usa a API |
 | `siconv.proposta.cod_munic_ibge` × IBGE municípios | gov-hub, mir | — |
 | MCMV `cod_ibge` × `api_ibge_municipios` | cidades | `api_ibge_municipios` e `api_ibge_regioes` declarados e nunca usados |
-| Ancine `consulta."No SALIC"` × SALIC PRONAC | minc | — |
-| SALIC código IBGE de 6 dígitos × `cod_ibge` de 7 dígitos (TransfereGov, BB Ágil) | minc | A ponte 6↔7 existe em `agentes__populacaomunicipio` |
-| SICONFI e IBGE SIDRA × `territorio_fcu.cd_mun` | minc | — |
+| Ancine `consulta."No SALIC"` × SALIC PRONAC | minc | **QP4** |
+| SALIC código IBGE de 6 dígitos × `cod_ibge` de 7 dígitos (TransfereGov, BB Ágil) | minc | **QP4**. A ponte 6↔7 existe em `agentes__populacaomunicipio` |
+| BB Ágil `cod_ibge`/`id_plano_acao` × TransfereGov | minc | **QP4**. O join existia na cadeia desativada do #28, removida no `1ad37a5` |
+| MUNIC × SALIC | minc | **QP4** |
+| Mapas Culturais × IBGE municípios | minc | **QP4** |
+| SICONFI e IBGE SIDRA × `territorio_fcu.cd_mun` | minc | **QP4** |
 | PPA `programa` × SIAFI `programa_governo` | mir | — |
 | `compras_gov` (API de contratos, MIR) × `compras_gov` (Dados Abertos, MGI) | mir, mgi | Dois schemas homônimos de APIs diferentes, sem ligação |
 | FKs documentadas e não implementadas do MGI (`idcompra` → `raw_contratacoes`; `codigoorgao` → `raw_orgao`; contratos × itens em `(codigounidadegestora, numerocontrato, nifornecedor)`) | mgi `documentacao-schema-compras-gov.md:44-260, 300-652` | Gabarito documentado, join inexistente — categoria intermediária |

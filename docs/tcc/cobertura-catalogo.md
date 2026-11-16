@@ -1,10 +1,10 @@
 # Cobertura do Catálogo de Transformações
 
-Quantas das condições de join do [inventário](inventario-govhub.md) o Catálogo de Transformações expressa, com as definições da [ADR 0013](../adr/0013-catalogo-de-transformacoes-fechado.md). Recontagem de 2026-11-15. A contagem mede ajuste, não generalização: o catálogo saiu do mesmo inventário (ver "Ajuste × generalização" em [`proposta.md`](proposta.md)).
+Quantas das condições de join do [inventário](inventario-govhub.md) o Catálogo de Transformações expressa, com as definições da [ADR 0013](../adr/0013-catalogo-de-transformacoes-fechado.md) e o universo da [ADR 0014](../adr/0014-minc-como-dominio-de-aplicacao.md). Recontagem de 2026-11-16. A contagem mede ajuste, não generalização: o catálogo saiu do mesmo inventário (ver "Ajuste × generalização" em [`proposta.md`](proposta.md)).
 
 ## Regras da contagem
 
-- **Universo**: as 29 condições do inventário, menos as 3 com chave em CPF (#19, #27 e #28), dão 26.
+- **Universo**: as 29 condições do inventário, menos as 2 com chave em CPF que ficam fora (#19 e #28), dão 27. O #27 entra com escopo restrito a pessoa jurídica (ADR 0014).
 - **Operações por lado**: soma das operações de todas as colunas da chave naquele lado; o limite é 3 (ADR 0013, decisão 2). Cada `trecho` usado dentro de `concatenar` conta.
 - **Filtros** do join em produção são escopo do par e não contam como operação.
 - **Cascatas**: cada etapa é uma Chave Aceitável; a classe da condição segue a primeira etapa (ADR 0013, decisão 6).
@@ -12,17 +12,17 @@ Quantas das condições de join do [inventário](inventario-govhub.md) o Catálo
   - **A**: cabe sem `extrair_identificador`;
   - **B**: precisa de `extrair_identificador(tipo)` na primeira etapa;
   - **C**: fora do catálogo; a resposta do pipeline é Abstenção por transformação fora do catálogo.
-- **Fontes**: as transformações vêm do inventário, conferido no código em 2026-11-05. O #8 e o #10 foram relidos no `data-application-mir` (HEAD `9807b9a`, 2026-11-13) e o #18 no `data-application-gov-hub` local.
+- **Fontes**: as transformações vêm do inventário, conferido no código em 2026-11-05, na versão do `data-application-gov-hub` quando a condição também existe no MIR (ADR 0014). O #7, o #8, o #10 e o #18 foram relidos no `data-application-gov-hub` local (`cd12913`); o #26, o #27 e o #29 no `data-application-minc` (`1d3f962`).
 
 ## Resumo
 
 | Contagem | A | A + B | C | Excluídas |
 | --- | --- | --- | --- | --- |
-| Pôster do CAIN 2027 (rascunho do catálogo; B = `extrair_identificador` em alguma etapa; 8 condições sem definição) | 14/26 (54%) | 18/26 (69%) | — | 3 |
-| ADR 0013, com a mesma regra do pôster para B | 19/26 (73%) | 23/26 (88%) | 3/26 (12%) | 3 |
-| **ADR 0013, classe pela primeira etapa** | **21/26 (81%)** | **23/26 (88%)** | **3/26 (12%)** | 3 |
+| Pôster do CAIN 2027 (rascunho do catálogo; B = `extrair_identificador` em alguma etapa; 8 condições sem definição; universo de 26) | 14/26 (54%) | 18/26 (69%) | — | 3 |
+| ADR 0013 e ADR 0014, com a mesma regra do pôster para B | 20/27 (74%) | 24/27 (89%) | 3/27 (11%) | 2 |
+| **ADR 0013 e ADR 0014, classe pela primeira etapa** | **22/27 (81%)** | **24/27 (89%)** | **3/27 (11%)** | 2 |
 
-As 8 condições sem definição no pôster eram #4, #10, #11, #14, #17, #18, #25 e #26. Com a ADR 0013, cinco entram na classe A (#4, #10, #11, #14 e #25) e três ficam fora (#17, #18 e #26). A regra da primeira etapa leva #2 e #3 de B para A: a primeira etapa de cada um cabe sem extração, e a extração aparece só num fallback.
+As 8 condições sem definição no pôster eram #4, #10, #11, #14, #17, #18, #25 e #26. Com a ADR 0013, cinco entram na classe A (#4, #10, #11, #14 e #25) e três ficam fora (#17, #18 e #26). A regra da primeira etapa leva #2 e #3 de B para A: a primeira etapa de cada um cabe sem extração, e a extração aparece só num fallback. A ADR 0014 traz o #27 para o universo, na classe A, e troca o #7, o #8 e o #10 pela versão do `data-application-gov-hub`, sem mudar a classe de nenhum deles.
 
 ## Por condição
 
@@ -36,10 +36,10 @@ As 8 condições sem definição no pôster eram #4, #10, #11, #14, #17, #18, #2
 | 4 | `contrato_id` —; data: `trecho(delimitador)`, `converter_data(mês)` (2) | `contrato_id` —; `concatenar(ano, mês)`, `converter_data(mês)` (2) | A | `split_part` vira `trecho` com delimitador literal |
 | 5 | `ne_ccor` — | `concatenar(UG, gestão, número)`, `normalizar_texto(caixa)` (2) | A | Exemplo de Derived Key do `CONTEXT.md` |
 | 6 | `nc`: `trecho(início, 6)`, `trecho(fim, 12)` (2) | — | A | Decompõe o SIAFI Identifier em UG e documento |
-| 7 | `trecho(fim, 12)`, `normalizar_texto(caixa, espaços)` (2) | `normalizar_texto(caixa, espaços)` (1) | A | |
-| 8 | etapa 1: `extrair_identificador(TED)` em `ne_ccor_descricao` (1) | — | B | Cascata de 16 passos; ver a tabela abaixo |
+| 7 | `trecho(fim, 12)` (1) | — | A | |
+| 8 | `extrair_identificador(TED)` em `ne_ccor_descricao` (1) | — | B | Um único regex no `data-application-gov-hub`; a cascata do MIR está no anexo |
 | 9 | — | — | A | Única igualdade direta entre colunas sem transformação |
-| 10 | `num_transf`: `converter_tipo(texto)`, `normalizar_texto(espaços)`, `preencher_zeros(largura)` (3) | idem (3) | A | No limite. `ltrim(..., '0')` só em `num_transf`; `plano_acao` sem transformação |
+| 10 | — | — | A | Igualdade direta em `plano_acao`; o `ltrim(..., '0')` era da versão do MIR |
 | 11 | fonte —; `ptres`: `trecho(delimitador '.', 1)` (1) | — | A | |
 | 12 | `extrair_identificador(convênio)`, `converter_tipo(inteiro)` (2) | — | B | Número do convênio no texto da NE |
 | 13 | `converter_tipo(texto)` (1) | — | A | `left(ne_ccor,6)='810008'` é escopo do par |
@@ -56,11 +56,20 @@ As 8 condições sem definição no pôster eram #4, #10, #11, #14, #17, #18, #2
 | 24 | `normalizar_texto(espaços)` (1) | — | A | `nullif(..., '')` trata vazio como nulo |
 | 25 | `ano` —; `converter_data(trimestre)` (1) | — | A | Trimestre derivado do mês |
 | 26 | `normalizar_texto` ×2, `concatenar` (3) | `normalizar_texto`, `mapear_valores(código de UF → sigla)`, `normalizar_texto`, `concatenar` (4) | C | Passa do limite no lado 2. Ver "Pendências" |
-| 27 | — | — | Excluída | Chave é CPF |
+| 27 | `remover_mascara`, `preencher_zeros(14)` (2) | idem (2) | A | Escopo restrito a pessoa jurídica. O SQL remove todo caractere não numérico, como no #20 |
 | 28 | — | — | Excluída | Chave é CPF; model desativado, lido em minc `813aa20` |
 | 29 | `agencia`, `conta`: `converter_tipo(inteiro)` (2) | — | A | Passo de ingestão em Python, não model dbt |
 
-## Cascata do #8
+## Pendências
+
+- **#26 como chave composta.** Sem `concatenar`, a chave (município, UF) cabe em 3 operações no lado 2, mas só se o de-para código de UF → sigla estiver no Glossário. É uma tabela pública do IBGE, não o Gabarito. Decidir se entra no Glossário. Se entrar, o #26 vai para A: 23/27 (85%) e 25/27 (93%).
+- **#27 e as regras de completar zeros.** O SALIC e a Ancine escolhem 11 ou 14 dígitos pelo tamanho do documento; o BB Ágil, pelo tipo de pessoa. Medir quantos documentos divergem entre as duas regras antes de anotar o Gabarito.
+- **#20 e `remover_mascara`.** O SQL remove todo caractere não numérico. Definir na spec do Catálogo se `remover_mascara` cobre isso ou só a máscara de identificadores.
+- **Conferir no código** as condições classificadas só pela transformação do inventário: todas exceto #7, #8, #10, #18, #26, #27 e #29.
+
+## Anexo: estado do pôster (cascata do #8 no MIR)
+
+O pôster do CAIN 2027 contou o #8 pela versão do `data-application-mir`, que fica fora a partir da ADR 0014. A tabela abaixo descreve essa versão.
 
 `num_transf` sai de `ne_ccor_descricao` e de outros campos da NE por uma cascata em `mir/models/empenhos_ted_dbt/silver/empenhos_ted_cascata.sql`, com os padrões na macro `ted_num_transf_metodos()` de `macros/mir_silver/regex_vinculo.sql` (MIR HEAD `9807b9a`). Cada NE fica com o primeiro método que resolve.
 
@@ -85,9 +94,4 @@ As 8 condições sem definição no pôster eram #4, #10, #11, #14, #17, #18, #2
 
 Contagem: 16 passos, 14 por regex e 2 por herança entre linhas (métodos 6 e 9). O empenho de origem também herda o `num_transf` de outra linha, mas conta como regex, porque é o regex que acha a NE de origem. Das 16 etapas, 9 cabem com `extrair_identificador` e 1 sem transformação (método 5); as outras 6 ficam fora.
 
-## Pendências
-
-- **#26 como chave composta.** Sem `concatenar`, a chave (município, UF) cabe em 3 operações no lado 2, mas só se o de-para código de UF → sigla estiver no Glossário. É uma tabela pública do IBGE, não o Gabarito. Decidir se entra no Glossário. Se entrar, o #26 vai para A: 22/26 (85%) e 24/26 (92%).
-- **#20 e `remover_mascara`.** O SQL remove todo caractere não numérico. Definir na spec do Catálogo se `remover_mascara` cobre isso ou só a máscara de identificadores.
-- **Conferir no código** as condições classificadas só pela transformação do inventário: todas exceto #8, #10 e #18.
-- **Fora deste repositório.** No `data-application-mir`, `airflow_lappis/dags/dbt/mir/models/empenhos_ted_dbt/silver/schema.yml:311` ainda fala em "9 métodos sequenciais de extração via regex"; são 16 passos.
+No `data-application-mir`, `airflow_lappis/dags/dbt/mir/models/empenhos_ted_dbt/silver/schema.yml:311` ainda fala em "9 métodos sequenciais de extração via regex"; são 16 passos.
