@@ -1,6 +1,6 @@
 # Integração Semântica de Bases de Dados
 
-Descoberta de chaves de integração entre bases governamentais, com um modelo de linguagem embutido entre estágios determinísticos. Desenvolvido no TCC *Integração de dados públicos com modelos de linguagem* (UnB), sobre as bases com que o GovHub trabalha.
+Descoberta de chaves de integração entre bases governamentais, com um modelo de linguagem embutido entre estágios determinísticos. Desenvolvido no TCC *Integração de dados públicos com modelos de linguagem* (UnB), sobre as bases com que o Gov Hub trabalha.
 
 ## Language
 
@@ -11,15 +11,15 @@ A sequência de estágios que transforma duas tabelas numa Integration Key valid
 _Avoid_: fluxo, workflow, processo
 
 **Domain Context**:
-Conhecimento do domínio orçamentário federal dado ao pipeline, em dois artefatos: o Dicionário e o Mapa de Fluxo. Congelado junto com o Conjunto de Teste; entra na avaliação como fator de ablação em três níveis (sem contexto, só Dicionário, Dicionário + Mapa de Fluxo).
+Conhecimento do domínio orçamentário federal dado ao pipeline, em dois artefatos: o Glossário e o Mapa de Fluxo. Congelado junto com o Conjunto de Teste; entra na avaliação como fator de ablação em três níveis (sem contexto, só Glossário, Glossário + Mapa de Fluxo).
 _Avoid_: configuração, metadados, schema
 
-**Dicionário**:
-Parte do Domain Context com os grupos de colunas equivalentes (sinônimos) e os padrões de identificador. Usado pela coleta de evidências.
-_Avoid_: dicionário de sinônimos, lista de aliases
+**Glossário**:
+Parte do Domain Context com os grupos de colunas equivalentes (sinônimos) e os padrões de identificador. Usado pela coleta de evidências e única fonte dos pares aceitos por `mapear_valores`. No artigo do CAIN 2027, *Glossary*.
+_Avoid_: Dicionário (nome antigo, confunde com o Dicionário de Mapeamento), dicionário de sinônimos, lista de aliases
 
 **Mapa de Fluxo**:
-Parte do Domain Context que descreve o processo da política em nível de documento: quais documentos existem (TED, NC, PF, NE, convênio, contrato), qual sistema registra cada um, o formato do identificador de cada um e onde o identificador de um documento é carregado no registro de outro, com a norma que sustenta cada elo. Escrito a partir de normas públicas, descreve documentos e elos, nunca condições de join. Ver ADR 0012.
+Parte do Domain Context que descreve o processo da política em nível de documento: quais documentos existem (TED, NC, PF, NE, convênio, contrato), qual sistema registra cada um, o formato do identificador de cada um e onde o identificador de um documento é carregado no registro de outro, com a norma que sustenta cada elo. Escrito a partir de normas públicas, descreve documentos e elos, nunca condições de join. Cada formato de identificador cita uma fonte pública (norma ou manual oficial), e o padrão de `extrair_identificador` deriva desse formato, nunca do SQL de produção. Ver ADR 0012.
 _Avoid_: modelo de dados, diagrama ER, regras de negócio
 
 **Evidence Layer**:
@@ -31,19 +31,23 @@ Parte da coleta de evidências que produz sinais baseados nos valores das coluna
 _Avoid_: análise de conteúdo, comparação de dados, validação de valores
 
 **Decision Layer**:
-Estágio que recebe as evidências da Evidence Layer ou da Content Evidence Layer e o esquema completo das duas tabelas, e decide a melhor chave de integração — um Candidate Key ou outra chave que ela mesma propõe — ou se abstém (Abstenção), usando o LLM quando disponível. As evidências ordenam as opções, mas não limitam a resposta. É o único ponto do pipeline onde o LLM atua (ver LLM embutido); sua saída é um Dicionário de Mapeamento, nunca SQL.
+Estágio que recebe as evidências da Evidence Layer ou da Content Evidence Layer e o esquema completo das duas tabelas, e decide a melhor chave de integração — um Candidate Key ou outra chave que ela mesma propõe — ou se abstém (Abstenção), usando o LLM quando disponível. As evidências ordenam as opções, mas não limitam a resposta. É o único ponto do pipeline onde o LLM atua (ver LLM embutido); sua saída é um Dicionário de Mapeamento, nunca SQL. Uma saída inválida volta ao LLM com a mensagem de erro; uma decisão que falha numa checagem vira Abstenção, sem nova decisão.
 _Avoid_: seleção, escolha
 
 **LLM embutido**:
-Princípio herdado do artigo-base (SPAPI-Tester, `docs/tcc/artigo-base.md`): o LLM não substitui o pipeline nem o fluxo do analista; entra só na etapa que exige julgamento — o de-para entre bases — entre estágios determinísticos. Ver ADR 0011.
+Padrão herdado do artigo-base (SPAPI-Tester, Wang et al., ICSE 2025; `docs/tcc/artigo-base.md`): o LLM não substitui o pipeline nem o fluxo do analista; entra entre estágios determinísticos e devolve dados estruturados, nunca o artefato executado. O SPAPI-Tester usa LLM em cada etapa manual discreta do processo de teste, inclusive para gerar os casos de teste, e deixa a renderização e a execução dos testes em código determinístico. Aqui, sob Bounded agency, o LLM decide uma etapa só: o de-para entre as bases. Ver ADR 0011.
 _Avoid_: agente autônomo, IA que integra as bases, LLM gerando o join
 
+**Bounded agency**:
+Princípio do TCC: o modelo decide só o que exige julgamento, e artefatos que ele não produziu (Catálogo de Transformações, checagens executáveis, Spec revisada) restringem e checam a decisão. Vale em dois níveis: em *run time*, a Decision Layer escolhe a Integration Key dentro do catálogo ou se abstém; em *build time*, o agente de código implementa a partir de uma Spec revisada, checado por Testes-Oráculo escondidos dele. Termo do artigo do CAIN 2027, mantido em inglês.
+_Avoid_: agência limitada, LLM controlado, guardrails
+
 **Dicionário de Mapeamento**:
-Saída tipada da Decision Layer: Integration Key (ou Abstenção), transformação de cada lado expressa no Catálogo de Transformações, Categoria de Atrito resolvida, confiança e justificativa curta registrada. Consumida por um estágio determinístico (templates Jinja → model dbt de join + testes).
+Saída tipada da Decision Layer: Integration Key (ou Abstenção), transformação de cada lado expressa no Catálogo de Transformações, cardinalidade esperada, Categoria de Atrito resolvida, confiança e justificativa curta registrada. No artigo do CAIN 2027, *mapping dictionary*. Consumida por um estágio determinístico (templates Jinja → model dbt de join + testes).
 _Avoid_: resposta do LLM, JSON de saída, mapping
 
 **Catálogo de Transformações**:
-Conjunto fechado e versionado de operações tipadas (ex.: extrair trecho, concatenar colunas, remover máscara, mapear valores, extrair identificador de um tipo do Mapa de Fluxo) com que a Decision Layer expressa como alinhar as colunas de uma Integration Key. O LLM nomeia a operação e seus parâmetros; nunca escreve regex ou SQL. Cada operação tem uma tradução fixa para SQL no estágio determinístico; uma chave que não cabe no catálogo leva à Abstenção. Congelado junto com o Conjunto de Teste.
+Conjunto fechado e versionado de operações tipadas (ex.: extrair trecho, concatenar colunas, remover máscara, mapear valores, extrair identificador de um tipo do Mapa de Fluxo) com que a Decision Layer expressa como alinhar as colunas de uma Integration Key. O LLM nomeia a operação e seus parâmetros; nunca escreve regex ou SQL. Cada operação tem uma tradução fixa para SQL no estágio determinístico, e cada lado da chave usa até três operações; uma chave que não cabe no catálogo leva à Abstenção. Congelado junto com o Conjunto de Teste. Operações e parâmetros na ADR 0013.
 _Avoid_: transformações livres, regras de transformação, DSL
 
 **Estágio determinístico**:
@@ -71,7 +75,7 @@ _Avoid_: chave calculada, chave transformada
 ### Atritos de integração
 
 **Categoria de Atrito**:
-Tipo de diferença entre duas bases que impede um join direto pela Integration Key e que a Decision Layer precisa resolver. Taxonomia adaptada do artigo-base para a descoberta de chaves: a categoria de unidades do artigo (W × kW) não tem correspondente aqui, porque valores medidos não viram chave. Cada Par de Avaliação é rotulado com uma ou mais categorias.
+Tipo de diferença entre duas bases que impede um join direto pela Integration Key e que a Decision Layer precisa resolver. No artigo do CAIN 2027, *friction*. Taxonomia adaptada do artigo-base para a descoberta de chaves: a categoria de unidades do artigo (W × kW) não tem correspondente aqui, porque valores medidos não viram chave. Cada Par de Avaliação é rotulado com uma ou mais categorias.
 
 | Categoria | Exemplo no domínio |
 | --- | --- |
@@ -92,7 +96,7 @@ Par de tabelas (A, B) com Gabarito, rotulado com uma ou mais Categorias de Atrit
 _Avoid_: caso de teste, exemplo, par do benchmark
 
 **Par Real**:
-Par de Avaliação formado por duas tabelas que o GovHub já cruza em produção; o Gabarito é a condição de join e a transformação do SQL em produção, documentadas pela autora e confirmadas por alguém do GovHub. Pode ter várias Categorias de Atrito.
+Par de Avaliação formado por duas tabelas que o Gov Hub já cruza em produção; o Gabarito é a condição de join e a transformação do SQL em produção, anotadas pela autora e auditadas por um engenheiro do Gov Hub. Pode ter várias Categorias de Atrito.
 _Avoid_: par natural, caso real
 
 **Par Perturbado**:
@@ -100,7 +104,7 @@ Par de Avaliação em que a tabela B é gerada a partir de uma tabela real aplic
 _Avoid_: par sintético, par artificial
 
 **Conjunto de Teste**:
-Parte do ground truth (cerca de 80% de cada tipo de par e de cada categoria) congelada antes de ajustar o agente e usada só nos experimentos finais. O restante é o **Conjunto de Desenvolvimento**, livre para ajustar a Decision Layer e o Domain Context; todo Par Real já visto durante o desenvolvimento (ex.: o par IBGE da PoC) fica nele.
+Parte do ground truth (cerca de 80% dos pares, divididos por tabela-semente e par de fontes antes da perturbação) congelada antes de ajustar o agente e usada só nos experimentos finais. O restante é o **Conjunto de Desenvolvimento**, livre para ajustar a Decision Layer e o Domain Context; todo Par Real já visto durante o desenvolvimento (ex.: o par IBGE da PoC) fica nele.
 _Avoid_: holdout, validação
 
 **Gabarito**:
@@ -108,7 +112,7 @@ Conjunto de Chaves Aceitáveis de um Par de Avaliação: extraído do join em pr
 _Avoid_: resposta certa, label
 
 **Chave Aceitável**:
-Integration Key considerada correta para um Par de Avaliação: colunas de A, colunas de B e a transformação que as alinha, expressa no Catálogo de Transformações. Um par pode ter várias (ex.: no par IBGE, o prefixo do código do município ou o `UF.id` aninhado; numa cascata de fallbacks em produção, cada etapa é uma Chave Aceitável e a primeira é a principal). Filtros que o join em produção aplica (UG, janela de Exercício) são **escopo do par**, aplicado às duas tabelas antes da avaliação, não parte da chave.
+Integration Key considerada correta para um Par de Avaliação: colunas de A, colunas de B e a transformação que as alinha, expressa no Catálogo de Transformações. Um par pode ter várias (ex.: no par IBGE, o prefixo do código do município ou o `UF.id` aninhado; numa cascata de fallbacks em produção, cada etapa é uma Chave Aceitável e a primeira é a principal; a cascata completa fica fora do escopo). Filtros que o join em produção aplica (UG, janela de Exercício) são **escopo do par**, aplicado às duas tabelas antes da avaliação, não parte da chave.
 _Avoid_: chave certa, chave esperada
 
 **Par Negativo**:
@@ -120,7 +124,7 @@ Saída da Decision Layer que declara não haver Integration Key entre as duas ta
 _Avoid_: erro, sem resultado, falha
 
 **Join de Referência**:
-Junção obtida ao aplicar uma Chave Aceitável do Gabarito, com sua transformação. Base de comparação do Acerto de Execução.
+Junção obtida ao aplicar uma Chave Aceitável do Gabarito, com sua transformação; em chaves de texto livre, a saída materializada do SQL de produção. Base de comparação do Acerto de Execução.
 _Avoid_: join esperado, join correto
 
 **Cobertura de Candidatos**:
@@ -128,12 +132,16 @@ Fração dos Pares de Avaliação em que alguma Chave Aceitável está entre os 
 _Avoid_: recall, cobertura (sem qualificador)
 
 **Acerto de Chave**:
-A Integration Key escolhida coincide, em colunas, com alguma Chave Aceitável do Gabarito; num Par Negativo, a Decision Layer se absteve.
+A Integration Key escolhida coincide, em colunas, com alguma Chave Aceitável do Gabarito. As Abstenções ficam fora desta medida e vão para a Matriz de decisão.
 _Avoid_: acurácia, acerto (sem qualificador)
 
 **Acerto de Execução**:
-O join produzido com a Integration Key e a transformação propostas reproduz o Join de Referência acima de um limiar fixado junto com o Conjunto de Teste. Separa colunas certas com transformação errada de uma decisão que de fato integra as bases.
+F1 dos pares de linhas do join produzido com a Integration Key e a transformação propostas contra os pares de linhas do Join de Referência; conta como acerto com F1 ≥ 0,90, limiar inicial congelado junto com o Conjunto de Teste. Relatam-se precisão, recall e F1. Separa colunas certas com transformação errada de uma decisão que de fato integra as bases.
 _Avoid_: acerto de join, validação
+
+**Matriz de decisão**:
+Cruzamento da resposta da Decision Layer (chave ou Abstenção) com o Gabarito (com chave ou Par Negativo). Relata as Abstenções corretas e erradas à parte do Acerto de Chave, com as Abstenções por transformação fora do catálogo e por checagem reprovada contadas separadamente.
+_Avoid_: matriz de confusão, taxa de Abstenção
 
 ### Processo de construção (QP5)
 
@@ -142,11 +150,23 @@ Documento em `docs/specs/` com problema, escopo, contrato e critérios de aceite
 _Avoid_: PRD, plano, especificação informal
 
 **Teste-Oráculo**:
-Teste escrito pela autora a partir dos critérios de aceite de uma Spec, antes da implementação e fora do alcance do agente. É o juiz independente dos dois braços de uma Comparação Pareada; os testes que o agente escreve não contam como oráculo.
+Teste escrito pela autora a partir de uma Spec, antes da implementação e fora do alcance do agente. É o juiz independente dos dois braços de uma Comparação Pareada; os testes que o agente escreve não contam como oráculo. Há dois grupos, relatados à parte: Oráculos compartilhados e Oráculos de critério.
 _Avoid_: teste de aceite, teste do agente
 
+**Oráculo compartilhado**:
+Teste-Oráculo derivado só do Problema e do Contrato mínimo, informação que os dois braços recebem. Mede os dois braços em igualdade.
+_Avoid_: teste comum, teste básico
+
+**Oráculo de critério**:
+Teste-Oráculo derivado dos critérios de aceite da Spec, que só o braço com spec recebe. Pode favorecer esse braço, por isso é relatado à parte.
+_Avoid_: teste de aceite, oráculo da spec
+
+**Contrato mínimo**:
+Descrição de como o incremento é invocado e do formato da saída, igual nos dois braços de uma Comparação Pareada. Não inclui critérios de aceite.
+_Avoid_: interface, assinatura, spec resumida
+
 **Comparação Pareada**:
-O mesmo incremento implementado duas vezes pelo mesmo agente, a partir do mesmo commit: o **braço com spec** recebe a Spec completa; o **braço sem spec**, só o problema. Só o braço com spec entra no repositório.
+O mesmo incremento implementado duas vezes pelo mesmo agente, a partir do mesmo commit: o **braço com spec** recebe a Spec completa; o **braço sem spec**, o Problema e o Contrato mínimo. Só o braço com spec recebe os critérios de aceite e só ele entra no repositório. O resultado é a diferença pareada por incremento, resumida pela mediana.
 _Avoid_: A/B, experimento controlado
 
 ### Domínio orçamentário federal (Brasil)
