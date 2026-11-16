@@ -236,7 +236,7 @@
           <rect x="230" y="34" width="170" height="70" rx="12" class="box"/><text x="315" y="56" text-anchor="middle" class="t">Compras.gov</text><text x="315" y="73" text-anchor="middle" class="t2">contratos · empenhos</text><text x="315" y="88" text-anchor="middle" class="t2">faturas · cronograma</text>
           <rect x="420" y="34" width="170" height="70" rx="12" class="box"/><text x="505" y="56" text-anchor="middle" class="t">TransfereGov</text><text x="505" y="73" text-anchor="middle" class="t2">TED · planos de ação</text><text x="505" y="88" text-anchor="middle" class="t2">notas de crédito</text>
           <rect x="610" y="34" width="170" height="70" rx="12" class="box"/><text x="695" y="56" text-anchor="middle" class="t">SICONV</text><text x="695" y="73" text-anchor="middle" class="t2">convênios</text><text x="695" y="88" text-anchor="middle" class="t2">propostas</text>
-          <rect x="800" y="34" width="170" height="70" rx="12" class="box"/><text x="885" y="56" text-anchor="middle" class="t">PNCP · PPA</text><text x="885" y="73" text-anchor="middle" class="t2">contratações</text><text x="885" y="88" text-anchor="middle" class="t2">programas</text>
+          <rect x="800" y="34" width="170" height="70" rx="12" class="box"/><text x="885" y="56" text-anchor="middle" class="t">SALIC · BB Ágil</text><text x="885" y="73" text-anchor="middle" class="t2">projetos PRONAC</text><text x="885" y="88" text-anchor="middle" class="t2">pagamentos LPG/PNAB</text>
           <rect x="990" y="34" width="170" height="70" rx="12" class="box"/><text x="1075" y="56" text-anchor="middle" class="t">IBGE</text><text x="1075" y="73" text-anchor="middle" class="t2">municípios · UF</text><text x="1075" y="88" text-anchor="middle" class="t2">SIDRA</text>
           <rect x="1180" y="34" width="170" height="70" rx="12" class="box"/><text x="1265" y="56" text-anchor="middle" class="t">Câmara · Senado</text><text x="1265" y="73" text-anchor="middle" class="t2">parlamentares</text><text x="1265" y="88" text-anchor="middle" class="t2">legislaturas</text>
         </g>
@@ -250,7 +250,7 @@
         <text x="60" y="158" class="k">GOV HUB · data-application-* · FORA DO FOCO DO TCC</text>
         <rect x="60" y="170" width="900" height="48" rx="10" class="box"/>
         <text x="76" y="190" class="t">Ingestão (Airflow) → PostgreSQL do Gov Hub</text>
-        <text x="76" y="207" class="t2 mono">schemas: siafi · compras_gov · transfere_gov · siconv · pncp · ppa · ibge · camara_deputados · senado_federal</text>
+        <text x="76" y="207" class="t2 mono">schemas: siafi · compras_gov · transfere_gov · siconv · salic · bbagil · ibge · camara_deputados · senado_federal</text>
         <rect x="990" y="170" width="340" height="48" rx="10" class="box"/>
         <text x="1006" y="190" class="t">Models dbt do Gov Hub</text>
         <text x="1006" y="207" class="t2">29 joins entre fontes já em produção → Gabarito (Fig. 2)</text>
@@ -274,11 +274,11 @@
         <text x="90" y="404" class="t2 mono">domain.py</text>
         <rect x="76" y="428" width="258" height="124" rx="10" class="box"/>
         <text x="90" y="449" class="t">Mapa de Fluxo <tspan class="t2">· ADR 0012</tspan></text>
-        <text x="90" y="466" class="t2">TED→NC→PF→NE · convênio · contrato</text>
+        <text x="90" y="466" class="t2">TED→NC→PF→NE · PRONAC · LPG/PNAB</text>
         <text x="90" y="481" class="t2">quem registra · formato do identificador</text>
         <text x="90" y="496" class="t2">onde o id. de um aparece no outro</text>
         <text x="90" y="511" class="t2">fonte pública por formato e por elo</text>
-        <text x="90" y="526" class="t2">revisado pelo Gov Hub · nunca contém joins</text>
+        <text x="90" y="526" class="t2">revisado pelo MinC · nunca contém joins</text>
         <text x="90" y="541" class="t2">= a documentação dos silos do artigo-base</text>
 
         <!-- Estágio 1 -->
@@ -376,15 +376,15 @@
         <text x="56" y="88" class="t2">condição do SQL = Gabarito</text>
 
         <rect x="40" y="150" width="280" height="66" rx="12" class="box"/>
-        <text x="56" y="172" class="t">Tabelas-semente públicas</text>
-        <text x="56" y="189" class="t2 mono">ne_tesouro · contratos · planos_acao</text>
-        <text x="56" y="204" class="t2 mono">siconv.proposta · ibge municípios</text>
+        <text x="56" y="172" class="t">Tabelas-semente do MinC</text>
+        <text x="56" y="189" class="t2 mono">salic (PRONAC) · plano_acao_minc</text>
+        <text x="56" y="204" class="t2 mono">ibge municípios · MUNIC</text>
 
         <rect x="40" y="266" width="280" height="82" rx="12" class="box"/>
-        <text x="56" y="288" class="t">Pares ainda não integrados</text>
-        <text x="56" y="305" class="t2">PNCP × Compras.gov · SIAFI API × Tesouro</text>
-        <text x="56" y="320" class="t2">SICONV × IBGE · PPA × SIAFI · Ancine × SALIC</text>
-        <text x="56" y="335" class="t2">+ FKs documentadas do MGI, sem join</text>
+        <text x="56" y="288" class="t">Pares ainda não integrados (MinC)</text>
+        <text x="56" y="305" class="t2">Ancine × SALIC · SALIC 6 ↔ IBGE 7 dígitos</text>
+        <text x="56" y="320" class="t2">BB Ágil × TransfereGov · MUNIC × SALIC</text>
+        <text x="56" y="335" class="t2">Mapas Culturais × IBGE · SICONFI × IBGE</text>
 
         <!-- Ground truth (x 350–670) -->
         <rect x="350" y="20" width="320" height="366" rx="16" class="region"/>
@@ -597,8 +597,8 @@
       <tbody>
         <tr><th>QP1</th><td>Por categoria de atrito, o que o LLM acrescenta sobre B2 e como se compara com B4? <em>(RQ1 no pôster)</em></td><td>Decision Layer nos Pares de Avaliação, inclusive Negativos</td><td><b>Acerto de Chave</b>, <b>Acerto de Execução</b> (F1 ≥ 0,90), Matriz de decisão, Cobertura de Candidatos</td><td>B0 a B4; ablação 2 × 3 do Domain Context</td><td>2</td></tr>
         <tr><th>QP2</th><td>Um modelo de pesos abertos, local, alcança o proprietário?</td><td>QP1 na condição S com 2 ou 3 modelos</td><td>Sucesso por modelo, tokens, latência</td><td>Modelo proprietário</td><td>2</td></tr>
-        <tr><th>QP3</th><td>O pipeline torna o analista mais rápido e mais certeiro, e a que custo?</td><td>Estudo cruzado com 2 ou 3 analistas do Gov Hub, 6 a 8 Pares Reais</td><td>Tempo por par (teto 60 min), acurácia pelo Gabarito, custo do pipeline</td><td>Analista sozinho</td><td>2</td></tr>
-        <tr><th>QP4</th><td>Em pares que o Gov Hub ainda não integra, o pipeline descobre chaves que quem conhece as bases confirma?</td><td>S nos 10 pares não integrados do inventário</td><td>Chaves confirmadas, Abstenções corretas; achados de interoperabilidade para a discussão</td><td>—</td><td>2</td></tr>
+        <tr><th>QP3</th><td>O pipeline torna o analista mais rápido e mais certeiro, e a que custo?</td><td>Estudo cruzado com 2 ou 3 analistas do time do MinC, 6 a 8 Pares Reais</td><td>Tempo por par (teto 60 min), acurácia pelo Gabarito, custo do pipeline</td><td>Analista sozinho</td><td>2</td></tr>
+        <tr><th>QP4</th><td>Em pares que o Gov Hub ainda não integra, o pipeline descobre chaves que quem conhece as bases confirma?</td><td>S nos 6 pares não integrados do MinC</td><td>Chaves confirmadas, Abstenções corretas; achados de interoperabilidade para a discussão</td><td>—</td><td>2</td></tr>
         <tr><th>QP5</th><td>A spec completa melhora o que o agente entrega, medido por oráculos escondidos? <em>(RQ2 no pôster)</em></td><td>Comparação pareada em 6 a 8 incrementos; o braço sem spec recebe o Problema e o Contrato mínimo</td><td>Oráculos compartilhados e de critério, à parte (1ª entrega e final), iterações, intervenções, tokens, tempo da autora; diferença pareada mediana</td><td>Braço sem spec do mesmo incremento</td><td>3</td></tr>
       </tbody>
     </table>
@@ -612,12 +612,13 @@
           <li class="done">Título e foco: LLM embutido + SDD; interoperabilidade como motivação</li>
           <li class="done">Bounded agency em run time e build time</li>
           <li class="done">Acerto em dois níveis (Execução por F1 ≥ 0,90); Matriz de decisão; chave fora da lista</li>
-          <li class="done">Catálogo de Transformações fechado, com <code>extrair_identificador</code> (ADR 0013); cobertura 21/26 sem extração, 23/26 com ela</li>
+          <li class="done">Catálogo de Transformações fechado, com <code>extrair_identificador</code> (ADR 0013); cobertura 22/27 sem extração, 24/27 com ela</li>
           <li class="done">Benchmark em duas partes; teste congelado, ajuste no desenvolvimento</li>
           <li class="done">Domain Context em dois artefatos; ablação 2 × 3 (ADR 0012)</li>
           <li class="done">Baselines B0–B4, 5 execuções em S, B3 e B4, plano de análise pré-registrado</li>
           <li class="done">QP3 cruzada; QP4 em pares não integrados; QP5 pareada</li>
           <li class="done">Pares Reais = joins em produção do Gov Hub; CPF fora, pessoa jurídica onde a chave pode ser CPF</li>
+          <li class="done">MinC como domínio de aplicação (ADR 0014); duplicatas pelo <code>data-application-gov-hub</code></li>
         </ul>
       </div>
       <div class="card">
@@ -625,7 +626,8 @@
         <h3>O que falta decidir</h3>
         <ul>
           <li class="open">Seleção final dos 12 a 20 Pares Reais e das tabelas-semente</li>
-          <li class="open">Formato e primeiro recorte do Mapa de Fluxo; quem do Gov Hub revisa</li>
+          <li class="open">Formato do Mapa de Fluxo; quem do MinC revisa; fontes legais</li>
+          <li class="open">Acesso às tabelas-semente do MinC no PostgreSQL</li>
           <li class="open">De-para código de UF → sigla no Glossário (decide o #26 da cobertura)</li>
           <li class="open">CAIN 2027: quem apresenta em Dublin e com qual financiamento</li>
           <li class="open">Quais LLMs e versões fixar; orçamento de tokens</li>
@@ -638,7 +640,7 @@
         <div class="tag">Portões do cronograma</div>
         <h3>Quatro fases</h3>
         <ul>
-          <li class="open"><b>CAIN 2027 Posters</b> · submetido em 6/11/2026; resultado 11/01/2027; camera-ready 29/01/2027; Dublin, 25/04 a 01/05/2027</li>
+          <li class="open"><b>CAIN 2027 Posters</b> · submetido em 6/11/2026; resultado 11/01/2027; camera-ready 29/01/2027; Dublin, 25/04 a 01/05/2027; pôster sem mudança (ADR 0014)</li>
           <li class="done"><b>Fase 1</b> · escopo e referencial → TCC 1, início de março de 2027</li>
           <li class="open"><b>Fase 2</b> · ground truth, gerador, harness, baselines → Conjunto de Teste congelado, fim de abril de 2027</li>
           <li class="open"><b>Fase 3</b> · QP1–QP4 → resultados congelados, fim de junho de 2027</li>
