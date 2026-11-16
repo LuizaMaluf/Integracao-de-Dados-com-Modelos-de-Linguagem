@@ -1,4 +1,4 @@
-# Inventário das bases do GovHub
+# Inventário das bases do Gov Hub
 
 Levantamento de 2026-10-03 nos repositórios `data-application-*` da organização GovHub-br, feito para montar o ground truth (Pares Reais), escolher os pares da QP4 e as tabelas-semente dos Pares Perturbados. Caminhos de dbt são relativos a `airflow_lappis/dags/dbt/` (gov-hub, cidades, mir) ou à raiz (minc). Conferir no código antes de anotar um Gabarito: este inventário foi feito por leitura estática, sem rodar nada.
 
@@ -38,15 +38,15 @@ Levantamento de 2026-10-03 nos repositórios `data-application-*` da organizaç�
 
 ## Joins entre fontes já em produção (candidatos a Pares Reais)
 
-A condição de join e a transformação usadas em produção são o Gabarito. A coluna "Categoria" é a classificação preliminar por Categoria de Atrito (`CONTEXT.md`).
+A condição de join e a transformação usadas em produção são o Gabarito. A coluna "Categoria" traz a Categoria de Atrito (`CONTEXT.md`), conferida no código em 2026-11-05. Contagem nas 29 condições, com sobreposição entre categorias: formato de identificador ou tipo 15, Derived Key 9, texto livre 4, sem transformação 1.
 
 ### SIAFI / Tesouro Gerencial × Compras.gov
 
 | # | Model | Condição | Transformação | Categoria |
 | --- | --- | --- | --- | --- |
-| 1 | `ipea/models/contratos_dbt/silver/contratos_empenhos.sql:30-33` (mir: `contratos_dbt/silver/contratos_empenhos.sql:35-37`) | `c.ne = e.ne_transformed and c.cnpj_cpf = e.ne_ccor_favorecido` | `upper(right(ne_ccor,12))`; `regexp_replace(cnpj,'[/.-]','')` | Formato de identificador (NE curta × SIAFI Identifier); chave composta |
-| 2 | mesmo arquivo, fallbacks `:84`, `:128`, `:170` | `num_processo`; só CNPJ; `info_complementar` | processo sem pontuação; `concat(UG, modalidade, numero)` × `substring(ne_info_complementar from '^([0-9]+) -')` | Derived Key; extração de texto livre |
-| 3 | `contratos_dbt/silver/contratos_estagios.sql:27/59/89` | `using (ne, cnpj_cpf)` → `(cnpj_cpf, num_processo)` → `(cnpj_cpf, info_complementar)` | idem | idem |
+| 1 | `ipea/models/contratos_dbt/silver/contratos_empenhos.sql:30-33` (mir: `contratos_dbt/silver/contratos_empenhos.sql:35-37`) | `c.ne = e.ne_transformed and c.cnpj_cpf = e.ne_ccor_favorecido` | `upper(right(ne_ccor,12))`; `regexp_replace(cnpj,'[/.-]','')` | Formato de identificador (NE curta × SIAFI Identifier); chave composta — **CPF quando o favorecido é pessoa física**: escopo do par restrito a pessoa jurídica |
+| 2 | mesmo arquivo, fallbacks `:84`, `:128`, `:170` | `num_processo`; só CNPJ; `info_complementar` | processo sem pontuação; `concat(UG, modalidade, numero)` × `substring(ne_info_complementar from '^([0-9]+) -')` | Derived Key; extração de texto livre — **CPF quando o favorecido é pessoa física**: escopo do par restrito a pessoa jurídica |
+| 3 | `contratos_dbt/silver/contratos_estagios.sql:27/59/89` | `using (ne, cnpj_cpf)` → `(cnpj_cpf, num_processo)` → `(cnpj_cpf, info_complementar)` | idem | idem — **CPF quando o favorecido é pessoa física**: escopo do par restrito a pessoa jurídica |
 | 4 | `contratos_dbt/gold/contratos_comparativo_mensal.sql:25` | `using (contrato_id, mes_ref)` | `to_date(split_part(emissao…))` × `to_date(ano||'-'||mes||'-01')` | Formato (data); Derived Key |
 | 5 | mir `contratos_dbt/bronze/empenhos_tesouro.sql:53-56` | `ne_ccor in (select unidade_gestora || gestao || upper(numero) from compras_gov.empenhos)` | concatenação UG + gestão + NE | Derived Key (o exemplo do `CONTEXT.md`) |
 
@@ -56,7 +56,7 @@ A condição de join e a transformação usadas em produção são o Gabarito. A
 | --- | --- | --- | --- | --- |
 | 6 | `ipea/models/ted_dbt/views/num_transf_n_plano_acao.sql:21` (mir: `empenhos_ted_dbt/views/…:21`) | `using (nc, ug)` com `tx_numero_nota`, `cd_ug_emitente_nota` | `left(nc,6) as ug, right(nc,12) as nc` | Derived Key (decompõe o SIAFI Identifier); composta |
 | 7 | `ted_dbt/silver/pf_plano_acao.sql:43`; mir `silver/pf_unificado.sql:73` | `using (pf, ug_emitente)`; `using (pf_chave)` | `right(pf,12)`; `upper(trim(right(pf,12)))` × `upper(trim(tx_numero_programacao))` | Formato de identificador |
-| 8 | `ted_dbt/silver/empenhos_plano_acao.sql:31`; mir `silver/empenhos_por_plano_acao.sql:442-443` | `using (num_transf)`; `er.num_transf = cast(pa.num_transf as text)` | `num_transf` extraído por regex de `ne_ccor_descricao` (9 métodos em cascata); ano de 2 dígitos expandido por CASE | Extração de texto livre; Equivalência lógica |
+| 8 | `ted_dbt/silver/empenhos_plano_acao.sql:31`; mir `silver/empenhos_por_plano_acao.sql:442-443` | `using (num_transf)`; `er.num_transf = cast(pa.num_transf as text)` | `num_transf` extraído de `ne_ccor_descricao` por uma cascata de 16 passos (14 por regex, 2 por herança entre linhas; no MIR HEAD `9807b9a` a cascata está em `silver/empenhos_ted_cascata.sql`; contagem em [`cobertura-catalogo.md`](cobertura-catalogo.md)); ano de 2 dígitos expandido por CASE | Extração de texto livre; Equivalência lógica |
 | 9 | `ted_dbt/silver/nc_plano_acao.sql:31`; mir `:21` | `nc_transferencia = pda.num_transf` | — | Grafia/nomenclatura |
 | 10 | `ted_dbt/gold/ted_resumo_orcamentario.sql:115`; mir `gold/…:149, 204-207` | `using (plano_acao)`; `using (plano_acao, num_transf)` | `ltrim(trim(cast(x as text)),'0')` | Formato (zeros à esquerda); composta |
 | 11 | `ted_dbt/silver/bolsistas_nc_tesouro.sql:50-52`; mir `silver/nc_unificado.sql:67` | `fonte_recursos_codigo = nc_fonte_recursos and ptres = ptres`; `trim(ptres) = trim(ptres)` | `split_part(ptres,'.',1)` | Formato; composta (dois relatórios do Tesouro) |
@@ -84,15 +84,15 @@ A condição de join e a transformação usadas em produção são o Gabarito. A
 | # | Repositório / model | Condição | Transformação | Categoria |
 | --- | --- | --- | --- | --- |
 | 20 | gov-hub `sistema_sisbolsas/silver/sgac_teds_siafi.sql:149-151` (SGAC × Tesouro) | `s.siafi_norm = t.transf_norm`, `length >= 5` | `regexp_replace(coalesce(x,''),'[^0-9]','')` | Formato |
-| 21 | gov-hub `chamadas_publicas.sql:374`; `bolsistas.sql:127` (Sisbolsas × IPEA Pro) | `c.co_projeto = proj.projetoid::text` | cast | Formato (tipo) |
+| 21 | gov-hub `chamadas_publicas.sql:374`; `bolsistas.sql:127` (Sisbolsas × IPEA Pro) | `c.co_projeto = proj.projetoid::text` | cast | Formato (tipo) — tabelas do Sisbolsas: só colunas não pessoais no snapshot |
 | 22 | cidades `mcid/models/empreendimento_far_dbt/silver/empreendimento.sql:82-84` (GFAR × CAIXA) | `id_proposta`; `c.apf = o.apf` | UDF `normalize_apf`: `lpad(replace(x,'-',''),8,'0')` | Formato (zeros, máscara) |
 | 23 | cidades `evolucao_financeira.sql:76-77`; `fds_empreendimento.sql:190-193` | `m.apf_raiz = left(e.apf, 6)` | `right(apf,6)` × `left(apf,6)` | Derived Key |
 | 24 | cidades `gold/mapa_nacional.sql:41`, `panorama_estadual.sql:165…` (MCMV × IBGE UF) | `f.uf = i.sigla` | `nullif(trim(sg_uf),'')` | Grafia |
 | 25 | cidades `conjuntura_dbt/silver/silver_financiamentos_habitacionais.sql:48-50`; `gold_ticket_medio_vs_incc.sql:47-49` | `on (ano, trimestre)` | trimestre derivado de `EXTRACT(MONTH)` por CASE | Derived Key; composta |
-| 26 | minc `cotas_dbt/gold/fct_pagamentos_elegiveis.sql:46-47` (planilhas TransfereGov × IBGE FCU) | `chave_municipio_uf = chave_municipio_uf` | `sem_acento(cidade)||'|'||sem_acento(uf)` × `sem_acento(nm_mun)||'|'||lower(sigla_uf)`, com código de UF → sigla por tabela CASE | Derived Key; Equivalência lógica; Grafia |
+| 26 | minc `cotas_dbt/gold/fct_pagamentos_elegiveis.sql:46-47` (planilhas TransfereGov × IBGE FCU) | `chave_municipio_uf = chave_municipio_uf` | `sem_acento(cidade)||'|'||sem_acento(uf)` × `sem_acento(nm_mun)||'|'||lower(sigla_uf)`, com código de UF → sigla por tabela CASE | Derived Key; Equivalência lógica; Grafia — planilhas do MinC: só colunas não pessoais no snapshot |
 | 27 | minc `agentes_dbt/gold/primeiro_acesso_anual.sql:66-69` (BB Ágil ∪ SALIC ∪ Ancine) | `beneficiario_documento` + `programa_fomento` + `ano` | `LPAD(REGEXP_REPLACE(doc,'[^0-9]',''), 11|14, '0')`, 11 ou 14 por tipo de pessoa | Formato (máscara, zeros); **CPF** |
-| 28 | minc `cotas_dbt/gold/fct_pagamentos_bbagil.sql:37-41` (model desativado) | `ente_bbagil = id_plano_acao::text`; `identificador_unico` | só dígitos | Formato |
-| 29 | minc `extracao_bbagil_dag.py:94-99` (TransfereGov → BB Ágil, na ingestão) | `agencia`, `conta` | `int()` descarta zeros à esquerda | Formato (zeros) |
+| 28 | minc `cotas_dbt/gold/fct_pagamentos_bbagil.sql:37-41` (model desativado; não existe mais no HEAD, lido em minc `813aa20`) | `ente_bbagil = id_plano_acao::text`; `identificador_unico` | só dígitos | Formato — **chave é CPF** |
+| 29 | minc `extracao_bbagil_dag.py:94-99` (TransfereGov → BB Ágil; passo de ingestão em Python, não model dbt) | `agencia`, `conta` | `int()` descarta zeros à esquerda | Formato (zeros) — BB Ágil: só colunas não pessoais no snapshot |
 
 Joins dentro de uma mesma fonte com transformação, úteis como semente: SALIC PRONAC = `lpad(trim(ano),2,'0')||trim(sequencial)` (minc `macros/salic/chaves_salic.sql:40-47`); SIAPE `right(codigo_orgao_uorg,7)::integer = cast(codigo as int)`; SIORG `regexp_replace(x,'^.*/','')` em códigos de unidade.
 
@@ -116,13 +116,13 @@ Joins dentro de uma mesma fonte com transformação, úteis como semente: SALIC 
 - **SIAPE** (`dados_pessoais`, `dados_funcionais`, `dados_financeiros`, `dados_dependentes`, `dados_pa`): CPF, nome, filiação, raça/cor, deficiência, salários, conta bancária.
 - **SIORG** `cpf_titular`, `nome_titular`.
 - **Compras.gov** `terceirizados`: CPF, nome, salário.
-- **Tesouro Gerencial** `pagamentos_ob_bolsa` e `ne_ccor_favorecido` quando o favorecido é pessoa física.
+- **Tesouro Gerencial** `pagamentos_ob_bolsa` e `ne_ccor_favorecido` quando o favorecido é pessoa física (#1–#3 entram com escopo restrito a pessoa jurídica).
 - **Sisbolsas** `tb_dado_pessoal`, `tb_dado_bancario`; **BB Ágil** `beneficiarydocumentid`/`name` (~176 mil CPFs); planilhas do MinC com raça e PcD (dados sensíveis); **SALIC** `cgccpf`, agentes físicos; **SICONV** `identif_fornecedor`.
 - Já tagueado como `PII.Sensitive` nos `schema.yml` do minc (`scripts/classificar_pii.py`).
 
 ## Observações para o desenho da avaliação
 
-1. **Transformações além do Catálogo.** Vários Gabaritos reais extraem a chave de texto livre por regex (`num_transf` de `ne_ccor_descricao`, `numero_transferencia` do texto da NE, `info_complementar`), ou usam cascatas de fallback e desempate por data. O Catálogo de Transformações atual (8 operações) não expressa isso.
-2. **Predicados de filtro no join.** `left(ne_ccor,6)='810008'` e a janela por Exercício fazem parte da chave em produção.
+1. **Transformações além do Catálogo.** Vários Gabaritos reais extraem a chave de texto livre por regex (`num_transf` de `ne_ccor_descricao`, `numero_transferencia` do texto da NE, `info_complementar`), ou usam cascatas de fallback e desempate por data. O rascunho anterior do Catálogo (8 operações) não expressava isso. Hoje: a extração de texto livre usa `extrair_identificador(tipo)` com padrão vindo do Mapa de Fluxo (ADR 0012); cada etapa de uma cascata vale como uma Chave Aceitável e a cascata completa fica fora do escopo; o desempate por data fica fora do catálogo (ADR 0013).
+2. **Predicados de filtro no join.** `left(ne_ccor,6)='810008'` e a janela por Exercício fazem parte da chave em produção. Na avaliação, viram escopo do par, aplicado às duas tabelas (`CONTEXT.md`).
 3. **Decomposição do SIAFI Identifier** (`left(nc,6)` = UG, `right(nc,12)` = documento) aparece em pelo menos cinco models: é a Derived Key mais frequente do domínio.
 4. **Nome de pessoa como chave** (parlamentares) é o único caso de Grafia/nomenclatura em valores, não em nomes de coluna.

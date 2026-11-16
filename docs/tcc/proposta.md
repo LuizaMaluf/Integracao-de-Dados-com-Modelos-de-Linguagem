@@ -314,7 +314,8 @@ O portão que decide o cronograma é o ground truth: congelar o Conjunto de Test
 - [ ] Seleção final dos 12 a 20 Pares Reais e das tabelas-semente, depois de conferir o inventário no código
 - [x] Transformações fora do Catálogo: Mapa de Fluxo como contexto do LLM + `extrair_identificador(tipo)` (ADR 0012); cascatas viram Chaves Aceitáveis múltiplas, com recall contra a cascata inteira como medida secundária, e filtros viram escopo do par
 - [x] Catálogo fechado: parâmetros, limite de três operações por lado e o que fica fora (ADR 0013)
-- [ ] Cobertura do catálogo recontada com as definições da ADR 0013 (`cobertura-catalogo.md`)
+- [x] Cobertura do catálogo recontada com as definições da ADR 0013: 21/26 sem extração, 23/26 com ela, 3 fora (`cobertura-catalogo.md`)
+- [ ] Se o de-para código de UF → sigla (tabela do IBGE) entra no Glossário, o que leva o #26 para a classe A
 - [x] Limites de `mapear_valores` e validação: equivalências só do Glossário; validação confere a cardinalidade declarada, a taxa de correspondência nas duas direções no escopo do par e restrições independentes quando disponíveis, com limiares calibrados no Desenvolvimento (ADR 0011)
 - [ ] Formato e escopo inicial do Mapa de Fluxo (quais documentos e normas entram primeiro) e quem do Gov Hub revisa
 - [x] Limiar do Acerto de Execução: F1 ≥ 0,90 como limiar inicial, congelado junto com o Conjunto de Teste

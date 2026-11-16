@@ -33,7 +33,13 @@ A ADR 0011 fixou um Catálogo de Transformações com nove operações e até tr
 
 ## Cobertura resultante
 
-Recontagem das 26 condições com as definições acima: **[pendente: recontar em `docs/tcc/cobertura-catalogo.md`]**.
+Recontagem das 26 condições com as definições acima, detalhada em `docs/tcc/cobertura-catalogo.md`:
+
+- **21/26 (81%)** cabem sem `extrair_identificador`;
+- **23/26 (88%)** cabem contando as 2 que precisam de `extrair_identificador` na primeira etapa (#8 e #12);
+- **3/26 (12%)** ficam fora e viram Abstenção: #17 (de-para fora do Glossário), #18 e #26 (mais de três operações num lado).
+
+Com a regra do artigo, que põe na classe B toda condição com `extrair_identificador` em alguma etapa, são 19/26 (73%) sem extração e 23/26 (88%) com ela. Das 8 condições que dependiam de definição, 5 cabem (#4, #10, #11, #14 e #25) e 3 ficam fora.
 
 A contagem descreve ajuste, não generalização: o catálogo saiu do mesmo inventário de onde vêm os Pares Reais. Os Pares Reais medem a escolha da chave, e a generalização fica com a QP4.
 
