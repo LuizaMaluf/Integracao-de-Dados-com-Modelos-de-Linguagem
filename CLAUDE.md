@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-TCC de Luiza Maluf (UnB) — *Integração de dados públicos com modelos de linguagem: um pipeline construído por Spec-Driven Development para descoberta de chaves entre bases governamentais*. Foco: descoberta de chaves com LLM embutido e SDD. A ingestão das bases é do GovHub (`data-application-gov-hub`); este repositório lê do PostgreSQL do GovHub ou de snapshots exportados de lá.
+TCC de Luiza Maluf (UnB) — *Integração de dados públicos com modelos de linguagem: um pipeline construído por Spec-Driven Development para descoberta de chaves entre bases governamentais*. Foco: descoberta de chaves com LLM embutido e SDD. A ingestão das bases é do Gov Hub (`data-application-gov-hub`); este repositório lê do PostgreSQL do Gov Hub ou de snapshots exportados de lá.
 Glossário do domínio em `CONTEXT.md`; decisões em `docs/adr/`.
 
 ## Contexto do TCC

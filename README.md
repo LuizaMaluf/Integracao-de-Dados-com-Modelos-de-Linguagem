@@ -21,7 +21,7 @@ Keys ranqueadas             (JSON tipado)
 
 **Estado atual.** A coleta de evidências e uma Decision Layer com prompt livre já funcionam (`govhub`, abaixo). A Decision Layer tipada com DSPy, o Catálogo de Transformações, a Abstenção, o estágio Jinja → dbt e o harness de avaliação estão em "Lacunas e plano de trabalho" na proposta.
 
-A ingestão das bases é feita pelo GovHub (`data-application-gov-hub`): o pipeline lê as tabelas do PostgreSQL do GovHub ou de arquivos CSV.
+A ingestão das bases é feita pelo Gov Hub (`data-application-gov-hub`): o pipeline lê as tabelas do PostgreSQL do Gov Hub ou de arquivos CSV.
 
 ## Setup
 
@@ -40,7 +40,7 @@ make up                     # opcional: PostgreSQL local para os testes `pg` e o
 | `LLM_BACKEND` | `anthropic` | `anthropic` (API key) ou `claude-cli` (Claude Code headless, login da máquina) |
 | `MAX_CANDIDATE_KEYS` | `10` | Candidate Keys enviados ao LLM |
 | `SAMPLE_SIZE` | `1000` | Linhas amostradas por tabela |
-| `POSTGRES_*` | `localhost`, `govhub`… | Banco de onde as tabelas são lidas (local ou do GovHub) |
+| `POSTGRES_*` | `localhost`, `govhub`… | Banco de onde as tabelas são lidas (local ou do Gov Hub) |
 
 ## Uso
 

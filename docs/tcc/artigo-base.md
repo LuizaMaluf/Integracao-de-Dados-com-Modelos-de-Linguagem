@@ -1,6 +1,6 @@
 # Artigo-base: SPAPI-Tester
 
-**Referência:** Shuai Wang, Yinan Yu, Robert Feldt (Chalmers University of Technology) e Dhasarathy Parthasarathy (Volvo Group). *Automating a Complete Software Test Process Using LLMs: An Automotive Case Study.* **Confirmar ano e veículo de publicação antes de citar.**
+**Referência:** Shuai Wang, Yinan Yu, Robert Feldt (Chalmers University of Technology) e Dhasarathy Parthasarathy (Volvo Group). *Automating a Complete Software Test Process Using LLMs: An Automotive Case Study.* Proc. ICSE 2025, pp. 373-384.
 
 **Fonte deste resumo:** apresentação da disciplina *Verificação, Validação e Testes de Software* (Mestrado Profissional em Computação Aplicada, UnB), por Douglas dos Santos Lopes e Pedro Britto Júnior. Números e frases abaixo vêm dos slides; na monografia, citar sempre o texto do artigo.
 
@@ -31,11 +31,11 @@ Um script precisaria de um dicionário de sinônimos de manutenção inviável; 
 
 ## Arquitetura
 
-- **Preservação estrutural:** mantém as oito etapas originais; o LLM automatiza só as de tradução (extração, preparação, limpeza e mapeamento de parâmetros). Não usa prompts abertos.
+- **Preservação estrutural:** mantém as oito etapas originais e usa LLM em cada etapa manual discreta (1–6): extração, preparação, limpeza e mapeamento de parâmetros, e também a geração dos casos de teste. A renderização e a execução dos testes ficam em código determinístico. Não usa prompts abertos.
 - **DSPy:** assinaturas com tipos de entrada e esquema exato de saída; programação em vez de engenharia de prompt; **autocorreção** — captura a exceção de parsing, injeta a mensagem de erro no histórico e refaz a chamada.
 - **`dspy.ChainOfThought`:** extrai o contexto de cada sinal isoladamente e justifica a relação API ↔ CAN antes de fechar o dicionário; o raciocínio intermediário fica registrado (rastreabilidade, mitigação de alucinação).
 - **Saída do LLM:** dicionário JSON unificado (propriedade da API → sinal CAN → estado do VV, com os mapeamentos de valores).
-- **Estágio determinístico:** o dicionário é injetado em templates **Jinja** que geram o script **PyTest**. O LLM não tem contato com o código de teste.
+- **Estágio determinístico:** o dicionário, com os casos de teste gerados pelo LLM como dados, é injetado em templates **Jinja** que geram o script **PyTest**, executado por código. O LLM não escreve o código de teste.
 
 ## Resultados (como apresentados nos slides — conferir no artigo)
 
@@ -52,7 +52,7 @@ Um script precisaria de um dicionário de sinônimos de manutenção inviável; 
 
 ## Lições que o TCC adota
 
-1. **LLM embutido, não substituto:** módulos estruturados → camada semântica LLM → módulos estruturados. LLMs não devem contornar fluxos estruturados; devem executar, dentro deles, as tarefas que exigem julgamento.
+1. **LLM embutido, não substituto:** módulos estruturados → camada semântica LLM → módulos estruturados. LLMs não devem contornar fluxos estruturados. O artigo usa LLM em cada etapa manual; o TCC restringe o LLM a uma etapa só, o de-para, sob bounded agency (`CONTEXT.md`).
 2. **Saída tipada e validada**, com autocorreção quando o parsing falha.
 3. **O LLM nunca escreve o artefato executado**: entrega dados; templates determinísticos geram o código.
 4. **Focar no processo, não no modelo:** o mesmo pipeline funciona com LLMs diferentes sem adaptação.
